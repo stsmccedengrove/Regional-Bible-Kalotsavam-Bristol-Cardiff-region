@@ -82,86 +82,104 @@
                 </div>
 
                 <!-- Navigation Controls -->
-                <div class="flex items-center space-x-2 sm:space-x-4">
-                    <button onclick="openLogoModal()" class="flex items-center space-x-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 transition px-3 py-2 rounded-lg text-xs font-semibold backdrop-blur-sm border border-amber-400/30">
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <button onclick="openLogoModal()" class="flex items-center space-x-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 transition px-2.5 py-2 rounded-lg text-xs font-semibold border border-amber-400/30">
                         <i class="fa-solid fa-image"></i>
-                        <span class="hidden md:inline">Set Logos</span>
+                        <span class="hidden md:inline">Logos</span>
                     </button>
-                    <button onclick="openQRModal()" class="flex items-center space-x-2 bg-white/10 hover:bg-white/20 transition px-3 py-2 rounded-lg text-xs font-semibold backdrop-blur-sm border border-white/20">
+                    <button onclick="openQRModal()" class="flex items-center space-x-1.5 bg-white/10 hover:bg-white/20 transition px-2.5 py-2 rounded-lg text-xs font-semibold border border-white/20">
                         <i class="fa-solid fa-qrcode text-amber-400"></i>
-                        <span class="hidden md:inline">Share Page</span>
+                        <span class="hidden md:inline">Share</span>
                     </button>
-                    <button onclick="toggleAdminPanel()" class="flex items-center space-x-2 bg-amber-500 hover:bg-amber-600 text-brand-900 font-bold px-3.5 py-2 rounded-lg text-xs transition shadow-md">
+                    <button onclick="toggleAdminPanel()" class="flex items-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-brand-900 font-bold px-3 py-2 rounded-lg text-xs transition shadow-md">
                         <i class="fa-solid fa-lock-open"></i>
-                        <span id="adminBtnText" class="hidden sm:inline">Admin Panel</span>
+                        <span class="hidden sm:inline">Admin Panel</span>
                     </button>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+
+        <!-- Navigation Tabs -->
+        <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
+            <button onclick="switchTab('results')" id="tabBtnResults" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-brand-600 text-white shadow">
+                <i class="fa-solid fa-trophy mr-1.5"></i> Results & Leaderboard
+            </button>
+            <button onclick="switchTab('liveStage')" id="tabBtnLive" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+                <i class="fa-solid fa-tower-broadcast text-red-500 mr-1.5 animate-pulse"></i> Stage Live Status
+            </button>
+            <button onclick="switchTab('schedule')" id="tabBtnSchedule" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+                <i class="fa-solid fa-calendar-days text-brand-600 mr-1.5"></i> Program Schedule
+            </button>
+        </div>
 
         <!-- Banner / Hero Section -->
         <section class="bg-gradient-to-r from-brand-900 via-brand-800 to-indigo-950 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
             <div class="absolute right-4 top-2 opacity-10">
-                <i class="fa-solid fa-book-bible text-[200px]"></i>
+                <i class="fa-solid fa-book-bible text-[180px]"></i>
             </div>
             <div class="relative z-10 max-w-3xl">
                 <div class="inline-flex items-center space-x-2 bg-amber-400/20 text-amber-300 border border-amber-400/30 px-3 py-1 rounded-full text-xs font-semibold mb-3">
                     <i class="fa-solid fa-location-dot"></i>
-                    <span>Bristol-Cardiff Region • Official CSMEGB Eparchial Guidelines</span>
+                    <span>Bristol-Cardiff Region • 31st October 2026</span>
                 </div>
-                <h2 class="text-xl sm:text-3xl font-black tracking-tight mb-2">CSMEGB Regional Bible Kalotsavam Bristol Cardiff Region 2026</h2>
-                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">Official points tally, category scoring, and competition listings strictly aligned with CSMEGB Bible Apostolate guidelines for all 12 regional missions.</p>
-                
-                <div class="mt-5 flex flex-wrap gap-3 text-xs">
-                    <div class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
-                        <span class="text-slate-300">Solo Items:</span> <strong class="text-amber-400">1st (5 pts), 2nd (3 pts), 3rd (1 pt)</strong>
-                    </div>
-                    <div class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
-                        <span class="text-slate-300">Group Items:</span> <strong class="text-amber-400">1st (10 pts), 2nd (6 pts), 3rd (2 pts)</strong>
-                    </div>
-                    <div class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
-                        <span class="text-slate-300">Max Limit:</span> <strong class="text-amber-400">3 Solo & 3 Group Items per participant</strong>
-                    </div>
-                </div>
+                <h2 class="text-xl sm:text-3xl font-black tracking-tight mb-2">CSMEGB Regional Bible Kalotsavam 2026</h2>
+                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">Live program schedule, real-time stage status, and official points standings for all 12 regional missions.</p>
             </div>
         </section>
 
-        <section id="adminSection" class="hidden bg-white rounded-2xl shadow-lg border-2 border-amber-400 p-6 transition-all duration-300">
-            <div class="flex justify-between items-center mb-6 border-b pb-4">
+        <!-- Admin Management Panel -->
+        <section id="adminSection" class="hidden bg-white rounded-2xl shadow-lg border-2 border-amber-400 p-6 transition-all duration-300 space-y-6">
+            <div class="flex justify-between items-center border-b pb-4">
                 <div class="flex items-center space-x-3">
                     <div class="bg-amber-100 p-2 rounded-lg text-amber-700">
-                        <i class="fa-solid fa-pen-to-square text-xl"></i>
+                        <i class="fa-solid fa-screwdriver-wrench text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900">Admin Result Entry & Management</h3>
-                        <p class="text-xs text-slate-500">Publish regional event results according to CSMEGB Eparchy scoring standards.</p>
+                        <h3 class="text-lg font-bold text-slate-900">Kalotsavam Event Administration</h3>
+                        <p class="text-xs text-slate-500">Manage results, live stage status, and event schedules.</p>
                     </div>
                 </div>
-                <button onclick="toggleAdminPanel()" class="text-slate-400 hover:text-slate-600">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
+                <div class="flex items-center space-x-2">
+                    <button onclick="clearAllPublishedResults()" class="px-3 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 rounded-lg text-xs font-semibold">
+                        <i class="fa-solid fa-trash-arrow-up mr-1"></i> Reset All Results to "Coming Soon"
+                    </button>
+                    <button onclick="toggleAdminPanel()" class="text-slate-400 hover:text-slate-600">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
             </div>
 
-            <form id="resultForm" onsubmit="handleResultSubmit(event)" class="space-y-6">
+            <!-- Sub Admin Tabs -->
+            <div class="flex space-x-2 border-b border-slate-200 pb-2">
+                <button onclick="switchAdminSubTab('resultEntry')" id="adminSubTabResult" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white">Publish Result</button>
+                <button onclick="switchAdminSubTab('stageUpdate')" id="adminSubTabStage" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">Update Live Stages</button>
+                <button onclick="switchAdminSubTab('scheduleEntry')" id="adminSubTabSchedule" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">Add Schedule Event</button>
+            </div>
+
+            <!-- Admin Form 1: Result Publishing -->
+            <form id="resultForm" onsubmit="handleResultSubmit(event)" class="space-y-4">
+                <input type="hidden" id="editingItemId" value="">
+                <h4 id="formHeaderTitle" class="text-sm font-bold text-slate-800">Publish Result Entry</h4>
+                
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Item Category / Type</label>
-                        <select id="itemType" onchange="updateFormItemsList()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm focus:ring-brand-500 focus:border-brand-500">
+                        <select id="itemType" onchange="updateFormItemsList()" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
                             <option value="Solo">Solo Item (5, 3, 1 pts)</option>
                             <option value="Group">Group Item (10, 6, 2 pts)</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Competition Item Name</label>
-                        <select id="itemNameSelect" required class="w-full rounded-lg border-slate-300 border p-2.5 text-sm focus:ring-brand-500 focus:border-brand-500">
+                        <select id="itemNameSelect" required class="w-full rounded-lg border-slate-300 border p-2 text-xs">
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Age Category (CSMEGB I-VII)</label>
-                        <select id="itemCategory" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm focus:ring-brand-500 focus:border-brand-500">
+                        <select id="itemCategory" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
                             <option value="Up to 7 yrs (Cat I)">Up to 7 yrs (Category I)</option>
                             <option value="8-10 yrs (Cat II)">8-10 yrs (Category II)</option>
                             <option value="11-13 yrs (Cat III)">11-13 yrs (Category III)</option>
@@ -176,204 +194,297 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
                     <!-- 1st Place -->
                     <div class="space-y-2">
-                        <span class="inline-flex items-center space-x-1 text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full">
+                        <span class="inline-flex items-center space-x-1 text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
                             <i class="fa-solid fa-trophy text-amber-500"></i>
                             <span>1st Place Winner</span>
                         </span>
                         <div>
-                            <label class="block text-xs text-slate-600 mb-0.5">Mission</label>
-                            <select id="firstMission" required class="w-full rounded-lg border-slate-300 border p-2 text-sm focus:ring-amber-500">
-                            </select>
+                            <label class="block text-[11px] text-slate-600 mb-0.5">Mission</label>
+                            <select id="firstMission" required class="w-full rounded-lg border-slate-300 border p-2 text-xs"></select>
                         </div>
                         <div>
-                            <label class="block text-xs text-slate-600 mb-0.5">Participant / Team Name</label>
-                            <input type="text" id="firstWinner" placeholder="Name (optional)" class="w-full rounded-lg border-slate-300 border p-2 text-sm">
+                            <label class="block text-[11px] text-slate-600 mb-0.5">Participant / Team Name</label>
+                            <input type="text" id="firstWinner" placeholder="Name (optional)" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
                         </div>
                     </div>
 
                     <!-- 2nd Place -->
                     <div class="space-y-2">
-                        <span class="inline-flex items-center space-x-1 text-xs font-bold text-slate-700 bg-slate-200 px-2.5 py-1 rounded-full">
+                        <span class="inline-flex items-center space-x-1 text-xs font-bold text-slate-700 bg-slate-200 px-2 py-0.5 rounded-full">
                             <i class="fa-solid fa-medal text-slate-400"></i>
                             <span>2nd Place Winner</span>
                         </span>
                         <div>
-                            <label class="block text-xs text-slate-600 mb-0.5">Mission</label>
-                            <select id="secondMission" required class="w-full rounded-lg border-slate-300 border p-2 text-sm focus:ring-slate-500">
-                            </select>
+                            <label class="block text-[11px] text-slate-600 mb-0.5">Mission</label>
+                            <select id="secondMission" required class="w-full rounded-lg border-slate-300 border p-2 text-xs"></select>
                         </div>
                         <div>
-                            <label class="block text-xs text-slate-600 mb-0.5">Participant / Team Name</label>
-                            <input type="text" id="secondWinner" placeholder="Name (optional)" class="w-full rounded-lg border-slate-300 border p-2 text-sm">
+                            <label class="block text-[11px] text-slate-600 mb-0.5">Participant / Team Name</label>
+                            <input type="text" id="secondWinner" placeholder="Name (optional)" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
                         </div>
                     </div>
 
                     <!-- 3rd Place -->
                     <div class="space-y-2">
-                        <span class="inline-flex items-center space-x-1 text-xs font-bold text-amber-900 bg-amber-200 px-2.5 py-1 rounded-full">
+                        <span class="inline-flex items-center space-x-1 text-xs font-bold text-amber-900 bg-amber-200 px-2 py-0.5 rounded-full">
                             <i class="fa-solid fa-award text-amber-700"></i>
                             <span>3rd Place Winner</span>
                         </span>
                         <div>
-                            <label class="block text-xs text-slate-600 mb-0.5">Mission</label>
-                            <select id="thirdMission" required class="w-full rounded-lg border-slate-300 border p-2 text-sm focus:ring-amber-700">
-                            </select>
+                            <label class="block text-[11px] text-slate-600 mb-0.5">Mission</label>
+                            <select id="thirdMission" required class="w-full rounded-lg border-slate-300 border p-2 text-xs"></select>
                         </div>
                         <div>
-                            <label class="block text-xs text-slate-600 mb-0.5">Participant / Team Name</label>
-                            <input type="text" id="thirdWinner" placeholder="Name (optional)" class="w-full rounded-lg border-slate-300 border p-2 text-sm">
+                            <label class="block text-[11px] text-slate-600 mb-0.5">Participant / Team Name</label>
+                            <input type="text" id="thirdWinner" placeholder="Name (optional)" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
                         </div>
                     </div>
                 </div>
 
                 <div class="flex justify-end space-x-3">
-                    <button type="button" onclick="resetForm()" class="px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-100 font-medium">Reset</button>
-                    <button type="submit" class="px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg text-sm shadow-md transition">Publish Result</button>
+                    <button type="button" onclick="resetForm()" class="px-4 py-2 border border-slate-300 rounded-lg text-xs text-slate-600 hover:bg-slate-100 font-medium">Reset</button>
+                    <button type="submit" id="submitBtnText" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg text-xs shadow-md">Publish Result</button>
+                </div>
+            </form>
+
+            <!-- Admin Form 2: Stage Status Management -->
+            <form id="stageForm" onsubmit="handleStageUpdate(event)" class="hidden space-y-4">
+                <h4 class="text-sm font-bold text-slate-800">Update Live Stage Progress</h4>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Stage Venue</label>
+                        <select id="adminStageSelect" required class="w-full rounded-lg border-slate-300 border p-2 text-xs">
+                            <option value="Stage 1 (Main Hall)">Stage 1 (Main Hall)</option>
+                            <option value="Stage 2 (St. Mary's Hall)">Stage 2 (St. Mary's Hall)</option>
+                            <option value="Stage 3 (Auditorium B)">Stage 3 (Auditorium B)</option>
+                            <option value="Stage 4 (Conference Room)">Stage 4 (Conference Room)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Ongoing Item Name</label>
+                        <input type="text" id="adminOngoingItem" required placeholder="e.g. Margamkali" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Category & Time</label>
+                        <input type="text" id="adminOngoingTime" placeholder="e.g. Cat IV • Started 10:30 AM" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Next Upcoming Item</label>
+                        <input type="text" id="adminNextItem" placeholder="e.g. Bible Quiz (Cat III)" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-xs shadow-md">Update Live Stage</button>
+                </div>
+            </form>
+
+            <!-- Admin Form 3: Schedule Management -->
+            <form id="scheduleForm" onsubmit="handleScheduleSubmit(event)" class="hidden space-y-4">
+                <h4 class="text-sm font-bold text-slate-800">Add Competition Schedule Event</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Time Slot</label>
+                        <input type="text" id="schedTime" required placeholder="e.g. 09:30 AM - 10:30 AM" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Item Name</label>
+                        <input type="text" id="schedItem" required placeholder="e.g. Bible Reading (Malayalam)" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Category</label>
+                        <input type="text" id="schedCat" required placeholder="e.g. Cat II (8-10 yrs)" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Stage Venue</label>
+                        <select id="schedStage" required class="w-full rounded-lg border-slate-300 border p-2 text-xs">
+                            <option value="Stage 1 (Main Hall)">Stage 1 (Main Hall)</option>
+                            <option value="Stage 2 (St. Mary's Hall)">Stage 2 (St. Mary's Hall)</option>
+                            <option value="Stage 3 (Auditorium B)">Stage 3 (Auditorium B)</option>
+                            <option value="Stage 4 (Conference Room)">Stage 4 (Conference Room)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg text-xs shadow-md">Add to Schedule</button>
                 </div>
             </form>
         </section>
 
-        <section>
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <div>
-                    <h2 class="text-xl font-extrabold text-slate-900 flex items-center space-x-2">
-                        <i class="fa-solid fa-trophy text-amber-500"></i>
-                        <span>Overall Mission Leaderboard</span>
-                    </h2>
-                    <p class="text-xs text-slate-500">Standings calculated strictly according to CSMEGB Bible Kalotsavam guidelines.</p>
-                </div>
-                <div class="text-xs bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg self-start border border-slate-200">
-                    <span id="totalItemsCount" class="font-bold text-brand-600">0</span> items announced
-                </div>
-            </div>
+        <!-- TAB 1: RESULTS & LEADERBOARD -->
+        <div id="tabContentResults" class="space-y-8">
 
-            <!-- Top 3 Podium Cards -->
-            <div id="podiumContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            </div>
-
-            <!-- Remaining Missions Grid -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-                <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 border-b pb-2">All Mission Rankings</h3>
-                <div id="remainingMissionsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                </div>
-            </div>
-        </section>
-
-        <!-- Item-Wise Results Section -->
-        <section class="space-y-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b">
+            <!-- Dynamic Leaderboard Section -->
+            <section>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                     <div>
                         <h2 class="text-xl font-extrabold text-slate-900 flex items-center space-x-2">
-                            <i class="fa-solid fa-filter text-brand-600"></i>
-                            <span>Filter Results by Dropdowns</span>
+                            <i class="fa-solid fa-trophy text-amber-500"></i>
+                            <span>Overall Mission Leaderboard</span>
                         </h2>
-                        <p class="text-xs text-slate-500">Filter regional competition results by Item Type, Age Category, or Mission</p>
+                        <p class="text-xs text-slate-500">Click any mission below or in the matrix to filter items won by that mission.</p>
                     </div>
-                    <button onclick="clearAllFilters()" class="self-start text-xs text-brand-600 hover:text-brand-800 font-semibold underline">
-                        Clear Filters
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center space-x-1">
-                            <i class="fa-solid fa-layer-group text-slate-500"></i>
-                            <span>1. Program Type / Items</span>
-                        </label>
-                        <select id="filterProgramType" onchange="applyFilters()" class="w-full bg-slate-50 rounded-xl border border-slate-300 p-2.5 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
-                            <option value="All">All Program Types (Solo & Group)</option>
-                            <optgroup label="Type Breakdown">
-                                <option value="Solo">Solo Items Only</option>
-                                <option value="Group">Group Items Only</option>
-                            </optgroup>
-                            <optgroup label="Official CSMEGB Solo Programs">
-                                <option value="Bible Reading (English)">Bible Reading (English)</option>
-                                <option value="Bible Reading (Malayalam)">Bible Reading (Malayalam)</option>
-                                <option value="Devotional Solo Song">Devotional Solo Song</option>
-                                <option value="Bible Story Telling">Bible Story Telling</option>
-                                <option value="Bible Mono Act">Bible Mono Act</option>
-                                <option value="Bible Elocution">Bible Elocution</option>
-                                <option value="Pencil Drawing / Sketching">Pencil Drawing / Sketching</option>
-                                <option value="Biblical Painting (Water Colour/Acrylic)">Biblical Painting</option>
-                                <option value="Bible Essay Writing (English)">Bible Essay Writing (English)</option>
-                                <option value="Bible Essay Writing (Malayalam)">Bible Essay Writing (Malayalam)</option>
-                                <option value="Bible Costume Character">Bible Costume Character</option>
-                            </optgroup>
-                            <optgroup label="Official CSMEGB Group Programs">
-                                <option value="Bible Quiz">Bible Quiz (Group)</option>
-                                <option value="Devotional Group Song">Devotional Group Song</option>
-                                <option value="Margamkali">Margamkali (Group Dance)</option>
-                                <option value="Bible Group Dance">Bible Group Dance</option>
-                                <option value="Bible Tableau">Bible Tableau</option>
-                            </optgroup>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center space-x-1">
-                            <i class="fa-solid fa-users text-slate-500"></i>
-                            <span>2. Age Category</span>
-                        </label>
-                        <select id="filterAgeCategory" onchange="applyFilters()" class="w-full bg-slate-50 rounded-xl border border-slate-300 p-2.5 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
-                            <option value="All">All Age Categories (I - VII)</option>
-                            <option value="Up to 7 yrs (Cat I)">Up to 7 yrs (Category I)</option>
-                            <option value="8-10 yrs (Cat II)">8-10 yrs (Category II)</option>
-                            <option value="11-13 yrs (Cat III)">11-13 yrs (Category III)</option>
-                            <option value="14-17 yrs (Cat IV)">14-17 yrs (Category IV)</option>
-                            <option value="18-24 yrs (Cat V)">18-24 yrs / Youth (Category V)</option>
-                            <option value="Adults 25+ (Cat VI)">Adults 25+ (Category VI)</option>
-                            <option value="All Ages (Cat VII)">All Ages (Category VII)</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center space-x-1">
-                            <i class="fa-solid fa-church text-slate-500"></i>
-                            <span>3. Mission Filter</span>
-                        </label>
-                        <select id="filterMission" onchange="applyFilters()" class="w-full bg-slate-50 rounded-xl border border-slate-300 p-2.5 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
-                            <option value="All">All 12 Regional Missions</option>
-                        </select>
+                    <div class="text-xs bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg self-start border border-slate-200">
+                        <span id="totalItemsCount" class="font-bold text-brand-600">0</span> published items
                     </div>
                 </div>
+
+                <!-- Top 3 Podium Cards -->
+                <div id="podiumContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                </div>
+
+                <!-- All Missions Grid -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-4 border-b pb-2">All Mission Regional Standings (Click Mission to Filter)</h3>
+                    <div id="remainingMissionsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Item-Wise Results & Search Filter Section -->
+            <section class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b">
+                        <div>
+                            <h2 class="text-xl font-extrabold text-slate-900 flex items-center space-x-2">
+                                <i class="fa-solid fa-filter text-brand-600"></i>
+                                <span>Filter Competition Results</span>
+                            </h2>
+                            <p class="text-xs text-slate-500">Search or filter by Mission, Specific Competition Item, or Age Group</p>
+                        </div>
+                        <button onclick="clearAllFilters()" class="self-start text-xs text-brand-600 hover:text-brand-800 font-semibold underline">
+                            Clear Active Filters
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">1. Competition Item</label>
+                            <select id="filterProgramType" onchange="applyFilters()" class="w-full bg-slate-50 rounded-xl border border-slate-300 p-2.5 text-xs font-semibold text-slate-800">
+                                <option value="All">All Items (Solo & Group)</option>
+                                <optgroup label="Item Types">
+                                    <option value="Solo">Solo Items Only</option>
+                                    <option value="Group">Group Items Only</option>
+                                </optgroup>
+                                <optgroup label="Specific Programs" id="filterProgramOptions"></optgroup>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">2. Age Category</label>
+                            <select id="filterAgeCategory" onchange="applyFilters()" class="w-full bg-slate-50 rounded-xl border border-slate-300 p-2.5 text-xs font-semibold text-slate-800">
+                                <option value="All">All Age Categories (I - VII)</option>
+                                <option value="Up to 7 yrs (Cat I)">Up to 7 yrs (Category I)</option>
+                                <option value="8-10 yrs (Cat II)">8-10 yrs (Category II)</option>
+                                <option value="11-13 yrs (Cat III)">11-13 yrs (Category III)</option>
+                                <option value="14-17 yrs (Cat IV)">14-17 yrs (Category IV)</option>
+                                <option value="18-24 yrs (Cat V)">18-24 yrs / Youth (Category V)</option>
+                                <option value="Adults 25+ (Cat VI)">Adults 25+ (Category VI)</option>
+                                <option value="All Ages (Cat VII)">All Ages (Category VII)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">3. Mission Winner Filter</label>
+                            <select id="filterMission" onchange="applyFilters()" class="w-full bg-slate-50 rounded-xl border border-slate-300 p-2.5 text-xs font-semibold text-slate-800">
+                                <option value="All">All 12 Regional Missions</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item Results Grid -->
+                <div id="itemResultsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+            </section>
+
+            <!-- Points Matrix Section -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-5 border-b border-slate-200">
+                    <h2 class="text-xl font-extrabold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-table-list text-brand-600"></i>
+                        <span>Points Breakdown Matrix</span>
+                    </h2>
+                    <p class="text-xs text-slate-500">Detailed points summary. Click any Mission name to filter results won by that mission.</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
+                                <th class="p-3.5 sticky left-0 bg-slate-50">Mission</th>
+                                <th class="p-3.5 text-center">1st (G)</th>
+                                <th class="p-3.5 text-center">2nd (S)</th>
+                                <th class="p-3.5 text-center">3rd (B)</th>
+                                <th class="p-3.5 text-center">Solo Pts</th>
+                                <th class="p-3.5 text-center">Group Pts</th>
+                                <th class="p-3.5 text-right">Total Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matrixTableBody" class="divide-y divide-slate-100">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- TAB 2: LIVE STAGE TRACKER -->
+        <div id="tabContentLive" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex items-center space-x-3 mb-2">
+                    <span class="relative flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>
+                    <h2 class="text-xl font-black text-slate-900">Live Stage Status</h2>
+                </div>
+                <p class="text-xs text-slate-500">Real-time status of ongoing items across all venues in the Bristol Cardiff Regional Kalotsavam.</p>
             </div>
 
-            <!-- Item Grid -->
-            <div id="itemResultsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div id="liveStagesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             </div>
-        </section>
+        </div>
 
-        <!-- Points Matrix Section -->
-        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="p-5 border-b border-slate-200">
-                <h2 class="text-xl font-extrabold text-slate-900 flex items-center space-x-2">
-                    <i class="fa-solid fa-table-list text-brand-600"></i>
-                    <span>Points Breakdown Matrix</span>
-                </h2>
-                <p class="text-xs text-slate-500">Detailed list of gold, silver, bronze finishes and solo/group points for each mission.</p>
+        <!-- TAB 3: PROGRAM SCHEDULE -->
+        <div id="tabContentSchedule" class="hidden space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-black text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-calendar-days text-brand-600"></i>
+                        <span>Event Program Schedule</span>
+                    </h2>
+                    <p class="text-xs text-slate-500">Complete schedule of stages and upcoming competition items.</p>
+                </div>
+                <div>
+                    <select id="scheduleStageFilter" onchange="renderSchedule()" class="bg-slate-50 border border-slate-300 text-xs font-bold rounded-xl p-2.5">
+                        <option value="All">All Stage Venues</option>
+                        <option value="Stage 1 (Main Hall)">Stage 1 (Main Hall)</option>
+                        <option value="Stage 2 (St. Mary's Hall)">Stage 2 (St. Mary's Hall)</option>
+                        <option value="Stage 3 (Auditorium B)">Stage 3 (Auditorium B)</option>
+                        <option value="Stage 4 (Conference Room)">Stage 4 (Conference Room)</option>
+                    </select>
+                </div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs">
-                    <thead>
-                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
-                            <th class="p-3.5 sticky left-0 bg-slate-50">Mission</th>
-                            <th class="p-3.5 text-center">1st (G)</th>
-                            <th class="p-3.5 text-center">2nd (S)</th>
-                            <th class="p-3.5 text-center">3rd (B)</th>
-                            <th class="p-3.5 text-center">Solo Pts</th>
-                            <th class="p-3.5 text-center">Group Pts</th>
-                            <th class="p-3.5 text-right">Total Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="matrixTableBody" class="divide-y divide-slate-100">
-                    </tbody>
-                </table>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 text-slate-700 font-bold border-b">
+                            <tr>
+                                <th class="p-4">Time Slot</th>
+                                <th class="p-4">Item Name</th>
+                                <th class="p-4">Category</th>
+                                <th class="p-4">Stage / Venue</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleTableBody" class="divide-y divide-slate-100">
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </section>
+        </div>
+
     </main>
 
-    <!-- Logo Management Modal -->
+    <!-- Modals -->
     <div id="logoModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
             <button onclick="closeLogoModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
@@ -385,39 +496,34 @@
                 </div>
                 <div>
                     <h3 class="font-bold text-lg text-slate-900">Configure Logos</h3>
-                    <p class="text-xs text-slate-500">Upload image files or paste image URLs for the official logos.</p>
+                    <p class="text-xs text-slate-500">Upload or set logo images.</p>
                 </div>
             </div>
 
             <div class="space-y-4 text-xs">
-                <!-- Left Logo Config -->
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
                     <label class="font-bold text-slate-800 block">1. CSMEGB Eparchy Emblem (Left)</label>
-                    <input type="file" id="leftLogoFile" accept="image/*" onchange="handleFileUpload(event, 'left')" class="w-full text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100">
-                    <div class="text-center text-slate-400 font-medium my-1">- OR -</div>
-                    <input type="text" id="leftLogoUrl" placeholder="Paste image URL (e.g. IMG_0159.JPG)" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
+                    <input type="file" id="leftLogoFile" accept="image/*" onchange="handleFileUpload(event, 'left')" class="w-full text-slate-500 text-xs">
+                    <input type="text" id="leftLogoUrl" placeholder="Paste image URL" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
                 </div>
 
-                <!-- Right Logo Config -->
                 <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
                     <label class="font-bold text-slate-800 block">2. Bible Apostolate Logo (Right)</label>
-                    <input type="file" id="rightLogoFile" accept="image/*" onchange="handleFileUpload(event, 'right')" class="w-full text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100">
-                    <div class="text-center text-slate-400 font-medium my-1">- OR -</div>
-                    <input type="text" id="rightLogoUrl" placeholder="Paste image URL (e.g. IMG_0160.JPG)" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
+                    <input type="file" id="rightLogoFile" accept="image/*" onchange="handleFileUpload(event, 'right')" class="w-full text-slate-500 text-xs">
+                    <input type="text" id="rightLogoUrl" placeholder="Paste image URL" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
                 </div>
             </div>
 
             <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-100">
-                <button onclick="resetLogos()" class="text-xs text-red-600 hover:text-red-800 font-semibold underline">Reset to Default SVGs</button>
+                <button onclick="resetLogos()" class="text-xs text-red-600 hover:text-red-800 font-semibold underline">Reset Default SVGs</button>
                 <div class="space-x-2">
-                    <button onclick="closeLogoModal()" class="px-4 py-2 border border-slate-300 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50">Cancel</button>
-                    <button onclick="saveLogoUrls()" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold shadow-sm">Save Logos</button>
+                    <button onclick="closeLogoModal()" class="px-4 py-2 border border-slate-300 rounded-lg text-xs">Cancel</button>
+                    <button onclick="saveLogoUrls()" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold">Save Logos</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- QR Code Sharing Modal -->
     <div id="qrModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl relative">
             <button onclick="closeQRModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
@@ -427,7 +533,7 @@
                 <i class="fa-solid fa-qrcode text-xl"></i>
             </div>
             <h3 class="font-bold text-lg text-slate-900">Scan & Share Results</h3>
-            <p class="text-xs text-slate-500 mb-4">Scan this QR code to view live regional Kalotsavam results on mobile.</p>
+            <p class="text-xs text-slate-500 mb-4">Scan QR code to view on mobile device.</p>
             
             <div class="bg-slate-50 p-4 rounded-xl inline-block border border-slate-200 mb-4">
                 <div id="qrcode" class="flex justify-center"></div>
@@ -474,205 +580,274 @@
             "Bible Tableau"
         ];
 
-        let itemResults = [
-            {
-                id: 1,
-                name: "Bible Reading (Malayalam)",
-                category: "11-13 yrs (Cat III)",
-                type: "Solo",
-                first: { mission: "Bristol", winner: "Johann Paul" },
-                second: { mission: "Cardiff", winner: "Maria Joseph" },
-                third: { mission: "Taunton", winner: "Anna Thomas" }
-            },
-            {
-                id: 2,
-                name: "Margamkali",
-                category: "14-17 yrs (Cat IV)",
-                type: "Group",
-                first: { mission: "Gloucester", winner: "St. Thomas Team" },
-                second: { mission: "Bristol", winner: "St. Marys Group" },
-                third: { mission: "Swindon", winner: "Swindon Youth" }
-            },
-            {
-                id: 3,
-                name: "Bible Quiz",
-                category: "11-13 yrs (Cat III)",
-                type: "Group",
-                first: { mission: "Exeter", winner: "Exeter Scholars" },
-                second: { mission: "Bath", winner: "Bath Believers" },
-                third: { mission: "Cardiff", winner: "Cardiff Stars" }
-            },
-            {
-                id: 4,
-                name: "Devotional Solo Song",
-                category: "Up to 7 yrs (Cat I)",
-                type: "Solo",
-                first: { mission: "Swindon", winner: "Eva Mary" },
-                second: { mission: "Weston-Super-Mare", winner: "Luke George" },
-                third: { mission: "Newport", winner: "Tessa Mathew" }
-            },
-            {
-                id: 5,
-                name: "Bible Mono Act",
-                category: "8-10 yrs (Cat II)",
-                type: "Solo",
-                first: { mission: "Cardiff", winner: "Aaron Francis" },
-                second: { mission: "Bristol", winner: "Teresa John" },
-                third: { mission: "Swansea", winner: "Kevin Boban" }
-            },
-            {
-                id: 6,
-                name: "Devotional Group Song",
-                category: "All Ages (Cat VII)",
-                type: "Group",
-                first: { mission: "Bristol", winner: "Bristol Choir" },
-                second: { mission: "Gloucester", winner: "Gloucester Harmonizers" },
-                third: { mission: "Taunton", winner: "Taunton Singers" }
-            },
-            {
-                id: 7,
-                name: "Bible Essay Writing (English)",
-                category: "18-24 yrs (Cat V)",
-                type: "Solo",
-                first: { mission: "Bath", winner: "Angela Roy" },
-                second: { mission: "Cardiff", winner: "Mathew Alex" },
-                third: { mission: "Hereford", winner: "Sneha Kurian" }
-            }
+        // Default empty list so layout starts fresh with "Results Coming Soon" until published
+        let itemResults = [];
+
+        let stageData = [
+            { stage: "Stage 1 (Main Hall)", ongoing: "Devotional Group Song", time: "Cat VII • In Progress", next: "Margamkali (Cat IV)" },
+            { stage: "Stage 2 (St. Mary's Hall)", ongoing: "Bible Reading (Malayalam)", time: "Cat III • In Progress", next: "Bible Mono Act (Cat II)" },
+            { stage: "Stage 3 (Auditorium B)", ongoing: "Bible Story Telling", time: "Cat I • In Progress", next: "Pencil Drawing (Cat III)" },
+            { stage: "Stage 4 (Conference Room)", ongoing: "Bible Essay Writing", time: "Cat V • In Progress", next: "Biblical Painting (Cat IV)" }
+        ];
+
+        let scheduleData = [
+            { time: "09:00 AM - 10:00 AM", item: "Bible Reading (Malayalam)", category: "Cat III (11-13 yrs)", stage: "Stage 2 (St. Mary's Hall)" },
+            { time: "10:00 AM - 11:30 AM", item: "Devotional Group Song", category: "Cat VII (All Ages)", stage: "Stage 1 (Main Hall)" },
+            { time: "11:30 AM - 01:00 PM", item: "Margamkali", category: "Cat IV (14-17 yrs)", stage: "Stage 1 (Main Hall)" },
+            { time: "01:30 PM - 03:00 PM", item: "Bible Quiz", category: "Cat III (11-13 yrs)", stage: "Stage 3 (Auditorium B)" }
         ];
 
         document.addEventListener("DOMContentLoaded", () => {
+            loadResultsData();
+            loadStageData();
+            loadScheduleData();
             populateMissionDropdowns();
+            populateProgramDropdowns();
             updateFormItemsList();
             renderApp();
+            renderStages();
+            renderSchedule();
             initQRCode();
             loadSavedLogos();
         });
 
+        function loadResultsData() {
+            try {
+                const stored = localStorage.getItem('csmegb_results_data_v2');
+                if (stored !== null) {
+                    itemResults = JSON.parse(stored);
+                } else {
+                    itemResults = []; // Clean initial state
+                }
+            } catch(e) {
+                itemResults = [];
+            }
+        }
+
+        function saveResultsData() {
+            try {
+                localStorage.setItem('csmegb_results_data_v2', JSON.stringify(itemResults));
+            } catch(e) {
+                console.warn('Could not save results to storage:', e);
+            }
+        }
+
+        function loadStageData() {
+            try {
+                const stored = localStorage.getItem('csmegb_stage_data');
+                if (stored) stageData = JSON.parse(stored);
+            } catch(e){}
+        }
+
+        function saveStageData() {
+            try {
+                localStorage.setItem('csmegb_stage_data', JSON.stringify(stageData));
+            } catch(e){}
+        }
+
+        function loadScheduleData() {
+            try {
+                const stored = localStorage.getItem('csmegb_schedule_data');
+                if (stored) scheduleData = JSON.parse(stored);
+            } catch(e){}
+        }
+
+        function saveScheduleData() {
+            try {
+                localStorage.setItem('csmegb_schedule_data', JSON.stringify(scheduleData));
+            } catch(e){}
+        }
+
+        function clearAllPublishedResults() {
+            if (confirm("Are you sure you want to reset all published results? This will set the public board to 'Results Coming Soon'.")) {
+                itemResults = [];
+                saveResultsData();
+                renderApp();
+            }
+        }
+
         function populateMissionDropdowns() {
             const missionOptions = MISSIONS.map(m => `<option value="${m}">${m}</option>`).join('');
-            
-            const firstSelect = document.getElementById('firstMission');
-            const secondSelect = document.getElementById('secondMission');
-            const thirdSelect = document.getElementById('thirdMission');
-            const filterSelect = document.getElementById('filterMission');
+            document.getElementById('firstMission').innerHTML = missionOptions;
+            document.getElementById('secondMission').innerHTML = missionOptions;
+            document.getElementById('thirdMission').innerHTML = missionOptions;
+            document.getElementById('filterMission').innerHTML = '<option value="All">All 12 Regional Missions</option>' + missionOptions;
+        }
 
-            if (firstSelect) firstSelect.innerHTML = missionOptions;
-            if (secondSelect) secondSelect.innerHTML = missionOptions;
-            if (thirdSelect) thirdSelect.innerHTML = missionOptions;
-            if (filterSelect) {
-                filterSelect.innerHTML = '<option value="All">All 12 Regional Missions</option>' + missionOptions;
+        function populateProgramDropdowns() {
+            const allItems = [...OFFICIAL_SOLO_ITEMS, ...OFFICIAL_GROUP_ITEMS];
+            document.getElementById('filterProgramOptions').innerHTML = allItems.map(i => `<option value="${i}">${i}</option>`).join('');
+        }
+
+        function switchTab(tab) {
+            document.getElementById('tabContentResults').classList.add('hidden');
+            document.getElementById('tabContentLive').classList.add('hidden');
+            document.getElementById('tabContentSchedule').classList.add('hidden');
+
+            document.getElementById('tabBtnResults').className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-white text-slate-700 hover:bg-slate-100 border border-slate-200";
+            document.getElementById('tabBtnLive').className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-white text-slate-700 hover:bg-slate-100 border border-slate-200";
+            document.getElementById('tabBtnSchedule').className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-white text-slate-700 hover:bg-slate-100 border border-slate-200";
+
+            if (tab === 'results') {
+                document.getElementById('tabContentResults').classList.remove('hidden');
+                document.getElementById('tabBtnResults').className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-brand-600 text-white shadow";
+            } else if (tab === 'liveStage') {
+                document.getElementById('tabContentLive').classList.remove('hidden');
+                document.getElementById('tabBtnLive').className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-brand-600 text-white shadow";
+            } else if (tab === 'schedule') {
+                document.getElementById('tabContentSchedule').classList.remove('hidden');
+                document.getElementById('tabBtnSchedule').className = "px-4 py-2 rounded-xl text-xs font-bold transition bg-brand-600 text-white shadow";
             }
         }
 
-        function openLogoModal() {
-            document.getElementById('logoModal').classList.remove('hidden');
+        function filterByMission(missionName) {
+            switchTab('results');
+            document.getElementById('filterMission').value = missionName;
+            applyFilters();
+            document.getElementById('itemResultsGrid').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function closeLogoModal() {
-            document.getElementById('logoModal').classList.add('hidden');
+        function filterByItem(itemName) {
+            switchTab('results');
+            document.getElementById('filterProgramType').value = itemName;
+            applyFilters();
+            document.getElementById('itemResultsGrid').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function updateLogoDisplay(position, src) {
-            const imgEl = document.getElementById(`${position}LogoImg`);
-            const svgEl = document.getElementById(`${position}LogoSvg`);
+        function editResultItem(id) {
+            const item = itemResults.find(i => i.id === id);
+            if (!item) return;
 
-            if (src && src.trim() !== "") {
-                imgEl.src = src;
-                imgEl.classList.remove('hidden');
-                svgEl.classList.add('hidden');
+            document.getElementById('editingItemId').value = item.id;
+            document.getElementById('itemType').value = item.type;
+            updateFormItemsList();
+
+            document.getElementById('itemNameSelect').value = item.name;
+            document.getElementById('itemCategory').value = item.category;
+
+            document.getElementById('firstMission').value = item.first.mission;
+            document.getElementById('firstWinner').value = item.first.winner || '';
+
+            document.getElementById('secondMission').value = item.second.mission;
+            document.getElementById('secondWinner').value = item.second.winner || '';
+
+            document.getElementById('thirdMission').value = item.third.mission;
+            document.getElementById('thirdWinner').value = item.third.winner || '';
+
+            document.getElementById('formHeaderTitle').innerText = 'Edit Published Result';
+            document.getElementById('submitBtnText').innerText = 'Save Changes';
+
+            const adminSection = document.getElementById('adminSection');
+            if (adminSection.classList.contains('hidden')) {
+                adminSection.classList.remove('hidden');
+            }
+            switchAdminSubTab('resultEntry');
+            adminSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteResultItem(id) {
+            if (confirm("Are you sure you want to delete this result?")) {
+                itemResults = itemResults.filter(i => i.id !== id);
+                saveResultsData();
+                renderApp();
+            }
+        }
+
+        function handleResultSubmit(e) {
+            e.preventDefault();
+            const editingId = document.getElementById('editingItemId').value;
+
+            const itemData = {
+                id: editingId ? Number(editingId) : Date.now(),
+                name: document.getElementById('itemNameSelect').value,
+                category: document.getElementById('itemCategory').value,
+                type: document.getElementById('itemType').value,
+                first: { mission: document.getElementById('firstMission').value, winner: document.getElementById('firstWinner').value },
+                second: { mission: document.getElementById('secondMission').value, winner: document.getElementById('secondWinner').value },
+                third: { mission: document.getElementById('thirdMission').value, winner: document.getElementById('thirdWinner').value }
+            };
+
+            if (editingId) {
+                const index = itemResults.findIndex(i => i.id === Number(editingId));
+                if (index !== -1) itemResults[index] = itemData;
             } else {
-                imgEl.classList.add('hidden');
-                svgEl.classList.remove('hidden');
-            }
-        }
-
-        function handleLogoError(position) {
-            updateLogoDisplay(position, "");
-        }
-
-        function handleFileUpload(event, position) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const dataUrl = e.target.result;
-                    document.getElementById(`${position}LogoUrl`).value = dataUrl;
-                    updateLogoDisplay(position, dataUrl);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function saveLogoUrls() {
-            const leftUrl = document.getElementById('leftLogoUrl').value;
-            const rightUrl = document.getElementById('rightLogoUrl').value;
-
-            updateLogoDisplay('left', leftUrl);
-            updateLogoDisplay('right', rightUrl);
-
-            try {
-                localStorage.setItem('csmegb_left_logo', leftUrl);
-                localStorage.setItem('csmegb_right_logo', rightUrl);
-            } catch(e) {
-                console.warn('LocalStorage limit exceeded or restricted.');
+                itemResults.unshift(itemData);
             }
 
-            closeLogoModal();
+            saveResultsData();
+            renderApp();
+            resetForm();
         }
 
-        function loadSavedLogos() {
-            const leftUrl = localStorage.getItem('csmegb_left_logo') || "";
-            const rightUrl = localStorage.getItem('csmegb_right_logo') || "";
+        function handleStageUpdate(e) {
+            e.preventDefault();
+            const stageName = document.getElementById('adminStageSelect').value;
+            const ongoing = document.getElementById('adminOngoingItem').value;
+            const time = document.getElementById('adminOngoingTime').value;
+            const next = document.getElementById('adminNextItem').value;
 
-            if (leftUrl) {
-                document.getElementById('leftLogoUrl').value = leftUrl;
-                updateLogoDisplay('left', leftUrl);
+            const existingIdx = stageData.findIndex(s => s.stage === stageName);
+            const newObj = { stage: stageName, ongoing, time, next };
+
+            if (existingIdx !== -1) stageData[existingIdx] = newObj;
+            else stageData.push(newObj);
+
+            saveStageData();
+            renderStages();
+            alert('Live stage status updated successfully!');
+        }
+
+        function handleScheduleSubmit(e) {
+            e.preventDefault();
+            const newSched = {
+                time: document.getElementById('schedTime').value,
+                item: document.getElementById('schedItem').value,
+                category: document.getElementById('schedCat').value,
+                stage: document.getElementById('schedStage').value
+            };
+            scheduleData.push(newSched);
+            saveScheduleData();
+            renderSchedule();
+            document.getElementById('scheduleForm').reset();
+            alert('Program schedule item added!');
+        }
+
+        function resetForm() {
+            document.getElementById('resultForm').reset();
+            document.getElementById('editingItemId').value = '';
+            document.getElementById('formHeaderTitle').innerText = 'Publish Result Entry';
+            document.getElementById('submitBtnText').innerText = 'Publish Result';
+        }
+
+        function switchAdminSubTab(tab) {
+            document.getElementById('resultForm').classList.add('hidden');
+            document.getElementById('stageForm').classList.add('hidden');
+            document.getElementById('scheduleForm').classList.add('hidden');
+
+            document.getElementById('adminSubTabResult').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200";
+            document.getElementById('adminSubTabStage').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200";
+            document.getElementById('adminSubTabSchedule').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200";
+
+            if (tab === 'resultEntry') {
+                document.getElementById('resultForm').classList.remove('hidden');
+                document.getElementById('adminSubTabResult').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white";
+            } else if (tab === 'stageUpdate') {
+                document.getElementById('stageForm').classList.remove('hidden');
+                document.getElementById('adminSubTabStage').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white";
+            } else if (tab === 'scheduleEntry') {
+                document.getElementById('scheduleForm').classList.remove('hidden');
+                document.getElementById('adminSubTabSchedule').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white";
             }
-            if (rightUrl) {
-                document.getElementById('rightLogoUrl').value = rightUrl;
-                updateLogoDisplay('right', rightUrl);
-            }
-        }
-
-        function resetLogos() {
-            document.getElementById('leftLogoUrl').value = "";
-            document.getElementById('rightLogoUrl').value = "";
-            document.getElementById('leftLogoFile').value = "";
-            document.getElementById('rightLogoFile').value = "";
-            
-            localStorage.removeItem('csmegb_left_logo');
-            localStorage.removeItem('csmegb_right_logo');
-
-            updateLogoDisplay('left', "");
-            updateLogoDisplay('right', "");
-            closeLogoModal();
-        }
-
-        function updateFormItemsList() {
-            const type = document.getElementById('itemType').value;
-            const select = document.getElementById('itemNameSelect');
-            const items = type === 'Solo' ? OFFICIAL_SOLO_ITEMS : OFFICIAL_GROUP_ITEMS;
-            
-            select.innerHTML = items.map(item => `<option value="${item}">${item}</option>`).join('');
         }
 
         function computeScores() {
             let scores = {};
             MISSIONS.forEach(m => {
-                scores[m] = {
-                    name: m,
-                    total: 0,
-                    soloPoints: 0,
-                    groupPoints: 0,
-                    firsts: 0,
-                    seconds: 0,
-                    thirds: 0
-                };
+                scores[m] = { name: m, total: 0, soloPoints: 0, groupPoints: 0, firsts: 0, seconds: 0, thirds: 0 };
             });
 
             itemResults.forEach(item => {
                 const pointsTable = RULES[item.type];
-                
                 if (scores[item.first.mission]) {
                     const pts = pointsTable[1];
                     scores[item.first.mission].total += pts;
@@ -710,16 +885,22 @@
 
         function renderPodium(standings) {
             const container = document.getElementById('podiumContainer');
-            if (standings.length < 3) return;
+            if (itemResults.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full bg-white rounded-2xl p-8 text-center text-slate-400 border border-slate-200">
+                        <i class="fa-solid fa-hourglass-half text-4xl mb-2 text-amber-500"></i>
+                        <h3 class="text-base font-bold text-slate-700">Official Results Coming Soon</h3>
+                        <p class="text-xs text-slate-500">Live points tally and rankings will appear here as soon as competition items conclude.</p>
+                    </div>
+                `;
+                return;
+            }
 
             const [first, second, third] = standings;
 
             container.innerHTML = `
                 <!-- 2nd Place -->
-                <div class="order-2 md:order-1 silver-gradient rounded-2xl p-6 border-2 shadow-sm flex flex-col justify-between relative overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 opacity-10 text-slate-700">
-                        <i class="fa-solid fa-medal text-8xl"></i>
-                    </div>
+                <div onclick="filterByMission('${second.name}')" class="cursor-pointer order-2 md:order-1 silver-gradient rounded-2xl p-6 border-2 shadow-sm flex flex-col justify-between relative overflow-hidden hover:scale-[1.01] transition">
                     <div>
                         <div class="flex justify-between items-center mb-3">
                             <span class="inline-flex items-center space-x-1 text-xs font-bold bg-slate-200 text-slate-700 px-3 py-1 rounded-full">
@@ -738,10 +919,7 @@
                 </div>
 
                 <!-- 1st Place Gold -->
-                <div class="order-1 md:order-2 gold-gradient rounded-2xl p-6 border-2 shadow-md flex flex-col justify-between relative overflow-hidden transform md:-translate-y-2">
-                    <div class="absolute -right-4 -bottom-4 opacity-15 text-amber-700">
-                        <i class="fa-solid fa-trophy text-9xl"></i>
-                    </div>
+                <div onclick="filterByMission('${first.name}')" class="cursor-pointer order-1 md:order-2 gold-gradient rounded-2xl p-6 border-2 shadow-md flex flex-col justify-between relative overflow-hidden transform md:-translate-y-2 hover:scale-[1.01] transition">
                     <div>
                         <div class="flex justify-between items-center mb-3">
                             <span class="inline-flex items-center space-x-1 text-xs font-bold bg-amber-200 text-amber-900 px-3 py-1 rounded-full shadow-sm">
@@ -760,10 +938,7 @@
                 </div>
 
                 <!-- 3rd Place Bronze -->
-                <div class="order-3 bronze-gradient rounded-2xl p-6 border-2 shadow-sm flex flex-col justify-between relative overflow-hidden">
-                    <div class="absolute -right-4 -bottom-4 opacity-10 text-amber-900">
-                        <i class="fa-solid fa-award text-8xl"></i>
-                    </div>
+                <div onclick="filterByMission('${third.name}')" class="cursor-pointer order-3 bronze-gradient rounded-2xl p-6 border-2 shadow-sm flex flex-col justify-between relative overflow-hidden hover:scale-[1.01] transition">
                     <div>
                         <div class="flex justify-between items-center mb-3">
                             <span class="inline-flex items-center space-x-1 text-xs font-bold bg-amber-200 text-amber-900 px-3 py-1 rounded-full">
@@ -785,12 +960,10 @@
 
         function renderRemainingMissions(standings) {
             const container = document.getElementById('remainingMissionsList');
-            const remaining = standings.slice(3);
-
-            container.innerHTML = remaining.map((m, index) => `
-                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100/80 transition border border-slate-100">
+            container.innerHTML = standings.map((m, index) => `
+                <div onclick="filterByMission('${m.name}')" class="cursor-pointer flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-brand-50 hover:border-brand-300 transition border border-slate-100">
                     <div class="flex items-center space-x-3">
-                        <span class="w-6 text-center text-xs font-bold text-slate-400">#${index + 4}</span>
+                        <span class="w-6 text-center text-xs font-bold text-slate-400">#${index + 1}</span>
                         <div>
                             <span class="text-sm font-semibold text-slate-800 block">${m.name}</span>
                             <span class="text-[10px] text-slate-400">${m.firsts} 1st • ${m.seconds} 2nd • ${m.thirds} 3rd</span>
@@ -818,6 +991,16 @@
             const selectedAge = document.getElementById('filterAgeCategory').value;
             const selectedMission = document.getElementById('filterMission').value;
 
+            if (itemResults.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full bg-white rounded-2xl p-8 text-center text-slate-400 border border-slate-200">
+                        <i class="fa-solid fa-clipboard-list text-4xl mb-2 text-slate-300"></i>
+                        <p class="text-sm font-semibold text-slate-600">No results published yet. Check back soon!</p>
+                    </div>
+                `;
+                return;
+            }
+
             let filtered = itemResults.filter(item => {
                 let programMatch = true;
                 if (selectedProgram === 'Solo') programMatch = item.type === 'Solo';
@@ -838,7 +1021,7 @@
                 container.innerHTML = `
                     <div class="col-span-full bg-white rounded-2xl p-8 text-center text-slate-400 border border-slate-200">
                         <i class="fa-solid fa-filter-circle-xmark text-4xl mb-2 text-slate-300"></i>
-                        <p class="text-sm font-semibold text-slate-600">No results found matching selected criteria.</p>
+                        <p class="text-sm font-semibold text-slate-600">No published results matching your filter criteria.</p>
                         <button onclick="clearAllFilters()" class="mt-3 text-xs bg-brand-50 text-brand-600 px-3 py-1.5 rounded-lg border border-brand-200">Reset Filters</button>
                     </div>
                 `;
@@ -846,21 +1029,31 @@
             }
 
             container.innerHTML = filtered.map(item => `
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition relative group">
                     <div class="flex justify-between items-start mb-3">
                         <div>
                             <span class="text-[10px] font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-2 py-0.5 rounded-md border border-brand-100">
                                 ${item.category}
                             </span>
-                            <h4 class="text-base font-extrabold text-slate-900 mt-1">${item.name}</h4>
+                            <h4 onclick="filterByItem('${item.name}')" class="text-base font-extrabold text-slate-900 mt-1 cursor-pointer hover:text-brand-600">
+                                ${item.name}
+                            </h4>
                         </div>
-                        <span class="text-xs px-2.5 py-1 rounded-full font-bold ${item.type === 'Group' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}">
-                            ${item.type} (${item.type === 'Solo' ? '5-3-1' : '10-6-2'} pts)
-                        </span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs px-2.5 py-1 rounded-full font-bold ${item.type === 'Group' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}">
+                                ${item.type}
+                            </span>
+                            <button onclick="editResultItem(${item.id})" title="Edit Item" class="p-1 text-slate-400 hover:text-brand-600 transition">
+                                <i class="fa-solid fa-pen-to-square text-sm"></i>
+                            </button>
+                            <button onclick="deleteResultItem(${item.id})" title="Delete Item" class="p-1 text-slate-400 hover:text-red-600 transition">
+                                <i class="fa-solid fa-trash-can text-sm"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="space-y-2 mt-4 text-xs">
-                        <div class="flex items-center justify-between p-2 rounded-lg bg-amber-50/60 border border-amber-200/60">
+                        <div onclick="filterByMission('${item.first.mission}')" class="cursor-pointer flex items-center justify-between p-2 rounded-lg bg-amber-50/60 border border-amber-200/60 hover:bg-amber-100/60 transition">
                             <div class="flex items-center space-x-2">
                                 <i class="fa-solid fa-trophy text-amber-500"></i>
                                 <div>
@@ -871,7 +1064,7 @@
                             <span class="font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded text-[11px]">1st Place</span>
                         </div>
 
-                        <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-200/60">
+                        <div onclick="filterByMission('${item.second.mission}')" class="cursor-pointer flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-200/60 hover:bg-slate-100 transition">
                             <div class="flex items-center space-x-2">
                                 <i class="fa-solid fa-medal text-slate-400"></i>
                                 <div>
@@ -882,7 +1075,7 @@
                             <span class="font-bold text-slate-600 bg-slate-200 px-2 py-0.5 rounded text-[11px]">2nd Place</span>
                         </div>
 
-                        <div class="flex items-center justify-between p-2 rounded-lg bg-amber-900/5 border border-amber-900/10">
+                        <div onclick="filterByMission('${item.third.mission}')" class="cursor-pointer flex items-center justify-between p-2 rounded-lg bg-amber-900/5 border border-amber-900/10 hover:bg-amber-900/10 transition">
                             <div class="flex items-center space-x-2">
                                 <i class="fa-solid fa-award text-amber-700"></i>
                                 <div>
@@ -900,10 +1093,10 @@
         function renderMatrixTable(standings) {
             const tbody = document.getElementById('matrixTableBody');
             tbody.innerHTML = standings.map((m, idx) => `
-                <tr class="hover:bg-slate-50/80 transition">
+                <tr onclick="filterByMission('${m.name}')" class="hover:bg-brand-50/50 cursor-pointer transition">
                     <td class="p-3.5 font-bold text-slate-900 sticky left-0 bg-white shadow-sm flex items-center space-x-2">
                         <span class="text-slate-400 w-4">${idx + 1}.</span>
-                        <span>${m.name}</span>
+                        <span class="hover:underline hover:text-brand-600">${m.name}</span>
                     </td>
                     <td class="p-3.5 text-center text-slate-600">${m.firsts}</td>
                     <td class="p-3.5 text-center text-slate-600">${m.seconds}</td>
@@ -911,6 +1104,58 @@
                     <td class="p-3.5 text-center text-slate-600">${m.soloPoints}</td>
                     <td class="p-3.5 text-center text-slate-600">${m.groupPoints}</td>
                     <td class="p-3.5 text-right font-extrabold text-brand-600 text-sm">${m.total} pts</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderStages() {
+            const grid = document.getElementById('liveStagesGrid');
+            grid.innerHTML = stageData.map(s => `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4 relative overflow-hidden">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <h3 class="font-black text-slate-900 text-base flex items-center space-x-2">
+                            <i class="fa-solid fa-masks-theater text-brand-600"></i>
+                            <span>${s.stage}</span>
+                        </h3>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-red-100 text-red-700 animate-pulse">
+                            LIVE NOW
+                        </span>
+                    </div>
+
+                    <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-100 space-y-1">
+                        <span class="text-[10px] uppercase font-extrabold tracking-wider text-slate-400 block">Ongoing Program</span>
+                        <p class="text-base font-black text-brand-900">${s.ongoing}</p>
+                        <p class="text-xs font-semibold text-slate-500">${s.time}</p>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs pt-1">
+                        <span class="text-slate-400 font-semibold">Next Up:</span>
+                        <span class="font-bold text-slate-800 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">${s.next}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderSchedule() {
+            const tbody = document.getElementById('scheduleTableBody');
+            const filter = document.getElementById('scheduleStageFilter').value;
+
+            let filtered = scheduleData;
+            if (filter !== 'All') {
+                filtered = scheduleData.filter(s => s.stage === filter);
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400">No schedule events found for selected stage.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(s => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-4 font-bold text-brand-700">${s.time}</td>
+                    <td class="p-4 font-extrabold text-slate-900">${s.item}</td>
+                    <td class="p-4 text-slate-600">${s.category}</td>
+                    <td class="p-4 font-semibold text-slate-700"><span class="bg-slate-100 px-2 py-1 rounded-md border border-slate-200">${s.stage}</span></td>
                 </tr>
             `).join('');
         }
@@ -923,36 +1168,73 @@
             }
         }
 
-        function handleResultSubmit(e) {
-            e.preventDefault();
-            
-            const newItem = {
-                id: Date.now(),
-                name: document.getElementById('itemNameSelect').value,
-                category: document.getElementById('itemCategory').value,
-                type: document.getElementById('itemType').value,
-                first: {
-                    mission: document.getElementById('firstMission').value,
-                    winner: document.getElementById('firstWinner').value
-                },
-                second: {
-                    mission: document.getElementById('secondMission').value,
-                    winner: document.getElementById('secondWinner').value
-                },
-                third: {
-                    mission: document.getElementById('thirdMission').value,
-                    winner: document.getElementById('thirdWinner').value
-                }
-            };
+        function openLogoModal() { document.getElementById('logoModal').classList.remove('hidden'); }
+        function closeLogoModal() { document.getElementById('logoModal').classList.add('hidden'); }
+        function openQRModal() { document.getElementById('qrModal').classList.remove('hidden'); }
+        function closeQRModal() { document.getElementById('qrModal').classList.add('hidden'); }
 
-            itemResults.unshift(newItem);
-            renderApp();
-            resetForm();
-            toggleAdminPanel();
+        function updateLogoDisplay(position, src) {
+            const imgEl = document.getElementById(`${position}LogoImg`);
+            const svgEl = document.getElementById(`${position}LogoSvg`);
+            if (src && src.trim() !== "") {
+                imgEl.src = src;
+                imgEl.classList.remove('hidden');
+                svgEl.classList.add('hidden');
+            } else {
+                imgEl.classList.add('hidden');
+                svgEl.classList.remove('hidden');
+            }
         }
 
-        function resetForm() {
-            document.getElementById('resultForm').reset();
+        function handleLogoError(position) { updateLogoDisplay(position, ""); }
+
+        function handleFileUpload(event, position) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const dataUrl = e.target.result;
+                    document.getElementById(`${position}LogoUrl`).value = dataUrl;
+                    updateLogoDisplay(position, dataUrl);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveLogoUrls() {
+            const leftUrl = document.getElementById('leftLogoUrl').value;
+            const rightUrl = document.getElementById('rightLogoUrl').value;
+            updateLogoDisplay('left', leftUrl);
+            updateLogoDisplay('right', rightUrl);
+            try {
+                localStorage.setItem('csmegb_left_logo', leftUrl);
+                localStorage.setItem('csmegb_right_logo', rightUrl);
+            } catch(e){}
+            closeLogoModal();
+        }
+
+        function loadSavedLogos() {
+            const leftUrl = localStorage.getItem('csmegb_left_logo') || "";
+            const rightUrl = localStorage.getItem('csmegb_right_logo') || "";
+            if (leftUrl) { document.getElementById('leftLogoUrl').value = leftUrl; updateLogoDisplay('left', leftUrl); }
+            if (rightUrl) { document.getElementById('rightLogoUrl').value = rightUrl; updateLogoDisplay('right', rightUrl); }
+        }
+
+        function resetLogos() {
+            document.getElementById('leftLogoUrl').value = "";
+            document.getElementById('rightLogoUrl').value = "";
+            localStorage.removeItem('csmegb_left_logo');
+            localStorage.removeItem('csmegb_right_logo');
+            updateLogoDisplay('left', "");
+            updateLogoDisplay('right', "");
+            closeLogoModal();
+        }
+
+        function updateFormItemsList() {
+            const type = document.getElementById('itemType').value;
+            const select = document.getElementById('itemNameSelect');
+            const items = type === 'Solo' ? OFFICIAL_SOLO_ITEMS : OFFICIAL_GROUP_ITEMS;
+            select.innerHTML = items.map(item => `<option value="${item}">${item}</option>`).join('');
         }
 
         function initQRCode() {
@@ -968,14 +1250,6 @@
             });
         }
 
-        function openQRModal() {
-            document.getElementById('qrModal').classList.remove('hidden');
-        }
-
-        function closeQRModal() {
-            document.getElementById('qrModal').classList.add('hidden');
-        }
-
         function copyPageUrl() {
             const dummy = document.createElement('input');
             document.body.appendChild(dummy);
@@ -985,10 +1259,8 @@
             document.body.removeChild(dummy);
 
             const btnText = document.getElementById('copyBtnText');
-            btnText.innerText = 'Copied to Clipboard!';
-            setTimeout(() => {
-                btnText.innerText = 'Copy Web Link';
-            }, 2000);
+            btnText.innerText = 'Copied Link!';
+            setTimeout(() => { btnText.innerText = 'Copy Web Link'; }, 2000);
         }
     </script>
 </body>

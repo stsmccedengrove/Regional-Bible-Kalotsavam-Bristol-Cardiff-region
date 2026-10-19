@@ -37,41 +37,41 @@
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
 
     <header class="bg-brand-900 text-white border-b-4 border-amber-500 sticky top-0 z-40 shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
-            <div class="flex items-center space-x-3 sm:space-x-4">
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-1">
+            <div class="flex items-center space-x-2 sm:space-x-4">
                 <!-- Left Logo Container -->
-                <div id="headerLeftLogo" class="w-12 h-12 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
-                    <i data-lucide="book-open" class="text-amber-400 w-6 h-6 sm:w-8 sm:h-8"></i>
+                <div id="headerLeftLogo" class="w-10 h-10 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
+                    <i data-lucide="book-open" class="text-amber-400 w-5 h-5 sm:w-8 sm:h-8"></i>
                 </div>
                 <div>
-                    <h1 class="text-sm sm:text-xl md:text-2xl font-black text-white leading-tight tracking-wide">9TH BRISTOL-CARDIFF REGIONAL</h1>
-                    <p class="text-xs sm:text-sm font-extrabold text-amber-400">SYRO-MALABAR EPARCHY OF GREAT BRITAIN</p>
-                    <p class="text-[11px] sm:text-xs text-slate-300 font-bold">BIBLE KALOTSAVAM 2026</p>
+                    <h1 class="text-xs sm:text-xl md:text-2xl font-black text-white leading-tight tracking-wide">9TH BRISTOL-CARDIFF REGIONAL</h1>
+                    <p class="text-[10px] sm:text-sm font-extrabold text-amber-400">SYRO-MALABAR EPARCHY OF GREAT BRITAIN</p>
+                    <p class="text-[10px] sm:text-xs text-slate-300 font-bold">BIBLE KALOTSAVAM 2026</p>
                 </div>
             </div>
             
-            <div class="flex items-center space-x-2 sm:space-x-3">
+            <div class="flex items-center space-x-1.5 sm:space-x-3">
                 <!-- Live Sync Indicator & Manual Refresh Button -->
-                <button onclick="fetchLatestData(true)" title="Force Refresh" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                <button onclick="fetchLatestData(true)" title="Force Refresh" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition">
                     <i data-lucide="refresh-cw" id="refreshSpinner" class="w-3.5 h-3.5 text-amber-400"></i>
-                    <span id="syncText" class="hidden md:inline">Live Sync</span>
+                    <span id="syncText" class="inline">Sync</span>
                 </button>
 
-                <!-- Push Notification Permission Toggle -->
-                <button id="notifToggleBtn" onclick="toggleNotifications()" title="Enable Result Notifications" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                <!-- Push Notification Permission Toggle (Always visible on mobile & desktop) -->
+                <button id="notifToggleBtn" onclick="toggleNotifications()" title="Enable Result Notifications" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition">
                     <i data-lucide="bell" id="notifIcon" class="w-3.5 h-3.5 text-amber-400"></i>
-                    <span id="notifText" class="hidden md:inline">Alerts</span>
+                    <span id="notifText" class="inline">Alerts</span>
                 </button>
 
                 <!-- Right Logo Container -->
-                <div id="headerRightLogo" class="w-12 h-12 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
-                    <i data-lucide="award" class="text-amber-400 w-6 h-6 sm:w-8 sm:h-8"></i>
+                <div id="headerRightLogo" class="w-10 h-10 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
+                    <i data-lucide="award" class="text-amber-400 w-5 h-5 sm:w-8 sm:h-8"></i>
                 </div>
                 
                 <!-- Share & QR Button -->
-                <button onclick="openShareModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-2 rounded-lg text-xs font-black flex items-center gap-1.5 transition shadow">
-                    <i data-lucide="qr-code" class="w-4 h-4"></i>
-                    <span class="hidden sm:inline">Share / QR</span>
+                <button onclick="openShareModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs font-black flex items-center gap-1 transition shadow">
+                    <i data-lucide="qr-code" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+                    <span class="hidden sm:inline">Share</span>
                 </button>
             </div>
         </div>
@@ -607,15 +607,14 @@
 
         function updateNotifButtonUI(enabled) {
             const btnText = document.getElementById('notifText');
-            const btnIcon = document.getElementById('notifIcon');
             const btn = document.getElementById('notifToggleBtn');
 
             if (enabled) {
                 if (btnText) btnText.innerText = "Alerts On";
-                if (btn) btn.className = "bg-amber-500 text-slate-950 px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition shadow";
+                if (btn) btn.className = "bg-amber-500 text-slate-950 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow";
             } else {
                 if (btnText) btnText.innerText = "Alerts";
-                if (btn) btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition";
+                if (btn) btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition";
             }
         }
 
@@ -656,16 +655,14 @@
             if (spinner) spinner.classList.add('animate-spin');
 
             try {
-                // Try relative path first to avoid CORS issues
                 let res = await fetch(`${PRIMARY_DATA_URL}?t=${Date.now()}`);
                 if (!res.ok) {
-                    // Fallback to absolute GitHub raw URL
                     res = await fetch(`${FALLBACK_DATA_URL}?t=${Date.now()}`);
                 }
 
                 if (res.ok) {
                     const data = await res.json();
-                    if (data && data.results) {
+                    if (data && data.results && data.results.length > 0) {
                         if (initialDataLoaded && data.results.length > itemResults.length) {
                             const newestResult = data.results[0];
                             showSystemNotification(
@@ -682,7 +679,6 @@
                         renderResults();
                         renderStages();
                         renderSchedule();
-                        initialDataLoaded = true;
                     }
                 }
             } catch (err) {
@@ -691,6 +687,7 @@
                 if (spinner) {
                     setTimeout(() => spinner.classList.remove('animate-spin'), 600);
                 }
+                initialDataLoaded = true;
                 if (manualTrigger) alert("Data refreshed.");
             }
         }
@@ -698,20 +695,35 @@
         function loadSavedData() {
             const savedResults = localStorage.getItem('csmegb_results_2026_v3');
             if (savedResults) {
-                itemResults = JSON.parse(savedResults);
-                itemResults.forEach(r => { if (!r.status) r.status = "Final Result"; });
+                try {
+                    const parsed = JSON.parse(savedResults);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        itemResults = parsed;
+                    }
+                } catch (e) {
+                    console.error("Error loading local results", e);
+                }
             }
+            itemResults.forEach(r => { if (!r.status) r.status = "Final Result"; });
 
             const savedStages = localStorage.getItem('csmegb_stages_2026_v3');
-            if (savedStages) stageData = JSON.parse(savedStages);
+            if (savedStages) {
+                try { stageData = JSON.parse(savedStages); } catch(e){}
+            }
 
             const savedSchedule = localStorage.getItem('csmegb_schedule_2026_v3');
-            if (savedSchedule) scheduleData = JSON.parse(savedSchedule);
+            if (savedSchedule) {
+                try { scheduleData = JSON.parse(savedSchedule); } catch(e){}
+            }
 
             const savedLogos = localStorage.getItem('csmegb_logos_2026_v3');
             if (savedLogos) {
-                const logos = JSON.parse(savedLogos);
-                applyLogos(logos.left || DEFAULT_LEFT_LOGO, logos.right || DEFAULT_RIGHT_LOGO);
+                try {
+                    const logos = JSON.parse(savedLogos);
+                    applyLogos(logos.left || DEFAULT_LEFT_LOGO, logos.right || DEFAULT_RIGHT_LOGO);
+                } catch(e) {
+                    applyLogos(DEFAULT_LEFT_LOGO, DEFAULT_RIGHT_LOGO);
+                }
             } else {
                 applyLogos(DEFAULT_LEFT_LOGO, DEFAULT_RIGHT_LOGO);
             }
@@ -730,10 +742,10 @@
             const rUrl = rightUrl || DEFAULT_RIGHT_LOGO;
             
             if (lUrl) {
-                document.getElementById('headerLeftLogo').innerHTML = `<img src="${lUrl}" class="w-full h-full object-cover" alt="Left Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'book-open\\' class=\\'text-amber-400 w-6 h-6 sm:w-8 sm:h-8\\'></i>'; initLucide();">`;
+                document.getElementById('headerLeftLogo').innerHTML = `<img src="${lUrl}" class="w-full h-full object-cover" alt="Left Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'book-open\\' class=\\'text-amber-400 w-5 h-5 sm:w-8 sm:h-8\\'></i>'; initLucide();">`;
             }
             if (rUrl) {
-                document.getElementById('headerRightLogo').innerHTML = `<img src="${rUrl}" class="w-full h-full object-cover" alt="Right Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'award\\' class=\\'text-amber-400 w-6 h-6 sm:w-8 sm:h-8\\'></i>'; initLucide();">`;
+                document.getElementById('headerRightLogo').innerHTML = `<img src="${rUrl}" class="w-full h-full object-cover" alt="Right Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'award\\' class=\\'text-amber-400 w-5 h-5 sm:w-8 sm:h-8\\'></i>'; initLucide();">`;
             }
         }
 
@@ -773,9 +785,9 @@
             REGIONAL_MISSIONS.forEach(m => tally[m] = { first: 0, second: 0, third: 0, points: 0 });
 
             itemResults.forEach(res => {
-                if (tally[res.p1.mission]) { tally[res.p1.mission].first += 1; tally[res.p1.mission].points += 5; }
-                if (tally[res.p2.mission]) { tally[res.p2.mission].second += 1; tally[res.p2.mission].points += 3; }
-                if (tally[res.p3.mission]) { tally[res.p3.mission].third += 1; tally[res.p3.mission].points += 1; }
+                if (res.p1 && tally[res.p1.mission]) { tally[res.p1.mission].first += 1; tally[res.p1.mission].points += 5; }
+                if (res.p2 && tally[res.p2.mission]) { tally[res.p2.mission].second += 1; tally[res.p2.mission].points += 3; }
+                if (res.p3 && tally[res.p3.mission]) { tally[res.p3.mission].third += 1; tally[res.p3.mission].points += 1; }
             });
 
             const sortedMissions = Object.keys(tally).sort((a, b) => {
@@ -916,17 +928,17 @@
             let firsts = 0, seconds = 0, thirds = 0;
 
             itemResults.forEach(res => {
-                if (res.p1.mission === missionName) {
+                if (res.p1 && res.p1.mission === missionName) {
                     wonPrizes.push({ rank: "🥇 1st Place", points: 5, item: res.itemName, cat: res.category, winner: res.p1.name, code: res.p1.code, status: res.status });
                     totalPts += 5;
                     firsts++;
                 }
-                if (res.p2.mission === missionName) {
+                if (res.p2 && res.p2.mission === missionName) {
                     wonPrizes.push({ rank: "🥈 2nd Place", points: 3, item: res.itemName, cat: res.category, winner: res.p2.name, code: res.p2.code, status: res.status });
                     totalPts += 3;
                     seconds++;
                 }
-                if (res.p3.mission === missionName) {
+                if (res.p3 && res.p3.mission === missionName) {
                     wonPrizes.push({ rank: "🥉 3rd Place", points: 1, item: res.itemName, cat: res.category, winner: res.p3.name, code: res.p3.code, status: res.status });
                     totalPts += 1;
                     thirds++;
@@ -1013,9 +1025,10 @@
             calculateAndRenderStandings();
 
             const container = document.getElementById('publishedResultsContainer');
-            const searchVal = (document.getElementById('searchItemInput').value || '').toLowerCase();
+            const searchInput = document.getElementById('searchItemInput');
+            const searchVal = searchInput ? (searchInput.value || '').toLowerCase() : '';
 
-            if (itemResults.length === 0) {
+            if (!itemResults || itemResults.length === 0) {
                 container.innerHTML = `
                     <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-500 space-y-2">
                         <i data-lucide="clock" class="w-10 h-10 mx-auto text-amber-500 stroke-1"></i>
@@ -1028,16 +1041,21 @@
             }
 
             let filtered = itemResults.filter(res => {
+                if (!res) return false;
+                const p1Name = res.p1 && res.p1.name ? res.p1.name : '';
+                const p2Name = res.p2 && res.p2.name ? res.p2.name : '';
+                const p3Name = res.p3 && res.p3.name ? res.p3.name : '';
+
                 const matchesSearch = !searchVal || 
                     res.itemName.toLowerCase().includes(searchVal) ||
-                    res.p1.name.toLowerCase().includes(searchVal) ||
-                    res.p2.name.toLowerCase().includes(searchVal) ||
-                    res.p3.name.toLowerCase().includes(searchVal);
+                    p1Name.toLowerCase().includes(searchVal) ||
+                    p2Name.toLowerCase().includes(searchVal) ||
+                    p3Name.toLowerCase().includes(searchVal);
 
                 const matchesMission = !selectedMissionFilter ||
-                    res.p1.mission === selectedMissionFilter ||
-                    res.p2.mission === selectedMissionFilter ||
-                    res.p3.mission === selectedMissionFilter;
+                    (res.p1 && res.p1.mission === selectedMissionFilter) ||
+                    (res.p2 && res.p2.mission === selectedMissionFilter) ||
+                    (res.p3 && res.p3.mission === selectedMissionFilter);
 
                 return matchesSearch && matchesMission;
             });
@@ -1066,6 +1084,10 @@
                     statusIcon = "alert-circle";
                 }
 
+                const p1 = res.p1 || { name: 'N/A', mission: '-', code: '' };
+                const p2 = res.p2 || { name: 'N/A', mission: '-', code: '' };
+                const p3 = res.p3 || { name: 'N/A', mission: '-', code: '' };
+
                 return `
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="bg-slate-900 text-white p-3.5 px-5 flex flex-wrap justify-between items-center gap-2">
@@ -1089,21 +1111,21 @@
                     <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div class="bg-amber-50/60 p-3.5 rounded-xl border border-amber-200">
                             <span class="text-[11px] font-black text-amber-800 uppercase block mb-1">🥇 1st Place (5 Pts)</span>
-                            <h4 class="text-sm font-black text-slate-900">${res.p1.name || 'N/A'}</h4>
-                            <p class="text-xs font-bold text-slate-600 mt-0.5">${res.p1.mission}</p>
-                            <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${res.p1.code || '-'}</p>
+                            <h4 class="text-sm font-black text-slate-900">${p1.name || 'N/A'}</h4>
+                            <p class="text-xs font-bold text-slate-600 mt-0.5">${p1.mission || '-'}</p>
+                            <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p1.code || '-'}</p>
                         </div>
                         <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                             <span class="text-[11px] font-black text-slate-600 uppercase block mb-1">🥈 2nd Place (3 Pts)</span>
-                            <h4 class="text-sm font-black text-slate-900">${res.p2.name || 'N/A'}</h4>
-                            <p class="text-xs font-bold text-slate-600 mt-0.5">${res.p2.mission}</p>
-                            <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${res.p2.code || '-'}</p>
+                            <h4 class="text-sm font-black text-slate-900">${p2.name || 'N/A'}</h4>
+                            <p class="text-xs font-bold text-slate-600 mt-0.5">${p2.mission || '-'}</p>
+                            <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p2.code || '-'}</p>
                         </div>
                         <div class="bg-amber-900/5 p-3.5 rounded-xl border border-amber-900/10">
                             <span class="text-[11px] font-black text-amber-900 uppercase block mb-1">🥉 3rd Place (1 Pt)</span>
-                            <h4 class="text-sm font-black text-slate-900">${res.p3.name || 'N/A'}</h4>
-                            <p class="text-xs font-bold text-slate-600 mt-0.5">${res.p3.mission}</p>
-                            <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${res.p3.code || '-'}</p>
+                            <h4 class="text-sm font-black text-slate-900">${p3.name || 'N/A'}</h4>
+                            <p class="text-xs font-bold text-slate-600 mt-0.5">${p3.mission || '-'}</p>
+                            <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p3.code || '-'}</p>
                         </div>
                     </div>
                 </div>
@@ -1254,17 +1276,17 @@
             document.getElementById('adminCategorySelect').value = res.category;
             document.getElementById('adminResultStatusSelect').value = res.status || "Final Result";
 
-            document.getElementById('p1_name').value = res.p1.name || '';
-            document.getElementById('p1_code').value = res.p1.code || '';
-            document.getElementById('p1_mission').value = res.p1.mission || REGIONAL_MISSIONS[0];
+            document.getElementById('p1_name').value = res.p1 && res.p1.name ? res.p1.name : '';
+            document.getElementById('p1_code').value = res.p1 && res.p1.code ? res.p1.code : '';
+            document.getElementById('p1_mission').value = res.p1 && res.p1.mission ? res.p1.mission : REGIONAL_MISSIONS[0];
 
-            document.getElementById('p2_name').value = res.p2.name || '';
-            document.getElementById('p2_code').value = res.p2.code || '';
-            document.getElementById('p2_mission').value = res.p2.mission || REGIONAL_MISSIONS[0];
+            document.getElementById('p2_name').value = res.p2 && res.p2.name ? res.p2.name : '';
+            document.getElementById('p2_code').value = res.p2 && res.p2.code ? res.p2.code : '';
+            document.getElementById('p2_mission').value = res.p2 && res.p2.mission ? res.p2.mission : REGIONAL_MISSIONS[0];
 
-            document.getElementById('p3_name').value = res.p3.name || '';
-            document.getElementById('p3_code').value = res.p3.code || '';
-            document.getElementById('p3_mission').value = res.p3.mission || REGIONAL_MISSIONS[0];
+            document.getElementById('p3_name').value = res.p3 && res.p3.name ? res.p3.name : '';
+            document.getElementById('p3_code').value = res.p3 && res.p3.code ? res.p3.code : '';
+            document.getElementById('p3_mission').value = res.p3 && res.p3.mission ? res.p3.mission : REGIONAL_MISSIONS[0];
         }
 
         function resetResultForm() {

@@ -470,6 +470,10 @@
             "Swindon"
         ];
 
+        // Default GitHub raw image URLs for logos so they display automatically on QR code scans
+        const DEFAULT_LEFT_LOGO = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0159.JPG";
+        const DEFAULT_RIGHT_LOGO = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0160.JPG";
+
         // Exact Program Matrix dataset matching official image
         const PROGRAM_MATRIX = [
             { name: "Bible Reading - English", duration: "2 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
@@ -555,7 +559,9 @@
             const savedLogos = localStorage.getItem('csmegb_logos_2026_v3');
             if (savedLogos) {
                 const logos = JSON.parse(savedLogos);
-                applyLogos(logos.left, logos.right);
+                applyLogos(logos.left || DEFAULT_LEFT_LOGO, logos.right || DEFAULT_RIGHT_LOGO);
+            } else {
+                applyLogos(DEFAULT_LEFT_LOGO, DEFAULT_RIGHT_LOGO);
             }
         }
 
@@ -566,11 +572,14 @@
         }
 
         function applyLogos(leftUrl, rightUrl) {
-            if (leftUrl) {
-                document.getElementById('headerLeftLogo').innerHTML = `<img src="${leftUrl}" class="w-full h-full object-cover" alt="Left Logo">`;
+            const lUrl = leftUrl || DEFAULT_LEFT_LOGO;
+            const rUrl = rightUrl || DEFAULT_RIGHT_LOGO;
+            
+            if (lUrl) {
+                document.getElementById('headerLeftLogo').innerHTML = `<img src="${lUrl}" class="w-full h-full object-cover" alt="Left Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'book-open\\' class=\\'text-amber-400 w-6 h-6 sm:w-8 sm:h-8\\'></i>'; initLucide();">`;
             }
-            if (rightUrl) {
-                document.getElementById('headerRightLogo').innerHTML = `<img src="${rightUrl}" class="w-full h-full object-cover" alt="Right Logo">`;
+            if (rUrl) {
+                document.getElementById('headerRightLogo').innerHTML = `<img src="${rUrl}" class="w-full h-full object-cover" alt="Right Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'award\\' class=\\'text-amber-400 w-6 h-6 sm:w-8 sm:h-8\\'></i>'; initLucide();">`;
             }
         }
 
@@ -615,7 +624,13 @@
                 if (tally[res.p3.mission]) { tally[res.p3.mission].third += 1; tally[res.p3.mission].points += 1; }
             });
 
-            const sortedMissions = Object.keys(tally).sort((a, b) => tally[b].points - tally[a].points);
+            // Sort missions strictly by Total Points (descending), then alphabetically if tied
+            const sortedMissions = Object.keys(tally).sort((a, b) => {
+                if (tally[b].points !== tally[a].points) {
+                    return tally[b].points - tally[a].points;
+                }
+                return a.localeCompare(b);
+            });
 
             // Render Top 3 Podium
             const top3Container = document.getElementById('top3PodiumContainer');
@@ -635,7 +650,7 @@
                                     <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${badgeColor}">${posLabel}</span>
                                     <span class="text-xs font-bold text-slate-400">0 Pts</span>
                                 </div>
-                                <h3 class="text-base font-extrabold text-slate-400 mt-1">Results Coming Soon</h3>
+                                <h3 class="text-base font-extrabold text-slate-400 mt-1">${missionName || 'Mission'}</h3>
                             </div>
                             <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400 italic">
                                 Standings will update as event results are published.
@@ -665,14 +680,14 @@
                 `;
             }).join('');
 
-            // Render All 12 Missions in Table
+            // Render All 12 Missions in Table ranked by total points
             const tallyBody = document.getElementById('missionTallyBody');
             tallyBody.innerHTML = sortedMissions.map((m, idx) => {
                 const pts = tally[m].points;
                 return `
                     <tr onclick="showMissionPrizes('${m}')" class="hover:bg-amber-50/50 transition cursor-pointer ${idx < 3 && pts > 0 ? 'bg-amber-50/20' : ''}">
                         <td class="p-3.5 font-black text-slate-900">
-                            ${pts > 0 ? (idx === 0 ? '🥇 1' : idx === 1 ? '🥈 2' : idx === 2 ? '🥉 3' : idx + 1) : '-'}
+                            ${idx === 0 ? '🥇 1' : idx === 1 ? '🥈 2' : idx === 2 ? '🥉 3' : idx + 1}
                         </td>
                         <td class="p-3.5 font-black text-brand-700 hover:underline flex items-center gap-1.5">
                             ${m}

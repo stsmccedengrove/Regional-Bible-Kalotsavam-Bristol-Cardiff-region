@@ -1,1368 +1,1331 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSMEGB Bible Kalotsavam 2026 - Bristol-Cardiff Region</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0f4f8',
-                            100: '#d9e2ec',
-                            500: '#103057',
-                            700: '#0b213f',
-                            900: '#061224',
-                            gold: '#d4af37',
-                            amber: '#f59e0b'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- QRCode.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    </style>
-</head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+<header class="bg-brand-900 text-white border-b-4 border-amber-500 sticky top-0 z-40 shadow-lg">
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-1">
+        <div class="flex items-center space-x-2 sm:space-x-4">
+            <!-- Left Logo Container -->
+            <div id="headerLeftLogo" class="w-10 h-10 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
+                <i data-lucide="book-open" class="text-amber-400 w-5 h-5 sm:w-8 sm:h-8"></i>
+            </div>
+            <div>
+                <h1 class="text-sm sm:text-2xl md:text-3xl font-black text-white leading-tight tracking-wide">9TH BRISTOL-CARDIFF REGIONAL</h1>
+                <p class="text-[11px] sm:text-base font-extrabold text-amber-400">SYRO-MALABAR EPARCHY OF GREAT BRITAIN</p>
+                <p class="text-[10px] sm:text-sm text-slate-300 font-bold">BIBLE KALOTSAVAM 2026</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-1.5 sm:space-x-3">
+            <!-- Live Sync Indicator & Manual Refresh Button -->
+            <button onclick="fetchLatestData(true)" title="Force Refresh" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition">
+                <i data-lucide="refresh-cw" id="refreshSpinner" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span id="syncText" class="inline">Sync</span>
+            </button>
 
-    <header class="bg-brand-900 text-white border-b-4 border-amber-500 sticky top-0 z-40 shadow-lg">
-        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-1">
-            <div class="flex items-center space-x-2 sm:space-x-4">
-                <!-- Left Logo Container -->
-                <div id="headerLeftLogo" class="w-10 h-10 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
-                    <i data-lucide="book-open" class="text-amber-400 w-5 h-5 sm:w-8 sm:h-8"></i>
-                </div>
-                <div>
-                    <h1 class="text-xs sm:text-xl md:text-2xl font-black text-white leading-tight tracking-wide">9TH BRISTOL-CARDIFF REGIONAL</h1>
-                    <p class="text-[10px] sm:text-sm font-extrabold text-amber-400">SYRO-MALABAR EPARCHY OF GREAT BRITAIN</p>
-                    <p class="text-[10px] sm:text-xs text-slate-300 font-bold">BIBLE KALOTSAVAM 2026</p>
-                </div>
+            <!-- Push Notification Permission Toggle -->
+            <button id="notifToggleBtn" onclick="toggleNotifications()" title="Enable Result Notifications" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition">
+                <i data-lucide="bell" id="notifIcon" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span id="notifText" class="inline">Alerts</span>
+            </button>
+
+            <!-- Right Logo Container -->
+            <div id="headerRightLogo" class="w-10 h-10 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
+                <i data-lucide="award" class="text-amber-400 w-5 h-5 sm:w-8 sm:h-8"></i>
             </div>
             
-            <div class="flex items-center space-x-1.5 sm:space-x-3">
-                <!-- Live Sync Indicator & Manual Refresh Button -->
-                <button onclick="fetchLatestData(true)" title="Force Refresh" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition">
-                    <i data-lucide="refresh-cw" id="refreshSpinner" class="w-3.5 h-3.5 text-amber-400"></i>
-                    <span id="syncText" class="inline">Sync</span>
-                </button>
-
-                <!-- Push Notification Permission Toggle (Always visible on mobile & desktop) -->
-                <button id="notifToggleBtn" onclick="toggleNotifications()" title="Enable Result Notifications" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition">
-                    <i data-lucide="bell" id="notifIcon" class="w-3.5 h-3.5 text-amber-400"></i>
-                    <span id="notifText" class="inline">Alerts</span>
-                </button>
-
-                <!-- Right Logo Container -->
-                <div id="headerRightLogo" class="w-10 h-10 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
-                    <i data-lucide="award" class="text-amber-400 w-5 h-5 sm:w-8 sm:h-8"></i>
-                </div>
-                
-                <!-- Share & QR Button -->
-                <button onclick="openShareModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs font-black flex items-center gap-1 transition shadow">
-                    <i data-lucide="qr-code" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
-                    <span class="hidden sm:inline">Share</span>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Theme Banner -->
-    <div class="bg-amber-500 text-slate-950 py-1.5 px-4 text-center text-xs sm:text-sm font-extrabold shadow-inner">
-        Theme: "The Lord disciplines those whom he loves..." (Hebrews 12:6) | "താൻ സ്നേഹിക്കുന്നവന് കർത്താവു ശിക്ഷണം നൽകുന്നു..." (ഹെബ്രായർ 12:6)
-    </div>
-
-    <!-- Live Floating Toast Notification Banner -->
-    <div id="liveToast" class="hidden fixed bottom-5 right-5 z-50 max-w-sm w-full bg-slate-900 border-2 border-amber-400 text-white p-4 rounded-2xl shadow-2xl transition-all duration-300 transform translate-y-0">
-        <div class="flex items-start justify-between gap-3">
-            <div class="flex items-start gap-3">
-                <div class="p-2 bg-amber-500 text-slate-950 rounded-xl shrink-0">
-                    <i data-lucide="bell-ring" class="w-5 h-5"></i>
-                </div>
-                <div>
-                    <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">New Result Published!</span>
-                    <h4 id="toastTitle" class="text-xs font-black text-white mt-0.5">Programme Name</h4>
-                    <p id="toastMessage" class="text-[11px] text-slate-300 font-medium mt-1">1st Place: Winner Name</p>
-                </div>
-            </div>
-            <button onclick="dismissToast()" class="text-slate-400 hover:text-white p-1">
-                <i data-lucide="x" class="w-4 h-4"></i>
+            <!-- Share & QR Button -->
+            <button onclick="openShareModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs font-black flex items-center gap-1 transition shadow">
+                <i data-lucide="qr-code" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+                <span class="hidden sm:inline">Share</span>
             </button>
         </div>
     </div>
+</header>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+<!-- Theme Banner -->
+<div class="bg-amber-500 text-slate-950 py-1.5 px-4 text-center text-xs sm:text-sm font-extrabold shadow-inner">
+    Theme: "The Lord disciplines those whom he loves..." (Hebrews 12:6) | "താൻ സ്നേഹിക്കുന്നവന് കർത്താവു ശിക്ഷണം നൽകുന്നു..." (ഹെബ്രായർ 12:6)
+</div>
 
-        <!-- Navigation Tabs -->
-        <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-2">
-            <button onclick="switchTab('results')" id="tab-results" class="px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-brand-700 text-white shadow-sm flex items-center gap-2">
-                <i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i> Published Results
-            </button>
-            <button onclick="switchTab('stages')" id="tab-stages" class="px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-2">
-                <i data-lucide="radio" class="w-4 h-4"></i> Live Stage Tracker
-            </button>
-            <button onclick="switchTab('schedule')" id="tab-schedule" class="px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-2">
-                <i data-lucide="calendar" class="w-4 h-4"></i> Programme Schedule
-            </button>
-            <button onclick="switchTab('rules')" id="tab-rules" class="px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-2">
-                <i data-lucide="grid" class="w-4 h-4"></i> Official Program Matrix
-            </button>
+<!-- Live Floating Toast Notification Banner -->
+<div id="liveToast" class="hidden fixed bottom-5 right-5 z-50 max-w-sm w-full bg-slate-900 border-2 border-amber-400 text-white p-4 rounded-2xl shadow-2xl transition-all duration-300 transform translate-y-0">
+    <div class="flex items-start justify-between gap-3">
+        <div class="flex items-start gap-3">
+            <div class="p-2 bg-amber-500 text-slate-950 rounded-xl shrink-0">
+                <i data-lucide="bell-ring" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">New Result Published!</span>
+                <h4 id="toastTitle" class="text-xs font-black text-white mt-0.5">Programme Name</h4>
+                <p id="toastMessage" class="text-[11px] text-slate-300 font-medium mt-1">1st Place: Winner Name</p>
+            </div>
+        </div>
+        <button onclick="dismissToast()" class="text-slate-400 hover:text-white p-1">
+            <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+    </div>
+</div>
+
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+
+    <!-- Navigation Tabs -->
+    <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-2">
+        <button onclick="switchTab('results')" id="tab-results" class="px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-brand-700 text-white shadow-sm flex items-center gap-2">
+            <i data-lucide="trophy" class="w-4 h-4 text-amber-400"></i> Published Results
+        </button>
+        <button onclick="switchTab('stages')" id="tab-stages" class="px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-2">
+            <i data-lucide="radio" class="w-4 h-4"></i> Live Stage Tracker
+        </button>
+        <button onclick="switchTab('schedule')" id="tab-schedule" class="px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-2">
+            <i data-lucide="calendar" class="w-4 h-4"></i> Programme Schedule
+        </button>
+        <button onclick="switchTab('rules')" id="tab-rules" class="px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-2">
+            <i data-lucide="grid" class="w-4 h-4"></i> Official Program Matrix
+        </button>
+    </div>
+
+    <!-- TAB 1: RESULTS VIEW -->
+    <section id="view-results" class="space-y-6">
+
+        <!-- TOP 3 MISSIONS PODIUM SECTION -->
+        <div class="space-y-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                    <i data-lucide="crown" class="w-5 h-5 text-amber-500"></i>
+                    Championship Standings - Top 3 Missions
+                </h2>
+                <span class="text-xs font-semibold text-slate-500">Click mission to view won prizes</span>
+            </div>
+
+            <div id="top3PodiumContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Populated Dynamically -->
+            </div>
         </div>
 
-        <!-- TAB 1: RESULTS VIEW -->
-        <section id="view-results" class="space-y-6">
-
-            <!-- TOP 3 MISSIONS PODIUM SECTION -->
-            <div class="space-y-3">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                        <i data-lucide="crown" class="w-5 h-5 text-amber-500"></i>
-                        Championship Standings - Top 3 Missions
-                    </h2>
-                    <span class="text-xs font-semibold text-slate-500">Click mission to view won prizes</span>
-                </div>
-
-                <div id="top3PodiumContainer" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- Populated Dynamically -->
-                </div>
+        <!-- REST OF MISSIONS RANKING TABLE -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-4 bg-slate-900 text-white flex justify-between items-center">
+                <h3 class="font-bold text-sm sm:text-base flex items-center gap-2">
+                    <i data-lucide="list-ordered" class="w-4 h-4 text-amber-400"></i>
+                    Full Regional Missions Ranking Tally (12 Missions)
+                </h3>
+                <span id="totalDeclaredBadge" class="text-xs bg-slate-800 text-amber-400 font-extrabold px-3 py-1 rounded-full border border-slate-700">0 Items Declared</span>
             </div>
-
-            <!-- REST OF MISSIONS RANKING TABLE -->
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="p-4 bg-slate-900 text-white flex justify-between items-center">
-                    <h3 class="font-bold text-sm sm:text-base flex items-center gap-2">
-                        <i data-lucide="list-ordered" class="w-4 h-4 text-amber-400"></i>
-                        Full Regional Missions Ranking Tally (12 Missions)
-                    </h3>
-                    <span id="totalDeclaredBadge" class="text-xs bg-slate-800 text-amber-400 font-extrabold px-3 py-1 rounded-full border border-slate-700">0 Items Declared</span>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs sm:text-sm">
-                        <thead class="bg-slate-100 text-slate-600 font-extrabold border-b border-slate-200 uppercase">
-                            <tr>
-                                <th class="p-3.5">Rank</th>
-                                <th class="p-3.5">Mission</th>
-                                <th class="p-3.5 text-center">1st Place (5 pts)</th>
-                                <th class="p-3.5 text-center">2nd Place (3 pts)</th>
-                                <th class="p-3.5 text-center">3rd Place (1 pt)</th>
-                                <th class="p-3.5 text-right">Total Points</th>
-                            </tr>
-                        </thead>
-                        <tbody id="missionTallyBody" class="divide-y divide-slate-100 font-semibold text-slate-700">
-                            <!-- Populated dynamically -->
-                        </tbody>
-                    </table>
-                </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs sm:text-sm">
+                    <thead class="bg-slate-100 text-slate-600 font-extrabold border-b border-slate-200 uppercase">
+                        <tr>
+                            <th class="p-3.5">Rank</th>
+                            <th class="p-3.5">Mission</th>
+                            <th class="p-3.5 text-center">1st Place</th>
+                            <th class="p-3.5 text-center">2nd Place</th>
+                            <th class="p-3.5 text-center">3rd Place</th>
+                            <th class="p-3.5 text-right">Total Points</th>
+                        </tr>
+                    </thead>
+                    <tbody id="missionTallyBody" class="divide-y divide-slate-100 font-semibold text-slate-700">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <!-- Mission Filter Pills -->
-            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Filter Item Results by Mission:</p>
-                <div id="missionFilters" class="flex flex-wrap gap-2">
-                    <!-- Populated dynamically -->
-                </div>
-            </div>
-
-            <!-- Item-Wise Published Results List -->
-            <div class="space-y-4 pt-2">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                        <i data-lucide="award" class="w-5 h-5 text-brand-700"></i>
-                        Item-Wise Declared Results
-                    </h2>
-                    <input type="text" id="searchItemInput" oninput="renderResults()" placeholder="Search item or candidate name..." class="bg-white border border-slate-300 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-brand-500 w-full sm:w-64">
-                </div>
-
-                <div id="publishedResultsContainer" class="space-y-4">
-                    <!-- Populated dynamically -->
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 2: LIVE STAGE TRACKER -->
-        <section id="view-stages" class="hidden space-y-6">
-            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <span class="relative flex h-3 w-3">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
-                    </span>
-                    <div>
-                        <h3 class="font-bold text-slate-900 text-sm">Live 9-Stage Progress Tracker</h3>
-                        <p class="text-xs text-slate-600">Stage details and schedule allocations are updated live by administrators.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="stagesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Mission Filter Pills -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Filter Item Results by Mission:</p>
+            <div id="missionFilters" class="flex flex-wrap gap-2">
                 <!-- Populated dynamically -->
             </div>
-        </section>
+        </div>
 
-        <!-- TAB 3: PROGRAMME SCHEDULE -->
-        <section id="view-schedule" class="hidden space-y-6">
-            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                        <i data-lucide="clock" class="w-5 h-5 text-brand-700"></i>
-                        Official Competition Programme Schedule
-                    </h2>
-                    <span id="adminScheduleNotice" class="text-xs text-slate-500 font-medium">Schedule subject to live updates</span>
+        <!-- Item-Wise Published Results List -->
+        <div class="space-y-4 pt-2">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                    <i data-lucide="award" class="w-5 h-5 text-brand-700"></i>
+                    Item-Wise Declared Results
+                </h2>
+                <input type="text" id="searchItemInput" oninput="renderResults()" placeholder="Search item or candidate name..." class="bg-white border border-slate-300 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-brand-500 w-full sm:w-64">
+            </div>
+
+            <div id="publishedResultsContainer" class="space-y-4">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 2: LIVE STAGE TRACKER -->
+    <section id="view-stages" class="hidden space-y-6">
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="relative flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                </span>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-sm">Live 9-Stage Progress Tracker</h3>
+                    <p class="text-xs text-slate-600">Stage details and schedule allocations are updated live by administrators.</p>
                 </div>
+            </div>
+        </div>
+
+        <div id="stagesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Populated dynamically -->
+        </div>
+    </section>
+
+    <!-- TAB 3: PROGRAMME SCHEDULE -->
+    <section id="view-schedule" class="hidden space-y-6">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                    <i data-lucide="clock" class="w-5 h-5 text-brand-700"></i>
+                    Official Competition Programme Schedule
+                </h2>
+                <span id="adminScheduleNotice" class="text-xs text-slate-500 font-medium">Schedule subject to live updates</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs sm:text-sm">
+                    <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                        <tr>
+                            <th class="p-3">Time</th>
+                            <th class="p-3">Programme Item</th>
+                            <th class="p-3">Category</th>
+                            <th class="p-3">Stage / Hall</th>
+                            <th id="schedAdminHeader" class="p-3 text-right hidden">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleTableBody" class="divide-y divide-slate-100 text-slate-700">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 4: OFFICIAL PROGRAM MATRIX -->
+    <section id="view-rules" class="hidden space-y-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+            <div>
+                <h2 class="text-lg font-black text-slate-900 mb-1">Official Program Matrix & Age Groups</h2>
+                <p class="text-xs text-slate-500 mb-4">Complete breakdown of allowable categories per programme as per official festival guidelines.</p>
+                
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs sm:text-sm">
-                        <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
+                    <table class="w-full text-xs text-left border border-slate-200 rounded-lg overflow-hidden">
+                        <thead class="bg-brand-900 text-white font-bold">
                             <tr>
-                                <th class="p-3">Time</th>
-                                <th class="p-3">Programme Item</th>
-                                <th class="p-3">Category</th>
-                                <th class="p-3">Stage / Hall</th>
-                                <th id="schedAdminHeader" class="p-3 text-right hidden">Actions</th>
+                                <th class="p-2.5">Programme</th>
+                                <th class="p-2.5">Duration</th>
+                                <th class="p-2.5 text-center">Up to 7</th>
+                                <th class="p-2.5 text-center">8 to 10</th>
+                                <th class="p-2.5 text-center">11 to 13</th>
+                                <th class="p-2.5 text-center">14 to 17</th>
+                                <th class="p-2.5 text-center">18 to 24</th>
+                                <th class="p-2.5 text-center">Adults (25+)</th>
+                                <th class="p-2.5 text-center">All Ages</th>
+                                <th class="p-2.5 text-center">Under 30 Yrs</th>
+                                <th class="p-2.5 text-center">30 Yrs & Above</th>
                             </tr>
                         </thead>
-                        <tbody id="scheduleTableBody" class="divide-y divide-slate-100 text-slate-700">
+                        <tbody id="matrixTableBody" class="divide-y divide-slate-200 text-slate-700 font-semibold">
                             <!-- Populated dynamically -->
                         </tbody>
                     </table>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- TAB 4: OFFICIAL PROGRAM MATRIX -->
-        <section id="view-rules" class="hidden space-y-6">
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-                <div>
-                    <h2 class="text-lg font-black text-slate-900 mb-1">Official Program Matrix & Age Groups</h2>
-                    <p class="text-xs text-slate-500 mb-4">Complete breakdown of allowable categories per programme as per official festival guidelines.</p>
-                    
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-xs text-left border border-slate-200 rounded-lg overflow-hidden">
-                            <thead class="bg-brand-900 text-white font-bold">
-                                <tr>
-                                    <th class="p-2.5">Programme</th>
-                                    <th class="p-2.5">Duration</th>
-                                    <th class="p-2.5 text-center">Up to 7</th>
-                                    <th class="p-2.5 text-center">8 to 10</th>
-                                    <th class="p-2.5 text-center">11 to 13</th>
-                                    <th class="p-2.5 text-center">14 to 17</th>
-                                    <th class="p-2.5 text-center">18 to 24</th>
-                                    <th class="p-2.5 text-center">Adults (25+)</th>
-                                    <th class="p-2.5 text-center">All Ages</th>
-                                    <th class="p-2.5 text-center">Under 30 Yrs</th>
-                                    <th class="p-2.5 text-center">30 Yrs & Above</th>
-                                </tr>
-                            </thead>
-                            <tbody id="matrixTableBody" class="divide-y divide-slate-200 text-slate-700 font-semibold">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
+</main>
 
-    </main>
+<!-- Footer with discrete Admin portal access -->
+<footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <p>© 2026 CSMEGB Bible Kalotsavam - Bristol-Cardiff Region</p>
+        <button onclick="openAdminAuth()" class="text-slate-600 hover:text-slate-400 transition text-[11px]">
+            Official Login
+        </button>
+    </div>
+</footer>
 
-    <!-- Footer with discrete Admin portal access -->
-    <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p>© 2026 CSMEGB Bible Kalotsavam - Bristol-Cardiff Region</p>
-            <button onclick="openAdminAuth()" class="text-slate-600 hover:text-slate-400 transition text-[11px]">
-                Official Login
+<!-- SHARE & QR CODE MODAL -->
+<div id="shareModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4 flex items-center justify-center">
+    <div class="max-w-md w-full bg-white text-slate-900 rounded-2xl shadow-2xl p-6 space-y-5 border border-slate-200 my-auto">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+            <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                <i data-lucide="qr-code" class="w-5 h-5 text-amber-500"></i>
+                Scan or Share Results
+            </h3>
+            <button onclick="closeShareModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
-    </footer>
+        
+        <div class="flex flex-col items-center justify-center space-y-3 py-2">
+            <div id="qrcode" class="p-3 bg-white border border-slate-200 rounded-xl shadow-inner"></div>
+            <p class="text-xs text-slate-500 font-semibold text-center">Scan this QR code with any mobile camera to view live results instantly.</p>
+        </div>
 
-    <!-- SHARE & QR CODE MODAL -->
-    <div id="shareModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4 flex items-center justify-center">
-        <div class="max-w-md w-full bg-white text-slate-900 rounded-2xl shadow-2xl p-6 space-y-5 border border-slate-200 my-auto">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                    <i data-lucide="qr-code" class="w-5 h-5 text-amber-500"></i>
-                    Scan or Share Results
-                </h3>
-                <button onclick="closeShareModal()" class="text-slate-400 hover:text-slate-600 p-1">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
+        <div class="space-y-2 pt-2 border-t border-slate-100">
+            <button onclick="copyPageUrl()" class="w-full bg-brand-700 hover:bg-brand-900 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                <i data-lucide="copy" class="w-4 h-4"></i> Copy Page Link
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MISSION PRIZE BREAKDOWN MODAL -->
+<div id="missionPrizeModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4 sm:p-6 flex items-center justify-center">
+    <div class="max-w-2xl w-full bg-white text-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 my-8">
+        <div class="bg-brand-900 text-white p-4 px-6 flex justify-between items-center border-b border-amber-500">
+            <div class="flex items-center gap-2">
+                <i data-lucide="award" class="text-amber-400 w-5 h-5"></i>
+                <h3 id="modalMissionTitle" class="font-black text-base sm:text-lg">Mission Winners Breakdown</h3>
             </div>
+            <button onclick="closeMissionPrizeModal()" class="text-slate-300 hover:text-white p-1">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+            <div id="modalMissionSummary" class="grid grid-cols-3 gap-3 text-center p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs font-bold">
+                <!-- Dynamic Summary Points -->
+            </div>
+            <div id="modalMissionPrizesList" class="space-y-3">
+                <!-- Dynamic List of Prizes Won -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ADMIN AUTHENTICATION & MODAL CONTROLS -->
+<div id="adminModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4 sm:p-6">
+    <div class="max-w-4xl mx-auto bg-slate-900 text-white rounded-2xl border border-slate-700 shadow-2xl p-6 space-y-6 my-8">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+            <div class="flex items-center gap-2">
+                <i data-lucide="shield-check" class="text-amber-400 w-6 h-6"></i>
+                <h2 class="text-lg font-black">Official Admin Portal & Results Management</h2>
+            </div>
+            <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white p-1">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Admin Passcode Verification Form -->
+        <div id="adminAuthSection" class="space-y-4 max-w-sm mx-auto text-center py-6">
+            <i data-lucide="lock" class="w-12 h-12 text-amber-400 mx-auto"></i>
+            <h3 class="text-base font-bold">Restricted Admin Access</h3>
+            <p class="text-xs text-slate-400">Please enter administrator passcode to modify results and schedules.</p>
+            <input type="password" id="adminPassInput" placeholder="Passcode" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+            <button onclick="verifyAdminPasscode()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-2.5 rounded-lg text-sm transition">
+                Unlock Admin Panel
+            </button>
+            <p id="adminAuthErr" class="text-xs text-red-400 hidden font-bold">Incorrect passcode. Try again.</p>
+        </div>
+
+        <!-- Admin Controls Dashboard (Visible after login) -->
+        <div id="adminControlsSection" class="hidden space-y-8">
             
-            <div class="flex flex-col items-center justify-center space-y-3 py-2">
-                <div id="qrcode" class="p-3 bg-white border border-slate-200 rounded-xl shadow-inner"></div>
-                <p class="text-xs text-slate-500 font-semibold text-center">Scan this QR code with any mobile camera to view live results instantly.</p>
+            <!-- Section 1: Logo URLs Configuration -->
+            <div class="bg-slate-800/60 p-5 rounded-xl border border-slate-700/80 space-y-4">
+                <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider">Header Logos Management</h3>
+                <p class="text-xs text-slate-400">Specify direct image web links for the left and right header logos.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-300 font-semibold block mb-1">Left Logo Image URL</label>
+                        <input type="text" id="leftLogoUrlInput" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-300 font-semibold block mb-1">Right Logo Image URL</label>
+                        <input type="text" id="rightLogoUrlInput" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+                    </div>
+                </div>
+                <button onclick="saveLogos()" class="bg-amber-500 text-slate-950 px-4 py-1.5 rounded text-xs font-bold hover:bg-amber-400">Save Logos</button>
             </div>
 
-            <div class="space-y-2 pt-2 border-t border-slate-100">
-                <button onclick="copyPageUrl()" class="w-full bg-brand-700 hover:bg-brand-900 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition">
-                    <i data-lucide="copy" class="w-4 h-4"></i> Copy Page Link
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MISSION PRIZE BREAKDOWN MODAL -->
-    <div id="missionPrizeModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4 sm:p-6 flex items-center justify-center">
-        <div class="max-w-2xl w-full bg-white text-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 my-8">
-            <div class="bg-brand-900 text-white p-4 px-6 flex justify-between items-center border-b border-amber-500">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="award" class="text-amber-400 w-5 h-5"></i>
-                    <h3 id="modalMissionTitle" class="font-black text-base sm:text-lg">Mission Winners Breakdown</h3>
-                </div>
-                <button onclick="closeMissionPrizeModal()" class="text-slate-300 hover:text-white p-1">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
-                <div id="modalMissionSummary" class="grid grid-cols-3 gap-3 text-center p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs font-bold">
-                    <!-- Dynamic Summary Points -->
-                </div>
-                <div id="modalMissionPrizesList" class="space-y-3">
-                    <!-- Dynamic List of Prizes Won -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ADMIN AUTHENTICATION & MODAL CONTROLS -->
-    <div id="adminModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4 sm:p-6">
-        <div class="max-w-4xl mx-auto bg-slate-900 text-white rounded-2xl border border-slate-700 shadow-2xl p-6 space-y-6 my-8">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="shield-check" class="text-amber-400 w-6 h-6"></i>
-                    <h2 class="text-lg font-black">Official Admin Portal & Results Management</h2>
-                </div>
-                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white p-1">
-                    <i data-lucide="x" class="w-6 h-6"></i>
+            <!-- Section 1B: Danger Zone / Delete All Results -->
+            <div class="bg-red-950/40 p-5 rounded-xl border border-red-800/60 space-y-3">
+                <h3 class="font-bold text-sm text-red-400 uppercase tracking-wider flex items-center gap-2">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-red-400"></i> Danger Zone
+                </h3>
+                <p class="text-xs text-slate-300">Wipe all published results and clear points standings for a fresh start.</p>
+                <button onclick="deleteAllResults()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-xs font-extrabold transition flex items-center gap-1.5">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear All Results Data
                 </button>
             </div>
 
-            <!-- Admin Passcode Verification Form -->
-            <div id="adminAuthSection" class="space-y-4 max-w-sm mx-auto text-center py-6">
-                <i data-lucide="lock" class="w-12 h-12 text-amber-400 mx-auto"></i>
-                <h3 class="text-base font-bold">Restricted Admin Access</h3>
-                <p class="text-xs text-slate-400">Please enter administrator passcode to modify results and schedules.</p>
-                <input type="password" id="adminPassInput" placeholder="Passcode" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
-                <button onclick="verifyAdminPasscode()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-2.5 rounded-lg text-sm transition">
-                    Unlock Admin Panel
-                </button>
-                <p id="adminAuthErr" class="text-xs text-red-400 hidden font-bold">Incorrect passcode. Try again.</p>
-            </div>
-
-            <!-- Admin Controls Dashboard (Visible after login) -->
-            <div id="adminControlsSection" class="hidden space-y-8">
+            <!-- Section 2: Publish / Edit Event Result -->
+            <div class="bg-slate-800/60 p-5 rounded-xl border border-slate-700/80 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 id="adminResultFormTitle" class="font-bold text-sm text-amber-400 uppercase tracking-wider">Publish New Event Result</h3>
+                    <button id="cancelEditResultBtn" onclick="resetResultForm()" class="hidden text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-2.5 py-1 rounded font-bold">Cancel Edit Mode</button>
+                </div>
                 
-                <!-- Section 1: Logo URLs Configuration -->
-                <div class="bg-slate-800/60 p-5 rounded-xl border border-slate-700/80 space-y-4">
-                    <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider">Header Logos Management</h3>
-                    <p class="text-xs text-slate-400">Specify direct image web links for the left and right header logos.</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs text-slate-300 font-semibold block mb-1">Left Logo Image URL</label>
-                            <input type="text" id="leftLogoUrlInput" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-300 font-semibold block mb-1">Right Logo Image URL</label>
-                            <input type="text" id="rightLogoUrlInput" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
-                        </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="text-xs text-slate-300 block mb-1 font-semibold">Select Programme Item</label>
+                        <select id="adminItemSelect" onchange="updateCategoryDropdown()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+                            <!-- Populated dynamically -->
+                        </select>
                     </div>
-                    <button onclick="saveLogos()" class="bg-amber-500 text-slate-950 px-4 py-1.5 rounded text-xs font-bold hover:bg-amber-400">Save Logos</button>
-                </div>
-
-                <!-- Section 1B: Danger Zone / Delete All Results -->
-                <div class="bg-red-950/40 p-5 rounded-xl border border-red-800/60 space-y-3">
-                    <h3 class="font-bold text-sm text-red-400 uppercase tracking-wider flex items-center gap-2">
-                        <i data-lucide="alert-triangle" class="w-4 h-4 text-red-400"></i> Danger Zone
-                    </h3>
-                    <p class="text-xs text-slate-300">Wipe all published results and clear points standings for a fresh start.</p>
-                    <button onclick="deleteAllResults()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-xs font-extrabold transition flex items-center gap-1.5">
-                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear All Results Data
-                    </button>
-                </div>
-
-                <!-- Section 2: Publish / Edit Event Result -->
-                <div class="bg-slate-800/60 p-5 rounded-xl border border-slate-700/80 space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h3 id="adminResultFormTitle" class="font-bold text-sm text-amber-400 uppercase tracking-wider">Publish New Event Result</h3>
-                        <button id="cancelEditResultBtn" onclick="resetResultForm()" class="hidden text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-2.5 py-1 rounded font-bold">Cancel Edit Mode</button>
+                    <div>
+                        <label class="text-xs text-slate-300 block mb-1 font-semibold">Select Age Category</label>
+                        <select id="adminCategorySelect" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+                            <!-- Populated dynamically according to matrix -->
+                        </select>
                     </div>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div>
-                            <label class="text-xs text-slate-300 block mb-1 font-semibold">Select Programme Item</label>
-                            <select id="adminItemSelect" onchange="updateCategoryDropdown()" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
-                                <!-- Populated dynamically -->
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-300 block mb-1 font-semibold">Select Age Category</label>
-                            <select id="adminCategorySelect" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
-                                <!-- Populated dynamically according to matrix -->
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-300 block mb-1 font-semibold">Result Status</label>
-                            <select id="adminResultStatusSelect" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white font-bold">
-                                <option value="Final Result">Final Result (Default)</option>
-                                <option value="Provisional Result">Provisional Result</option>
-                                <option value="Under Appeal">Under Appeal</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- 1st, 2nd, 3rd Winners Entry -->
-                    <div class="space-y-3 pt-2">
-                        <!-- 1st Place -->
-                        <div class="p-3 bg-slate-900/80 rounded-lg border border-amber-500/40 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            <span class="text-amber-400 font-bold text-xs sm:col-span-3">🥇 1st Place Winner (5 Points)</span>
-                            <input type="text" id="p1_name" placeholder="Participant / Group Name" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <input type="text" id="p1_code" placeholder="Chest / Reg No." class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <select id="p1_mission" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                                <!-- Populated dynamically -->
-                            </select>
-                        </div>
-
-                        <!-- 2nd Place -->
-                        <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-700 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            <span class="text-slate-300 font-bold text-xs sm:col-span-3">🥈 2nd Place Winner (3 Points)</span>
-                            <input type="text" id="p2_name" placeholder="Participant / Group Name" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <input type="text" id="p2_code" placeholder="Chest / Reg No." class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <select id="p2_mission" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                                <!-- Populated dynamically -->
-                            </select>
-                        </div>
-
-                        <!-- 3rd Place -->
-                        <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-700 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            <span class="text-amber-700 font-bold text-xs sm:col-span-3">🥉 3rd Place Winner (1 Point)</span>
-                            <input type="text" id="p3_name" placeholder="Participant / Group Name" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <input type="text" id="p3_code" placeholder="Chest / Reg No." class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <select id="p3_mission" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                                <!-- Populated dynamically -->
-                            </select>
-                        </div>
-                    </div>
-
-                    <button id="publishResultBtn" onclick="publishResult()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-2.5 rounded-lg text-xs uppercase tracking-wider transition">
-                        Publish Result & Update Standings
-                    </button>
-                </div>
-
-                <!-- Section 3: Add & Edit Programme Schedule -->
-                <div class="bg-slate-800/60 p-5 rounded-xl border border-slate-700/80 space-y-4">
-                    <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider">Programme Schedule Management</h3>
-                    <p class="text-xs text-slate-400">Add or edit timetable items displayed on the public schedule tab.</p>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
-                        <input type="text" id="schedTimeInput" placeholder="Time (e.g. 09:00 AM)" class="bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
-                        <input type="text" id="schedItemInput" placeholder="Item Name" class="bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
-                        <input type="text" id="schedCatInput" placeholder="Category" class="bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
-                        <input type="text" id="schedStageInput" placeholder="Stage Name / Hall" class="bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
-                    </div>
-                    <button onclick="addScheduleItem()" class="bg-amber-500 text-slate-950 px-4 py-1.5 rounded text-xs font-bold hover:bg-amber-400">Add Schedule Entry</button>
-                </div>
-
-                <!-- Section 4: Live 9-Stage Configuration -->
-                <div class="bg-slate-800/60 p-5 rounded-xl border border-slate-700/80 space-y-3">
-                    <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider">Stage Names & Live Allocation (All 9 Stages)</h3>
-                    <p class="text-xs text-slate-400 mb-2">Edit stage titles, ongoing events, and upcoming items.</p>
-                    <div id="adminStagesControlList" class="space-y-3 max-h-[400px] overflow-y-auto pr-1">
-                        <!-- Populated dynamically -->
+                    <div>
+                        <label class="text-xs text-slate-300 block mb-1 font-semibold">Result Status</label>
+                        <select id="adminResultStatusSelect" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white font-bold">
+                            <option value="Final Result">Final Result (Default)</option>
+                            <option value="Provisional Result">Provisional Result</option>
+                            <option value="Under Appeal">Under Appeal</option>
+                        </select>
                     </div>
                 </div>
 
+                <!-- 1st, 2nd, 3rd Winners Entry -->
+                <div class="space-y-3 pt-2">
+                    <!-- 1st Place -->
+                    <div class="p-3 bg-slate-900/80 rounded-lg border border-amber-500/40 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <span class="text-amber-400 font-bold text-xs sm:col-span-3">🥇 1st Place Winner (5 Points)</span>
+                        <input type="text" id="p1_name" placeholder="Participant / Group Name" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        <input type="text" id="p1_code" placeholder="Chest / Reg No." class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        <select id="p1_mission" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <!-- 2nd Place -->
+                    <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-700 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <span class="text-slate-300 font-bold text-xs sm:col-span-3">🥈 2nd Place Winner (3 Points)</span>
+                        <input type="text" id="p2_name" placeholder="Participant / Group Name" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        <input type="text" id="p2_code" placeholder="Chest / Reg No." class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        <select id="p2_mission" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <!-- 3rd Place -->
+                    <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-700 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <span class="text-amber-700 font-bold text-xs sm:col-span-3">🥉 3rd Place Winner (1 Point)</span>
+                        <input type="text" id="p3_name" placeholder="Participant / Group Name" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        <input type="text" id="p3_code" placeholder="Chest / Reg No." class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        <select id="p3_mission" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+
+                <button id="publishResultBtn" onclick="publishResult()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-2.5 rounded-lg text-xs uppercase tracking-wider transition">
+                    Publish Result & Update Standings
+                </button>
             </div>
+
+            <!-- Section 3: Add & Edit Programme Schedule -->
+            <div class="bg-slate-800/60 p-5 rounded-xl border border-slate-700/80 space-y-4">
+                <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider">Programme Schedule Management</h3>
+                <p class="text-xs text-slate-400">Add or edit timetable items displayed on the public schedule tab.</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
+                    <input type="text" id="schedTimeInput" placeholder="Time (e.g. 09:00 AM)" class="bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+                    <input type="text" id="schedItemInput" placeholder="Item Name" class="bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+                    <input type="text" id="schedCatInput" placeholder="Category" class="bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+                    <input type="text" id="schedStageInput" placeholder="Stage Name / Hall" class="bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+                </div>
+                <button onclick="addScheduleItem()" class="bg-amber-500 text-slate-950 px-4 py-1.5 rounded text-xs font-bold hover:bg-amber-400">Add Schedule Entry</button>
+            </div>
+
+            <!-- Section 4: Live 9-Stage Configuration -->
+            <div class="bg-slate-800/60 p-5 rounded-xl border border-slate-700/80 space-y-3">
+                <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider">Stage Names & Live Allocation (All 9 Stages)</h3>
+                <p class="text-xs text-slate-400 mb-2">Edit stage titles, ongoing events, and upcoming items.</p>
+                <div id="adminStagesControlList" class="space-y-3 max-h-[400px] overflow-y-auto pr-1">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
         </div>
     </div>
+</div>
 
-    <script>
-        // Official 12 Competing Missions (Short Place Names)
-        const REGIONAL_MISSIONS = [
-            "Exeter", "Taunton", "Weston Super Mare", "Bristol",
-            "Bath", "Newport", "Cardiff", "Barry",
-            "Hereford", "Gloucester", "Swansea", "Swindon"
-        ];
+<script>
+    // Official 12 Competing Missions
+    const REGIONAL_MISSIONS = [
+        "Exeter", "Taunton", "Weston Super Mare", "Bristol",
+        "Bath", "Newport", "Cardiff", "Barry",
+        "Hereford", "Gloucester", "Swansea", "Swindon"
+    ];
 
-        // Default GitHub raw image URLs
-        const DEFAULT_LEFT_LOGO = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0159.JPG";
-        const DEFAULT_RIGHT_LOGO = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0160.JPG";
+    // Default GitHub raw image URLs
+    const DEFAULT_LEFT_LOGO = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0159.JPG";
+    const DEFAULT_RIGHT_LOGO = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0160.JPG";
 
-        // Local & Remote relative sync URLs
-        const PRIMARY_DATA_URL = "./data.json";
-        const FALLBACK_DATA_URL = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/data.json";
+    // Remote raw URL for data.json with strict cache-busting
+    const PRIMARY_DATA_URL = "./data.json";
+    const FALLBACK_DATA_URL = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/data.json";
 
-        // Program Matrix dataset
-        const PROGRAM_MATRIX = [
-            { name: "Bible Reading - English", duration: "2 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Bible Reading - Malayalam", duration: "2 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Elocution - English", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24"] },
-            { name: "Elocution - Malayalam", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
-            { name: "Colour Painting", duration: "30 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Pencil Sketching", duration: "30 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Essay Writing - English", duration: "30 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24"] },
-            { name: "Essay Writing – Malayalam or English", duration: "30 mins", cat: ["Adults (25+)"] },
-            { name: "Bible Mono act", duration: "5 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Bible Citation", duration: "15 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
-            { name: "Bible Costume", duration: "30 secs", cat: ["Up to 7", "8 to 10", "11 to 13"] },
-            { name: "Syriac Song Solo", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
-            { name: "Song – Solo", duration: "3-5 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
-            { name: "Song – Group (Max 8)", duration: "3-5 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
-            { name: "Instrumental – Keyboard", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Instrumental – Guitar", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Instrumental – Violin", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Dance – Solo", duration: "5 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Dance – Group (Max 8)", duration: "5 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Margam Kali (6-8+2, Max 10)", duration: "9 mins", cat: ["Under 30 Years", "30 Years & Above"] },
-            { name: "Bible Tableau (Max 8 + 4 Support)", duration: "1 min", cat: ["All Ages"] },
-            { name: "Bible Skit (Max 8 + 4 Support)", duration: "10 mins", cat: ["All Ages"] }
-        ];
+    // Program Matrix dataset
+    const PROGRAM_MATRIX = [
+        { name: "Bible Reading - English", duration: "2 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
+        { name: "Bible Reading - Malayalam", duration: "2 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
+        { name: "Elocution - English", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24"] },
+        { name: "Elocution - Malayalam", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
+        { name: "Colour Painting", duration: "30 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
+        { name: "Pencil Sketching", duration: "30 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
+        { name: "Essay Writing - English", duration: "30 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24"] },
+        { name: "Essay Writing – Malayalam or English", duration: "30 mins", cat: ["Adults (25+)"] },
+        { name: "Bible Mono act", duration: "5 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
+        { name: "Bible Citation", duration: "15 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
+        { name: "Bible Costume", duration: "30 secs", cat: ["Up to 7", "8 to 10", "11 to 13"] },
+        { name: "Syriac Song Solo", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
+        { name: "Song – Solo", duration: "3-5 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
+        { name: "Song – Group (Max 8)", duration: "3-5 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
+        { name: "Instrumental – Keyboard", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
+        { name: "Instrumental – Guitar", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
+        { name: "Instrumental – Violin", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
+        { name: "Dance – Solo", duration: "5 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
+        { name: "Dance – Group (Max 8)", duration: "5 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
+        { name: "Margam Kali (6-8+2, Max 10)", duration: "9 mins", cat: ["Under 30 Years", "30 Years & Above"] },
+        { name: "Bible Tableau (Max 8 + 4 Support)", duration: "1 min", cat: ["All Ages"] },
+        { name: "Bible Skit (Max 8 + 4 Support)", duration: "10 mins", cat: ["All Ages"] }
+    ];
 
-        let itemResults = [];
-        let selectedMissionFilter = null;
-        let adminAuthenticated = false;
-        let editingResultIndex = null;
-        let qrcodeObj = null;
-        let notificationsEnabled = false;
-        let initialDataLoaded = false;
+    let itemResults = [];
+    let selectedMissionFilter = null;
+    let adminAuthenticated = false;
+    let editingResultIndex = null;
+    let qrcodeObj = null;
+    let notificationsEnabled = false;
+    let initialDataLoaded = false;
 
-        let stageData = Array.from({ length: 9 }, (_, i) => ({
-            stage: `Stage ${i + 1}`,
-            ongoing: "To be allocated",
-            time: "Awaiting Schedule",
-            next: "To be updated"
-        }));
+    let stageData = Array.from({ length: 9 }, (_, i) => ({
+        stage: `Stage ${i + 1}`,
+        ongoing: "To be allocated",
+        time: "Awaiting Schedule",
+        next: "To be updated"
+    }));
 
-        let scheduleData = [
-            { time: "08:00 AM", item: "Registration & Inauguration", category: "All", stage: "Main Hall" },
-            { time: "09:00 AM", item: "Bible Reading - English", category: "Up to 7, 8-10", stage: "Stage 1" }
-        ];
+    let scheduleData = [
+        { time: "08:00 AM", item: "Registration & Inauguration", category: "All", stage: "Main Hall" },
+        { time: "09:00 AM", item: "Bible Reading - English", category: "Up to 7, 8-10", stage: "Stage 1" }
+    ];
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadSavedData();
-            initLucide();
-            checkNotificationStatus();
-            renderProgramMatrixTable();
-            renderMissionFilters();
-            renderDropdowns();
-            renderResults();
-            renderStages();
-            renderSchedule();
+    window.addEventListener('DOMContentLoaded', () => {
+        loadSavedData();
+        initLucide();
+        checkNotificationStatus();
+        renderProgramMatrixTable();
+        renderMissionFilters();
+        renderDropdowns();
+        renderResults();
+        renderStages();
+        renderSchedule();
 
-            // Auto-fetch remote data every 15 seconds to sync all devices automatically
-            fetchLatestData();
-            setInterval(() => fetchLatestData(), 15000);
+        // Auto-fetch remote data every 12 seconds to sync all visitors automatically
+        fetchLatestData();
+        setInterval(() => fetchLatestData(), 12000);
 
-            // Ctrl + Shift + A for Admin Portal
-            window.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
-                    openAdminAuth();
-                }
-            });
+        // Ctrl + Shift + A for Admin Portal
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+                openAdminAuth();
+            }
         });
+    });
 
-        function checkNotificationStatus() {
-            if ("Notification" in window) {
-                if (Notification.permission === "granted") {
+    function checkNotificationStatus() {
+        if ("Notification" in window) {
+            if (Notification.permission === "granted") {
+                notificationsEnabled = true;
+                updateNotifButtonUI(true);
+            } else {
+                updateNotifButtonUI(false);
+            }
+        } else {
+            const btn = document.getElementById('notifToggleBtn');
+            if (btn) btn.classList.add('hidden');
+        }
+    }
+
+    function toggleNotifications() {
+        if (!("Notification" in window)) {
+            alert("Browser notifications are not supported on this device.");
+            return;
+        }
+
+        if (Notification.permission === "granted") {
+            alert("Notifications are already enabled for live result updates!");
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
                     notificationsEnabled = true;
                     updateNotifButtonUI(true);
+                    showSystemNotification("Notifications Enabled!", "You will now receive automatic alerts when new results are declared.");
                 } else {
-                    updateNotifButtonUI(false);
+                    alert("Notification permission denied. You can re-enable it anytime from your browser settings.");
                 }
-            } else {
-                const btn = document.getElementById('notifToggleBtn');
-                if (btn) btn.classList.add('hidden');
-            }
+            });
+        } else {
+            alert("Notifications are currently blocked by your browser settings. Please unblock notifications for this site to receive updates.");
         }
+    }
 
-        function toggleNotifications() {
-            if (!("Notification" in window)) {
-                alert("Browser notifications are not supported on this device.");
-                return;
-            }
+    function updateNotifButtonUI(enabled) {
+        const btnText = document.getElementById('notifText');
+        const btn = document.getElementById('notifToggleBtn');
 
-            if (Notification.permission === "granted") {
-                alert("Notifications are already enabled for live result updates!");
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        notificationsEnabled = true;
-                        updateNotifButtonUI(true);
-                        showSystemNotification("Notifications Enabled!", "You will now receive automatic alerts when new results are declared.");
-                    } else {
-                        alert("Notification permission denied. You can re-enable it anytime from your browser settings.");
-                    }
-                });
-            } else {
-                alert("Notifications are currently blocked by your browser settings. Please unblock notifications for this site to receive updates.");
-            }
+        if (enabled) {
+            if (btnText) btnText.innerText = "Alerts On";
+            if (btn) btn.className = "bg-amber-500 text-slate-950 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow";
+        } else {
+            if (btnText) btnText.innerText = "Alerts";
+            if (btn) btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition";
         }
+    }
 
-        function updateNotifButtonUI(enabled) {
-            const btnText = document.getElementById('notifText');
-            const btn = document.getElementById('notifToggleBtn');
-
-            if (enabled) {
-                if (btnText) btnText.innerText = "Alerts On";
-                if (btn) btn.className = "bg-amber-500 text-slate-950 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow";
-            } else {
-                if (btnText) btnText.innerText = "Alerts";
-                if (btn) btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition";
-            }
-        }
-
-        function showSystemNotification(title, body) {
-            if ("Notification" in window && Notification.permission === "granted") {
-                try {
-                    new Notification(title, {
-                        body: body,
-                        icon: 'https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0160.JPG'
-                    });
-                } catch (e) {
-                    console.log("Notification trigger error:", e);
-                }
-            }
-            triggerToast(title, body);
-        }
-
-        function triggerToast(title, message) {
-            const toast = document.getElementById('liveToast');
-            document.getElementById('toastTitle').innerText = title;
-            document.getElementById('toastMessage').innerText = message;
-            
-            toast.classList.remove('hidden');
-            initLucide();
-
-            setTimeout(() => {
-                dismissToast();
-            }, 8000);
-        }
-
-        function dismissToast() {
-            const toast = document.getElementById('liveToast');
-            if (toast) toast.classList.add('hidden');
-        }
-
-        async function fetchLatestData(manualTrigger = false) {
-            const spinner = document.getElementById('refreshSpinner');
-            if (spinner) spinner.classList.add('animate-spin');
-
+    function showSystemNotification(title, body) {
+        if ("Notification" in window && Notification.permission === "granted") {
             try {
-                let res = await fetch(`${PRIMARY_DATA_URL}?t=${Date.now()}`);
-                if (!res.ok) {
-                    res = await fetch(`${FALLBACK_DATA_URL}?t=${Date.now()}`);
-                }
-
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.results && data.results.length > 0) {
-                        if (initialDataLoaded && data.results.length > itemResults.length) {
-                            const newestResult = data.results[0];
-                            showSystemNotification(
-                                `🎉 New Result: ${newestResult.itemName} (${newestResult.category})`,
-                                `🥇 1st: ${newestResult.p1.name || 'Winner'} (${newestResult.p1.mission})`
-                            );
-                        }
-
-                        itemResults = data.results;
-                        if (data.stages) stageData = data.stages;
-                        if (data.schedule) scheduleData = data.schedule;
-
-                        saveData(false);
-                        renderResults();
-                        renderStages();
-                        renderSchedule();
-                    }
-                }
-            } catch (err) {
-                console.log("Remote sync offline or using cached local data.", err);
-            } finally {
-                if (spinner) {
-                    setTimeout(() => spinner.classList.remove('animate-spin'), 600);
-                }
-                initialDataLoaded = true;
-                if (manualTrigger) alert("Data refreshed.");
+                new Notification(title, {
+                    body: body,
+                    icon: 'https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0160.JPG'
+                });
+            } catch (e) {
+                console.log("Notification trigger error:", e);
             }
         }
+        triggerToast(title, body);
+    }
 
-        function loadSavedData() {
-            const savedResults = localStorage.getItem('csmegb_results_2026_v3');
-            if (savedResults) {
-                try {
-                    const parsed = JSON.parse(savedResults);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        itemResults = parsed;
+    function triggerToast(title, message) {
+        const toast = document.getElementById('liveToast');
+        document.getElementById('toastTitle').innerText = title;
+        document.getElementById('toastMessage').innerText = message;
+        
+        toast.classList.remove('hidden');
+        initLucide();
+
+        setTimeout(() => {
+            dismissToast();
+        }, 8000);
+    }
+
+    function dismissToast() {
+        const toast = document.getElementById('liveToast');
+        if (toast) toast.classList.add('hidden');
+    }
+
+    async function fetchLatestData(manualTrigger = false) {
+        const spinner = document.getElementById('refreshSpinner');
+        if (spinner) spinner.classList.add('animate-spin');
+
+        // Force bypass GitHub CDN cache with unique random timestamp and cache: 'reload'
+        const cacheBuster = `?_cb=${Date.now()}_${Math.random()}`;
+
+        try {
+            let res = await fetch(PRIMARY_DATA_URL + cacheBuster, { cache: 'reload' });
+            if (!res.ok) {
+                res = await fetch(FALLBACK_DATA_URL + cacheBuster, { cache: 'reload' });
+            }
+
+            if (res.ok) {
+                const data = await res.json();
+                if (data && data.results && Array.isArray(data.results)) {
+                    if (initialDataLoaded && data.results.length > itemResults.length) {
+                        const newestResult = data.results[0];
+                        showSystemNotification(
+                            `🎉 New Result: ${newestResult.itemName} (${newestResult.category})`,
+                            `🥇 1st: ${newestResult.p1.name || 'Winner'} (${newestResult.p1.mission})`
+                        );
                     }
-                } catch (e) {
-                    console.error("Error loading local results", e);
+
+                    itemResults = data.results;
+                    if (data.stages) stageData = data.stages;
+                    if (data.schedule) scheduleData = data.schedule;
+
+                    saveData(false);
+                    renderResults();
+                    renderStages();
+                    renderSchedule();
                 }
             }
-            itemResults.forEach(r => { if (!r.status) r.status = "Final Result"; });
-
-            const savedStages = localStorage.getItem('csmegb_stages_2026_v3');
-            if (savedStages) {
-                try { stageData = JSON.parse(savedStages); } catch(e){}
+        } catch (err) {
+            console.log("Remote sync fetch note:", err);
+        } finally {
+            if (spinner) {
+                setTimeout(() => spinner.classList.remove('animate-spin'), 600);
             }
+            initialDataLoaded = true;
+            if (manualTrigger) alert("Synced latest results successfully!");
+        }
+    }
 
-            const savedSchedule = localStorage.getItem('csmegb_schedule_2026_v3');
-            if (savedSchedule) {
-                try { scheduleData = JSON.parse(savedSchedule); } catch(e){}
-            }
-
-            const savedLogos = localStorage.getItem('csmegb_logos_2026_v3');
-            if (savedLogos) {
-                try {
-                    const logos = JSON.parse(savedLogos);
-                    applyLogos(logos.left || DEFAULT_LEFT_LOGO, logos.right || DEFAULT_RIGHT_LOGO);
-                } catch(e) {
-                    applyLogos(DEFAULT_LEFT_LOGO, DEFAULT_RIGHT_LOGO);
+    function loadSavedData() {
+        const savedResults = localStorage.getItem('csmegb_results_2026_v3');
+        if (savedResults) {
+            try {
+                const parsed = JSON.parse(savedResults);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    itemResults = parsed;
                 }
-            } else {
+            } catch (e) {
+                console.error("Error loading local results", e);
+            }
+        }
+        itemResults.forEach(r => { if (!r.status) r.status = "Final Result"; });
+
+        const savedStages = localStorage.getItem('csmegb_stages_2026_v3');
+        if (savedStages) {
+            try { stageData = JSON.parse(savedStages); } catch(e){}
+        }
+
+        const savedSchedule = localStorage.getItem('csmegb_schedule_2026_v3');
+        if (savedSchedule) {
+            try { scheduleData = JSON.parse(savedSchedule); } catch(e){}
+        }
+
+        const savedLogos = localStorage.getItem('csmegb_logos_2026_v3');
+        if (savedLogos) {
+            try {
+                const logos = JSON.parse(savedLogos);
+                applyLogos(logos.left || DEFAULT_LEFT_LOGO, logos.right || DEFAULT_RIGHT_LOGO);
+            } catch(e) {
                 applyLogos(DEFAULT_LEFT_LOGO, DEFAULT_RIGHT_LOGO);
             }
+        } else {
+            applyLogos(DEFAULT_LEFT_LOGO, DEFAULT_RIGHT_LOGO);
         }
+    }
 
-        function saveData(syncLocal = true) {
-            if (syncLocal) {
-                localStorage.setItem('csmegb_results_2026_v3', JSON.stringify(itemResults));
-                localStorage.setItem('csmegb_stages_2026_v3', JSON.stringify(stageData));
-                localStorage.setItem('csmegb_schedule_2026_v3', JSON.stringify(scheduleData));
+    function saveData(syncLocal = true) {
+        if (syncLocal) {
+            localStorage.setItem('csmegb_results_2026_v3', JSON.stringify(itemResults));
+            localStorage.setItem('csmegb_stages_2026_v3', JSON.stringify(stageData));
+            localStorage.setItem('csmegb_schedule_2026_v3', JSON.stringify(scheduleData));
+        }
+    }
+
+    function applyLogos(leftUrl, rightUrl) {
+        const lUrl = leftUrl || DEFAULT_LEFT_LOGO;
+        const rUrl = rightUrl || DEFAULT_RIGHT_LOGO;
+        
+        if (lUrl) {
+            document.getElementById('headerLeftLogo').innerHTML = `<img src="${lUrl}" class="w-full h-full object-cover" alt="Left Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'book-open\\' class=\\'text-amber-400 w-5 h-5 sm:w-8 sm:h-8\\'></i>'; initLucide();">`;
+        }
+        if (rUrl) {
+            document.getElementById('headerRightLogo').innerHTML = `<img src="${rUrl}" class="w-full h-full object-cover" alt="Right Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'award\\' class=\\'text-amber-400 w-5 h-5 sm:w-8 sm:h-8\\'></i>'; initLucide();">`;
+        }
+    }
+
+    function switchTab(tabId) {
+        ['results', 'stages', 'schedule', 'rules'].forEach(t => {
+            const view = document.getElementById(`view-${t}`);
+            const btn = document.getElementById(`tab-${t}`);
+            if (t === tabId) {
+                view.classList.remove('hidden');
+                btn.className = "px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-brand-700 text-white shadow-sm flex items-center gap-2";
+            } else {
+                view.classList.add('hidden');
+                btn.className = "px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-2";
             }
-        }
+        });
+    }
 
-        function applyLogos(leftUrl, rightUrl) {
-            const lUrl = leftUrl || DEFAULT_LEFT_LOGO;
-            const rUrl = rightUrl || DEFAULT_RIGHT_LOGO;
+    function renderProgramMatrixTable() {
+        const cols = ["Up to 7", "8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)", "All Ages", "Under 30 Years", "30 Years & Above"];
+        const tbody = document.getElementById('matrixTableBody');
+        
+        tbody.innerHTML = PROGRAM_MATRIX.map(p => `
+            <tr class="hover:bg-slate-50 transition">
+                <td class="p-2.5 font-bold text-slate-900">${p.name}</td>
+                <td class="p-2.5 text-slate-500 whitespace-nowrap">${p.duration}</td>
+                ${cols.map(c => `
+                    <td class="p-2.5 text-center">
+                        ${p.cat.includes(c) ? '<span class="inline-block w-4 h-4 bg-emerald-500 text-white rounded-full text-[10px] leading-4 text-center font-black">✓</span>' : '-'}
+                    </td>
+                `).join('')}
+            </tr>
+        `).join('');
+    }
+
+    function calculateAndRenderStandings() {
+        const tally = {};
+        REGIONAL_MISSIONS.forEach(m => tally[m] = { first: 0, second: 0, third: 0, points: 0 });
+
+        itemResults.forEach(res => {
+            if (res.p1 && tally[res.p1.mission]) { tally[res.p1.mission].first += 1; tally[res.p1.mission].points += 5; }
+            if (res.p2 && tally[res.p2.mission]) { tally[res.p2.mission].second += 1; tally[res.p2.mission].points += 3; }
+            if (res.p3 && tally[res.p3.mission]) { tally[res.p3.mission].third += 1; tally[res.p3.mission].points += 1; }
+        });
+
+        const sortedMissions = Object.keys(tally).sort((a, b) => {
+            if (tally[b].points !== tally[a].points) {
+                return tally[b].points - tally[a].points;
+            }
+            return a.localeCompare(b);
+        });
+
+        const top3Container = document.getElementById('top3PodiumContainer');
+        const top3 = sortedMissions.slice(0, 3);
+
+        top3Container.innerHTML = [0, 1, 2].map(idx => {
+            const missionName = top3[idx];
+            const pts = tally[missionName]?.points || 0;
+            const posLabel = idx === 0 ? "1st Champion" : idx === 1 ? "2nd Runner Up" : "3rd Runner Up";
+            const badgeColor = idx === 0 ? "bg-amber-500 text-slate-950" : idx === 1 ? "bg-slate-300 text-slate-900" : "bg-amber-700 text-white";
             
-            if (lUrl) {
-                document.getElementById('headerLeftLogo').innerHTML = `<img src="${lUrl}" class="w-full h-full object-cover" alt="Left Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'book-open\\' class=\\'text-amber-400 w-5 h-5 sm:w-8 sm:h-8\\'></i>'; initLucide();">`;
-            }
-            if (rUrl) {
-                document.getElementById('headerRightLogo').innerHTML = `<img src="${rUrl}" class="w-full h-full object-cover" alt="Right Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'award\\' class=\\'text-amber-400 w-5 h-5 sm:w-8 sm:h-8\\'></i>'; initLucide();">`;
-            }
-        }
-
-        function switchTab(tabId) {
-            ['results', 'stages', 'schedule', 'rules'].forEach(t => {
-                const view = document.getElementById(`view-${t}`);
-                const btn = document.getElementById(`tab-${t}`);
-                if (t === tabId) {
-                    view.classList.remove('hidden');
-                    btn.className = "px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-brand-700 text-white shadow-sm flex items-center gap-2";
-                } else {
-                    view.classList.add('hidden');
-                    btn.className = "px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-2";
-                }
-            });
-        }
-
-        function renderProgramMatrixTable() {
-            const cols = ["Up to 7", "8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)", "All Ages", "Under 30 Years", "30 Years & Above"];
-            const tbody = document.getElementById('matrixTableBody');
-            
-            tbody.innerHTML = PROGRAM_MATRIX.map(p => `
-                <tr class="hover:bg-slate-50 transition">
-                    <td class="p-2.5 font-bold text-slate-900">${p.name}</td>
-                    <td class="p-2.5 text-slate-500 whitespace-nowrap">${p.duration}</td>
-                    ${cols.map(c => `
-                        <td class="p-2.5 text-center">
-                            ${p.cat.includes(c) ? '<span class="inline-block w-4 h-4 bg-emerald-500 text-white rounded-full text-[10px] leading-4 text-center font-black">✓</span>' : '-'}
-                        </td>
-                    `).join('')}
-                </tr>
-            `).join('');
-        }
-
-        function calculateAndRenderStandings() {
-            const tally = {};
-            REGIONAL_MISSIONS.forEach(m => tally[m] = { first: 0, second: 0, third: 0, points: 0 });
-
-            itemResults.forEach(res => {
-                if (res.p1 && tally[res.p1.mission]) { tally[res.p1.mission].first += 1; tally[res.p1.mission].points += 5; }
-                if (res.p2 && tally[res.p2.mission]) { tally[res.p2.mission].second += 1; tally[res.p2.mission].points += 3; }
-                if (res.p3 && tally[res.p3.mission]) { tally[res.p3.mission].third += 1; tally[res.p3.mission].points += 1; }
-            });
-
-            const sortedMissions = Object.keys(tally).sort((a, b) => {
-                if (tally[b].points !== tally[a].points) {
-                    return tally[b].points - tally[a].points;
-                }
-                return a.localeCompare(b);
-            });
-
-            const top3Container = document.getElementById('top3PodiumContainer');
-            const top3 = sortedMissions.slice(0, 3);
-
-            top3Container.innerHTML = [0, 1, 2].map(idx => {
-                const missionName = top3[idx];
-                const pts = tally[missionName]?.points || 0;
-                const posLabel = idx === 0 ? "1st Champion" : idx === 1 ? "2nd Runner Up" : "3rd Runner Up";
-                const badgeColor = idx === 0 ? "bg-amber-500 text-slate-950" : idx === 1 ? "bg-slate-300 text-slate-900" : "bg-amber-700 text-white";
-                
-                if (itemResults.length === 0 || pts === 0) {
-                    return `
-                        <div class="bg-white p-5 rounded-2xl border border-dashed border-slate-300 shadow-sm relative overflow-hidden flex flex-col justify-between opacity-80">
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${badgeColor}">${posLabel}</span>
-                                    <span class="text-xs font-bold text-slate-400">0 Pts</span>
-                                </div>
-                                <h3 class="text-base font-extrabold text-slate-400 mt-1">${missionName || 'Mission'}</h3>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400 italic">
-                                Standings will update as event results are published.
-                            </div>
-                        </div>
-                    `;
-                }
-
+            if (itemResults.length === 0 || pts === 0) {
                 return `
-                    <div onclick="showMissionPrizes('${missionName}')" class="bg-white p-5 rounded-2xl border ${idx === 0 ? 'border-amber-400 ring-2 ring-amber-400/30' : 'border-slate-200'} shadow-sm relative overflow-hidden flex flex-col justify-between cursor-pointer hover:border-amber-500 hover:shadow-md transition">
+                    <div class="bg-white p-5 rounded-2xl border border-dashed border-slate-300 shadow-sm relative overflow-hidden flex flex-col justify-between opacity-80">
                         <div>
                             <div class="flex items-center justify-between mb-2">
                                 <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${badgeColor}">${posLabel}</span>
-                                <span class="text-xs font-black text-brand-700">${pts} Pts</span>
+                                <span class="text-xs font-bold text-slate-400">0 Pts</span>
                             </div>
-                            <h3 class="text-base font-black text-slate-900 mt-1 flex items-center justify-between">
-                                ${missionName}
-                                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
-                            </h3>
+                            <h3 class="text-base font-extrabold text-slate-400 mt-1">${missionName || 'Mission'}</h3>
                         </div>
-                        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold">
-                            <span>🥇 ${tally[missionName]?.first || 0} Firsts</span>
-                            <span>🥈 ${tally[missionName]?.second || 0} Seconds</span>
-                            <span>🥉 ${tally[missionName]?.third || 0} Thirds</span>
+                        <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400 italic">
+                            Results Coming Soon
                         </div>
                     </div>
                 `;
-            }).join('');
-
-            const tallyBody = document.getElementById('missionTallyBody');
-            tallyBody.innerHTML = sortedMissions.map((m, idx) => {
-                const pts = tally[m].points;
-                return `
-                    <tr onclick="showMissionPrizes('${m}')" class="hover:bg-amber-50/50 transition cursor-pointer ${idx < 3 && pts > 0 ? 'bg-amber-50/20' : ''}">
-                        <td class="p-3.5 font-black text-slate-900">
-                            ${idx === 0 ? '🥇 1' : idx === 1 ? '🥈 2' : idx === 2 ? '🥉 3' : idx + 1}
-                        </td>
-                        <td class="p-3.5 font-black text-brand-700 hover:underline flex items-center gap-1.5">
-                            ${m}
-                            ${pts > 0 ? '<i data-lucide="award" class="w-3.5 h-3.5 text-amber-500"></i>' : ''}
-                        </td>
-                        <td class="p-3.5 text-center text-amber-600 font-bold">${tally[m].first}</td>
-                        <td class="p-3.5 text-center text-slate-600 font-bold">${tally[m].second}</td>
-                        <td class="p-3.5 text-center text-amber-800 font-bold">${tally[m].third}</td>
-                        <td class="p-3.5 text-right font-black ${pts > 0 ? 'text-brand-700' : 'text-slate-400'} text-base">${pts}</td>
-                    </tr>
-                `;
-            }).join('');
-
-            document.getElementById('totalDeclaredBadge').innerText = `${itemResults.length} Items Declared`;
-            initLucide();
-        }
-
-        function renderStages() {
-            const container = document.getElementById('stagesContainer');
-            const adminContainer = document.getElementById('adminStagesControlList');
-
-            if (container) {
-                container.innerHTML = stageData.map((stg, i) => `
-                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3 relative overflow-hidden">
-                        <div class="flex justify-between items-center border-b border-slate-100 pb-2">
-                            <h3 class="font-black text-slate-900 text-sm flex items-center gap-2">
-                                <i data-lucide="map-pin" class="w-4 h-4 text-amber-500"></i>
-                                ${stg.stage || `Stage ${i + 1}`}
-                            </h3>
-                            <span class="text-[10px] font-extrabold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">${stg.time || 'Awaiting'}</span>
-                        </div>
-                        <div>
-                            <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider block mb-0.5">Ongoing Event</span>
-                            <p class="text-xs font-black text-slate-800">${stg.ongoing || 'To be allocated'}</p>
-                        </div>
-                        <div class="pt-2 border-t border-slate-50">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Upcoming Next</span>
-                            <p class="text-xs font-bold text-slate-600">${stg.next || 'To be updated'}</p>
-                        </div>
-                    </div>
-                `).join('');
             }
 
-            if (adminContainer) {
-                adminContainer.innerHTML = stageData.map((stg, i) => `
-                    <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-700 space-y-2">
-                        <span class="text-amber-400 font-bold text-xs">Stage #${i + 1} Configuration</span>
-                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
-                            <input type="text" value="${stg.stage || ''}" onchange="updateStageField(${i}, 'stage', this.value)" placeholder="Stage Name" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <input type="text" value="${stg.ongoing || ''}" onchange="updateStageField(${i}, 'ongoing', this.value)" placeholder="Ongoing Event" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <input type="text" value="${stg.time || ''}" onchange="updateStageField(${i}, 'time', this.value)" placeholder="Time Range" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <input type="text" value="${stg.next || ''}" onchange="updateStageField(${i}, 'next', this.value)" placeholder="Upcoming Next" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+            return `
+                <div onclick="showMissionPrizes('${missionName}')" class="bg-white p-5 rounded-2xl border ${idx === 0 ? 'border-amber-400 ring-2 ring-amber-400/30' : 'border-slate-200'} shadow-sm relative overflow-hidden flex flex-col justify-between cursor-pointer hover:border-amber-500 hover:shadow-md transition">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${badgeColor}">${posLabel}</span>
+                            <span class="text-xs font-black text-brand-700">${pts} Pts</span>
                         </div>
+                        <h3 class="text-base font-black text-slate-900 mt-1 flex items-center justify-between">
+                            ${missionName}
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                        </h3>
                     </div>
-                `).join('');
-            }
-
-            initLucide();
-        }
-
-        function updateStageField(index, field, value) {
-            stageData[index][field] = value;
-            saveData();
-            renderStages();
-        }
-
-        function showMissionPrizes(missionName) {
-            if (!missionName || missionName === "Awaiting Result") return;
-
-            const modal = document.getElementById('missionPrizeModal');
-            document.getElementById('modalMissionTitle').innerText = `${missionName} Mission - Prize Breakdown`;
-
-            const wonPrizes = [];
-            let totalPts = 0;
-            let firsts = 0, seconds = 0, thirds = 0;
-
-            itemResults.forEach(res => {
-                if (res.p1 && res.p1.mission === missionName) {
-                    wonPrizes.push({ rank: "🥇 1st Place", points: 5, item: res.itemName, cat: res.category, winner: res.p1.name, code: res.p1.code, status: res.status });
-                    totalPts += 5;
-                    firsts++;
-                }
-                if (res.p2 && res.p2.mission === missionName) {
-                    wonPrizes.push({ rank: "🥈 2nd Place", points: 3, item: res.itemName, cat: res.category, winner: res.p2.name, code: res.p2.code, status: res.status });
-                    totalPts += 3;
-                    seconds++;
-                }
-                if (res.p3 && res.p3.mission === missionName) {
-                    wonPrizes.push({ rank: "🥉 3rd Place", points: 1, item: res.itemName, cat: res.category, winner: res.p3.name, code: res.p3.code, status: res.status });
-                    totalPts += 1;
-                    thirds++;
-                }
-            });
-
-            document.getElementById('modalMissionSummary').innerHTML = `
-                <div><span class="block text-amber-600 text-sm font-black">${firsts}</span> First Places</div>
-                <div><span class="block text-slate-600 text-sm font-black">${seconds}</span> Second Places</div>
-                <div><span class="block text-amber-800 text-sm font-black">${thirds}</span> Third Places</div>
-            `;
-
-            const listContainer = document.getElementById('modalMissionPrizesList');
-            if (wonPrizes.length === 0) {
-                listContainer.innerHTML = `
-                    <div class="text-center py-6 text-slate-400 font-medium text-xs">
-                        No prizes declared for ${missionName} mission yet.
-                    </div>
-                `;
-            } else {
-                listContainer.innerHTML = wonPrizes.map(p => `
-                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-3 text-xs">
-                        <div>
-                            <span class="font-extrabold text-slate-900 block">${p.item} (${p.cat})</span>
-                            <span class="text-slate-500 font-semibold">${p.winner || 'Participant'} ${p.code ? `[#${p.code}]` : ''}</span>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <span class="font-black text-amber-600 block">${p.rank}</span>
-                            <span class="text-[10px] text-slate-400 font-bold">+${p.points} Pts</span>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            modal.classList.remove('hidden');
-            initLucide();
-        }
-
-        function closeMissionPrizeModal() {
-            document.getElementById('missionPrizeModal').classList.add('hidden');
-        }
-
-        function renderMissionFilters() {
-            const container = document.getElementById('missionFilters');
-            let html = `<button onclick="filterByMission(null)" class="px-3 py-1 rounded-full text-xs font-extrabold transition ${selectedMissionFilter === null ? 'bg-amber-500 text-slate-950' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">All Missions</button>`;
-            
-            REGIONAL_MISSIONS.forEach(m => {
-                const isSelected = selectedMissionFilter === m;
-                html += `<button onclick="filterByMission('${m}')" class="px-3 py-1 rounded-full text-xs font-extrabold transition ${isSelected ? 'bg-amber-500 text-slate-950' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">${m}</button>`;
-            });
-            container.innerHTML = html;
-        }
-
-        function filterByMission(mission) {
-            selectedMissionFilter = mission;
-            renderMissionFilters();
-            renderResults();
-        }
-
-        function renderDropdowns() {
-            const itemSel = document.getElementById('adminItemSelect');
-            if (itemSel) {
-                itemSel.innerHTML = PROGRAM_MATRIX.map((i, idx) => `<option value="${idx}">${i.name}</option>`).join('');
-                updateCategoryDropdown();
-            }
-
-            ['p1_mission', 'p2_mission', 'p3_mission'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.innerHTML = REGIONAL_MISSIONS.map(m => `<option value="${m}">${m}</option>`).join('');
-                }
-            });
-        }
-
-        function updateCategoryDropdown() {
-            const itemIdx = document.getElementById('adminItemSelect').value;
-            const catSel = document.getElementById('adminCategorySelect');
-            if (PROGRAM_MATRIX[itemIdx] && catSel) {
-                catSel.innerHTML = PROGRAM_MATRIX[itemIdx].cat.map(c => `<option value="${c}">${c}</option>`).join('');
-            }
-        }
-
-        function renderResults() {
-            calculateAndRenderStandings();
-
-            const container = document.getElementById('publishedResultsContainer');
-            const searchInput = document.getElementById('searchItemInput');
-            const searchVal = searchInput ? (searchInput.value || '').toLowerCase() : '';
-
-            if (!itemResults || itemResults.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-500 space-y-2">
-                        <i data-lucide="clock" class="w-10 h-10 mx-auto text-amber-500 stroke-1"></i>
-                        <h3 class="text-base font-extrabold text-slate-800">Results Coming Soon</h3>
-                        <p class="text-xs font-semibold text-slate-500">Official results will appear here as soon as judging and verification are completed.</p>
-                    </div>
-                `;
-                initLucide();
-                return;
-            }
-
-            let filtered = itemResults.filter(res => {
-                if (!res) return false;
-                const p1Name = res.p1 && res.p1.name ? res.p1.name : '';
-                const p2Name = res.p2 && res.p2.name ? res.p2.name : '';
-                const p3Name = res.p3 && res.p3.name ? res.p3.name : '';
-
-                const matchesSearch = !searchVal || 
-                    res.itemName.toLowerCase().includes(searchVal) ||
-                    p1Name.toLowerCase().includes(searchVal) ||
-                    p2Name.toLowerCase().includes(searchVal) ||
-                    p3Name.toLowerCase().includes(searchVal);
-
-                const matchesMission = !selectedMissionFilter ||
-                    (res.p1 && res.p1.mission === selectedMissionFilter) ||
-                    (res.p2 && res.p2.mission === selectedMissionFilter) ||
-                    (res.p3 && res.p3.mission === selectedMissionFilter);
-
-                return matchesSearch && matchesMission;
-            });
-
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-400 space-y-2">
-                        <i data-lucide="inbox" class="w-10 h-10 mx-auto stroke-1"></i>
-                        <p class="text-sm font-semibold">No announced results match your current search/filter.</p>
-                    </div>
-                `;
-                initLucide();
-                return;
-            }
-
-            container.innerHTML = filtered.map((res, index) => {
-                const status = res.status || "Final Result";
-                let statusBadgeStyle = "bg-emerald-500/20 text-emerald-400 border-emerald-500/40";
-                let statusIcon = "check-circle-2";
-
-                if (status === "Provisional Result") {
-                    statusBadgeStyle = "bg-amber-500/20 text-amber-400 border-amber-500/40";
-                    statusIcon = "clock";
-                } else if (status === "Under Appeal") {
-                    statusBadgeStyle = "bg-rose-500/20 text-rose-400 border-rose-500/40";
-                    statusIcon = "alert-circle";
-                }
-
-                const p1 = res.p1 || { name: 'N/A', mission: '-', code: '' };
-                const p2 = res.p2 || { name: 'N/A', mission: '-', code: '' };
-                const p3 = res.p3 || { name: 'N/A', mission: '-', code: '' };
-
-                return `
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="bg-slate-900 text-white p-3.5 px-5 flex flex-wrap justify-between items-center gap-2">
-                        <div>
-                            <span class="font-extrabold text-sm sm:text-base">${res.itemName}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-1 rounded-md border ${statusBadgeStyle}">
-                                <i data-lucide="${statusIcon}" class="w-3 h-3"></i>
-                                ${status}
-                            </span>
-                            <span class="text-xs text-amber-400 font-semibold bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">${res.category}</span>
-                            ${adminAuthenticated ? `
-                                <div class="flex items-center gap-1.5 ml-2">
-                                    <button onclick="editResult(${index})" class="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-2 py-0.5 rounded">Edit</button>
-                                    <button onclick="deleteResult(${index})" class="text-xs text-red-400 hover:text-red-300 font-bold px-1">Delete</button>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                    <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div class="bg-amber-50/60 p-3.5 rounded-xl border border-amber-200">
-                            <span class="text-[11px] font-black text-amber-800 uppercase block mb-1">🥇 1st Place (5 Pts)</span>
-                            <h4 class="text-sm font-black text-slate-900">${p1.name || 'N/A'}</h4>
-                            <p class="text-xs font-bold text-slate-600 mt-0.5">${p1.mission || '-'}</p>
-                            <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p1.code || '-'}</p>
-                        </div>
-                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                            <span class="text-[11px] font-black text-slate-600 uppercase block mb-1">🥈 2nd Place (3 Pts)</span>
-                            <h4 class="text-sm font-black text-slate-900">${p2.name || 'N/A'}</h4>
-                            <p class="text-xs font-bold text-slate-600 mt-0.5">${p2.mission || '-'}</p>
-                            <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p2.code || '-'}</p>
-                        </div>
-                        <div class="bg-amber-900/5 p-3.5 rounded-xl border border-amber-900/10">
-                            <span class="text-[11px] font-black text-amber-900 uppercase block mb-1">🥉 3rd Place (1 Pt)</span>
-                            <h4 class="text-sm font-black text-slate-900">${p3.name || 'N/A'}</h4>
-                            <p class="text-xs font-bold text-slate-600 mt-0.5">${p3.mission || '-'}</p>
-                            <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p3.code || '-'}</p>
-                        </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold">
+                        <span>1st: ${tally[missionName]?.first || 0}</span>
+                        <span>2nd: ${tally[missionName]?.second || 0}</span>
+                        <span>3rd: ${tally[missionName]?.third || 0}</span>
                     </div>
                 </div>
             `;
-            }).join('');
+        }).join('');
 
-            initLucide();
-        }
-
-        // Share & QR Modal Handlers
-        function openShareModal() {
-            const modal = document.getElementById('shareModal');
-            const qrContainer = document.getElementById('qrcode');
-            qrContainer.innerHTML = '';
-
-            if (window.QRCode) {
-                qrcodeObj = new QRCode(qrContainer, {
-                    text: window.location.href,
-                    width: 160,
-                    height: 160,
-                    colorDark : "#061224",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.H
-                });
-            }
-
-            modal.classList.remove('hidden');
-            initLucide();
-        }
-
-        function closeShareModal() {
-            document.getElementById('shareModal').classList.add('hidden');
-        }
-
-        function copyPageUrl() {
-            const dummy = document.createElement('input');
-            document.body.appendChild(dummy);
-            dummy.value = window.location.href;
-            dummy.select();
-            document.execCommand('copy');
-            document.body.removeChild(dummy);
-            alert("Website link copied to clipboard!");
-        }
-
-        function deleteAllResults() {
-            if (confirm("CRITICAL WARNING: Are you sure you want to delete ALL published results? This will reset all mission points to zero.")) {
-                itemResults = [];
-                saveData();
-                renderResults();
-                alert("All results have been wiped clean.");
-            }
-        }
-
-        function renderSchedule() {
-            const tbody = document.getElementById('scheduleTableBody');
-            tbody.innerHTML = scheduleData.map((s, idx) => `
-                <tr class="hover:bg-slate-50 transition">
-                    <td class="p-3 font-bold text-slate-900 whitespace-nowrap">${s.time}</td>
-                    <td class="p-3 font-bold text-brand-700">${s.item}</td>
-                    <td class="p-3 font-semibold text-slate-600">${s.category}</td>
-                    <td class="p-3 font-extrabold text-amber-600">${s.stage}</td>
-                    ${adminAuthenticated ? `<td class="p-3 text-right"><button onclick="deleteScheduleItem(${idx})" class="text-xs text-red-500 font-bold hover:underline">Remove</button></td>` : ''}
+        const tallyBody = document.getElementById('missionTallyBody');
+        tallyBody.innerHTML = sortedMissions.map((m, idx) => {
+            const pts = tally[m].points;
+            return `
+                <tr onclick="showMissionPrizes('${m}')" class="hover:bg-amber-50/50 transition cursor-pointer ${idx < 3 && pts > 0 ? 'bg-amber-50/20' : ''}">
+                    <td class="p-3.5 font-black text-slate-900">
+                        ${idx === 0 ? '🥇 1' : idx === 1 ? '🥈 2' : idx === 2 ? '🥉 3' : idx + 1}
+                    </td>
+                    <td class="p-3.5 font-black text-brand-700 hover:underline flex items-center gap-1.5">
+                        ${m}
+                        ${pts > 0 ? '<i data-lucide="award" class="w-3.5 h-3.5 text-amber-500"></i>' : ''}
+                    </td>
+                    <td class="p-3.5 text-center text-amber-600 font-bold">${tally[m].first}</td>
+                    <td class="p-3.5 text-center text-slate-600 font-bold">${tally[m].second}</td>
+                    <td class="p-3.5 text-center text-amber-800 font-bold">${tally[m].third}</td>
+                    <td class="p-3.5 text-right font-black ${pts > 0 ? 'text-brand-700' : 'text-slate-400'} text-base">${pts}</td>
                 </tr>
+            `;
+        }).join('');
+
+        document.getElementById('totalDeclaredBadge').innerText = `${itemResults.length} Items Declared`;
+        initLucide();
+    }
+
+    function renderStages() {
+        const container = document.getElementById('stagesContainer');
+        const adminContainer = document.getElementById('adminStagesControlList');
+
+        if (container) {
+            container.innerHTML = stageData.map((stg, i) => `
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3 relative overflow-hidden">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                        <h3 class="font-black text-slate-900 text-sm flex items-center gap-2">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-amber-500"></i>
+                            ${stg.stage || `Stage ${i + 1}`}
+                        </h3>
+                        <span class="text-[10px] font-extrabold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">${stg.time || 'Awaiting'}</span>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider block mb-0.5">Ongoing Event</span>
+                        <p class="text-xs font-black text-slate-800">${stg.ongoing || 'To be allocated'}</p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-50">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Upcoming Next</span>
+                        <p class="text-xs font-bold text-slate-600">${stg.next || 'To be updated'}</p>
+                    </div>
+                </div>
             `).join('');
+        }
 
-            const header = document.getElementById('schedAdminHeader');
-            if (header) {
-                if (adminAuthenticated) header.classList.remove('hidden');
-                else header.classList.add('hidden');
+        if (adminContainer) {
+            adminContainer.innerHTML = stageData.map((stg, i) => `
+                <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-700 space-y-2">
+                    <span class="text-amber-400 font-bold text-xs">Stage #${i + 1} Configuration</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                        <input type="text" value="${stg.stage || ''}" onchange="updateStageField(${i}, 'stage', this.value)" placeholder="Stage Name" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        <input type="text" value="${stg.ongoing || ''}" onchange="updateStageField(${i}, 'ongoing', this.value)" placeholder="Ongoing Event" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        <input type="text" value="${stg.time || ''}" onchange="updateStageField(${i}, 'time', this.value)" placeholder="Time Range" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        <input type="text" value="${stg.next || ''}" onchange="updateStageField(${i}, 'next', this.value)" placeholder="Upcoming Next" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        initLucide();
+    }
+
+    function updateStageField(index, field, value) {
+        stageData[index][field] = value;
+        saveData();
+        renderStages();
+    }
+
+    function showMissionPrizes(missionName) {
+        if (!missionName || missionName === "Awaiting Result") return;
+
+        const modal = document.getElementById('missionPrizeModal');
+        document.getElementById('modalMissionTitle').innerText = `${missionName} Mission - Prize Breakdown`;
+
+        const wonPrizes = [];
+        let totalPts = 0;
+        let firsts = 0, seconds = 0, thirds = 0;
+
+        itemResults.forEach(res => {
+            if (res.p1 && res.p1.mission === missionName) {
+                wonPrizes.push({ rank: "1st Place", points: 5, item: res.itemName, cat: res.category, winner: res.p1.name, code: res.p1.code, status: res.status });
+                totalPts += 5;
+                firsts++;
             }
+            if (res.p2 && res.p2.mission === missionName) {
+                wonPrizes.push({ rank: "2nd Place", points: 3, item: res.itemName, cat: res.category, winner: res.p2.name, code: res.p2.code, status: res.status });
+                totalPts += 3;
+                seconds++;
+            }
+            if (res.p3 && res.p3.mission === missionName) {
+                wonPrizes.push({ rank: "3rd Place", points: 1, item: res.itemName, cat: res.category, winner: res.p3.name, code: res.p3.code, status: res.status });
+                totalPts += 1;
+                thirds++;
+            }
+        });
+
+        document.getElementById('modalMissionSummary').innerHTML = `
+            <div><span class="block text-amber-600 text-sm font-black">${firsts}</span> 1st</div>
+            <div><span class="block text-slate-600 text-sm font-black">${seconds}</span> 2nd</div>
+            <div><span class="block text-amber-800 text-sm font-black">${thirds}</span> 3rd</div>
+        `;
+
+        const listContainer = document.getElementById('modalMissionPrizesList');
+        if (wonPrizes.length === 0) {
+            listContainer.innerHTML = `
+                <div class="text-center py-6 text-slate-400 font-medium text-xs">
+                    No prizes declared for ${missionName} mission yet.
+                </div>
+            `;
+        } else {
+            listContainer.innerHTML = wonPrizes.map(p => `
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-3 text-xs">
+                    <div>
+                        <span class="font-extrabold text-slate-900 block">${p.item} (${p.cat})</span>
+                        <span class="text-slate-500 font-semibold">${p.winner || 'Participant'} ${p.code ? `[#${p.code}]` : ''}</span>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <span class="font-black text-amber-600 block">${p.rank}</span>
+                        <span class="text-[10px] text-slate-400 font-bold">+${p.points} Pts</span>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function addScheduleItem() {
-            const time = document.getElementById('schedTimeInput').value.trim();
-            const item = document.getElementById('schedItemInput').value.trim();
-            const category = document.getElementById('schedCatInput').value.trim();
-            const stage = document.getElementById('schedStageInput').value.trim();
+        modal.classList.remove('hidden');
+        initLucide();
+    }
 
-            if (!time || !item) {
-                alert("Please enter at least Time and Item Name.");
-                return;
+    function closeMissionPrizeModal() {
+        document.getElementById('missionPrizeModal').classList.add('hidden');
+    }
+
+    function renderMissionFilters() {
+        const container = document.getElementById('missionFilters');
+        let html = `<button onclick="filterByMission(null)" class="px-3 py-1 rounded-full text-xs font-extrabold transition ${selectedMissionFilter === null ? 'bg-amber-500 text-slate-950' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">All Missions</button>`;
+        
+        REGIONAL_MISSIONS.forEach(m => {
+            const isSelected = selectedMissionFilter === m;
+            html += `<button onclick="filterByMission('${m}')" class="px-3 py-1 rounded-full text-xs font-extrabold transition ${isSelected ? 'bg-amber-500 text-slate-950' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">${m}</button>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function filterByMission(mission) {
+        selectedMissionFilter = mission;
+        renderMissionFilters();
+        renderResults();
+    }
+
+    function renderDropdowns() {
+        const itemSel = document.getElementById('adminItemSelect');
+        if (itemSel) {
+            itemSel.innerHTML = PROGRAM_MATRIX.map((i, idx) => `<option value="${idx}">${i.name}</option>`).join('');
+            updateCategoryDropdown();
+        }
+
+        ['p1_mission', 'p2_mission', 'p3_mission'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.innerHTML = REGIONAL_MISSIONS.map(m => `<option value="${m}">${m}</option>`).join('');
+            }
+        });
+    }
+
+    function updateCategoryDropdown() {
+        const itemIdx = document.getElementById('adminItemSelect').value;
+        const catSel = document.getElementById('adminCategorySelect');
+        if (PROGRAM_MATRIX[itemIdx] && catSel) {
+            catSel.innerHTML = PROGRAM_MATRIX[itemIdx].cat.map(c => `<option value="${c}">${c}</option>`).join('');
+        }
+    }
+
+    function renderResults() {
+        calculateAndRenderStandings();
+
+        const container = document.getElementById('publishedResultsContainer');
+        const searchInput = document.getElementById('searchItemInput');
+        const searchVal = searchInput ? (searchInput.value || '').toLowerCase() : '';
+
+        if (!itemResults || itemResults.length === 0) {
+            container.innerHTML = `
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-500 space-y-2">
+                    <i data-lucide="clock" class="w-10 h-10 mx-auto text-amber-500 stroke-1"></i>
+                    <h3 class="text-base font-extrabold text-slate-800">Results Coming Soon</h3>
+                    <p class="text-xs font-semibold text-slate-500">Official results will appear here as soon as judging and verification are completed.</p>
+                </div>
+            `;
+            initLucide();
+            return;
+        }
+
+        let filtered = itemResults.filter(res => {
+            if (!res) return false;
+            const p1Name = res.p1 && res.p1.name ? res.p1.name : '';
+            const p2Name = res.p2 && res.p2.name ? res.p2.name : '';
+            const p3Name = res.p3 && res.p3.name ? res.p3.name : '';
+
+            const matchesSearch = !searchVal || 
+                res.itemName.toLowerCase().includes(searchVal) ||
+                p1Name.toLowerCase().includes(searchVal) ||
+                p2Name.toLowerCase().includes(searchVal) ||
+                p3Name.toLowerCase().includes(searchVal);
+
+            const matchesMission = !selectedMissionFilter ||
+                (res.p1 && res.p1.mission === selectedMissionFilter) ||
+                (res.p2 && res.p2.mission === selectedMissionFilter) ||
+                (res.p3 && res.p3.mission === selectedMissionFilter);
+
+            return matchesSearch && matchesMission;
+        });
+
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-400 space-y-2">
+                    <i data-lucide="inbox" class="w-10 h-10 mx-auto stroke-1"></i>
+                    <p class="text-sm font-semibold">No announced results match your current search/filter.</p>
+                </div>
+            `;
+            initLucide();
+            return;
+        }
+
+        container.innerHTML = filtered.map((res, index) => {
+            const status = res.status || "Final Result";
+            let statusBadgeStyle = "bg-emerald-500/20 text-emerald-400 border-emerald-500/40";
+            let statusIcon = "check-circle-2";
+
+            if (status === "Provisional Result") {
+                statusBadgeStyle = "bg-amber-500/20 text-amber-400 border-amber-500/40";
+                statusIcon = "clock";
+            } else if (status === "Under Appeal") {
+                statusBadgeStyle = "bg-rose-500/20 text-rose-400 border-rose-500/40";
+                statusIcon = "alert-circle";
             }
 
-            scheduleData.push({ time, item, category: category || 'All', stage: stage || 'TBA' });
-            saveData();
-            renderSchedule();
+            const p1 = res.p1 || { name: 'N/A', mission: '-', code: '' };
+            const p2 = res.p2 || { name: 'N/A', mission: '-', code: '' };
+            const p3 = res.p3 || { name: 'N/A', mission: '-', code: '' };
 
-            document.getElementById('schedTimeInput').value = '';
-            document.getElementById('schedItemInput').value = '';
-            document.getElementById('schedCatInput').value = '';
-            document.getElementById('schedStageInput').value = '';
-        }
+            return `
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="bg-slate-900 text-white p-3.5 px-5 flex flex-wrap justify-between items-center gap-2">
+                    <div>
+                        <span class="font-extrabold text-sm sm:text-base">${res.itemName}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-1 rounded-md border ${statusBadgeStyle}">
+                            <i data-lucide="${statusIcon}" class="w-3 h-3"></i>
+                            ${status}
+                        </span>
+                        <span class="text-xs text-amber-400 font-semibold bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">${res.category}</span>
+                        ${adminAuthenticated ? `
+                            <div class="flex items-center gap-1.5 ml-2">
+                                <button onclick="editResult(${index})" class="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-2 py-0.5 rounded">Edit</button>
+                                <button onclick="deleteResult(${index})" class="text-xs text-red-400 hover:text-red-300 font-bold px-1">Delete</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+                <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="bg-amber-50/60 p-3.5 rounded-xl border border-amber-200">
+                        <span class="text-[11px] font-black text-amber-800 uppercase block mb-1">1st Place (5 Pts)</span>
+                        <h4 class="text-sm font-black text-slate-900">${p1.name || 'N/A'}</h4>
+                        <p class="text-xs font-bold text-slate-600 mt-0.5">${p1.mission || '-'}</p>
+                        <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p1.code || '-'}</p>
+                    </div>
+                    <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                        <span class="text-[11px] font-black text-slate-600 uppercase block mb-1">2nd Place (3 Pts)</span>
+                        <h4 class="text-sm font-black text-slate-900">${p2.name || 'N/A'}</h4>
+                        <p class="text-xs font-bold text-slate-600 mt-0.5">${p2.mission || '-'}</p>
+                        <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p2.code || '-'}</p>
+                    </div>
+                    <div class="bg-amber-900/5 p-3.5 rounded-xl border border-amber-900/10">
+                        <span class="text-[11px] font-black text-amber-900 uppercase block mb-1">3rd Place (1 Pt)</span>
+                        <h4 class="text-sm font-black text-slate-900">${p3.name || 'N/A'}</h4>
+                        <p class="text-xs font-bold text-slate-600 mt-0.5">${p3.mission || '-'}</p>
+                        <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p3.code || '-'}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        }).join('');
 
-        function deleteScheduleItem(idx) {
-            scheduleData.splice(idx, 1);
-            saveData();
-            renderSchedule();
-        }
+        initLucide();
+    }
 
-        function openAdminAuth() {
-            document.getElementById('adminModal').classList.remove('hidden');
-        }
+    // Share & QR Modal Handlers
+    function openShareModal() {
+        const modal = document.getElementById('shareModal');
+        const qrContainer = document.getElementById('qrcode');
+        qrContainer.innerHTML = '';
 
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.add('hidden');
-        }
-
-        function verifyAdminPasscode() {
-            const input = document.getElementById('adminPassInput').value;
-            if (input === 'kalotsavam2026') {
-                adminAuthenticated = true;
-                document.getElementById('adminAuthSection').classList.add('hidden');
-                document.getElementById('adminControlsSection').classList.remove('hidden');
-                renderResults();
-                renderStages();
-                renderSchedule();
-            } else {
-                document.getElementById('adminAuthErr').classList.remove('hidden');
-            }
-        }
-
-        function saveLogos() {
-            const left = document.getElementById('leftLogoUrlInput').value.trim();
-            const right = document.getElementById('rightLogoUrlInput').value.trim();
-
-            localStorage.setItem('csmegb_logos_2026_v3', JSON.stringify({ left, right }));
-            applyLogos(left, right);
-            alert("Logos updated successfully!");
-        }
-
-        function editResult(index) {
-            editingResultIndex = index;
-            const res = itemResults[index];
-            if (!res) return;
-
-            openAdminAuth();
-
-            document.getElementById('adminResultFormTitle').innerText = "Edit Declared Result";
-            document.getElementById('cancelEditResultBtn').classList.remove('hidden');
-            document.getElementById('publishResultBtn').innerText = "Update Result & Save Changes";
-
-            const matrixIndex = PROGRAM_MATRIX.findIndex(p => p.name === res.itemName);
-            if (matrixIndex !== -1) {
-                document.getElementById('adminItemSelect').value = matrixIndex;
-                updateCategoryDropdown();
-            }
-            
-            document.getElementById('adminCategorySelect').value = res.category;
-            document.getElementById('adminResultStatusSelect').value = res.status || "Final Result";
-
-            document.getElementById('p1_name').value = res.p1 && res.p1.name ? res.p1.name : '';
-            document.getElementById('p1_code').value = res.p1 && res.p1.code ? res.p1.code : '';
-            document.getElementById('p1_mission').value = res.p1 && res.p1.mission ? res.p1.mission : REGIONAL_MISSIONS[0];
-
-            document.getElementById('p2_name').value = res.p2 && res.p2.name ? res.p2.name : '';
-            document.getElementById('p2_code').value = res.p2 && res.p2.code ? res.p2.code : '';
-            document.getElementById('p2_mission').value = res.p2 && res.p2.mission ? res.p2.mission : REGIONAL_MISSIONS[0];
-
-            document.getElementById('p3_name').value = res.p3 && res.p3.name ? res.p3.name : '';
-            document.getElementById('p3_code').value = res.p3 && res.p3.code ? res.p3.code : '';
-            document.getElementById('p3_mission').value = res.p3 && res.p3.mission ? res.p3.mission : REGIONAL_MISSIONS[0];
-        }
-
-        function resetResultForm() {
-            editingResultIndex = null;
-            document.getElementById('adminResultFormTitle').innerText = "Publish New Event Result";
-            document.getElementById('cancelEditResultBtn').classList.add('hidden');
-            document.getElementById('publishResultBtn').innerText = "Publish Result & Update Standings";
-
-            ['p1_name', 'p1_code', 'p2_name', 'p2_code', 'p3_name', 'p3_code'].forEach(id => {
-                document.getElementById(id).value = '';
+        if (window.QRCode) {
+            qrcodeObj = new QRCode(qrContainer, {
+                text: window.location.href,
+                width: 160,
+                height: 160,
+                colorDark : "#061224",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
             });
-            document.getElementById('adminResultStatusSelect').value = "Final Result";
         }
 
-        function publishResult() {
-            const itemIdx = document.getElementById('adminItemSelect').value;
-            const itemObj = PROGRAM_MATRIX[itemIdx];
-            const category = document.getElementById('adminCategorySelect').value;
-            const status = document.getElementById('adminResultStatusSelect').value;
+        modal.classList.remove('hidden');
+        initLucide();
+    }
 
-            const updatedResult = {
-                itemName: itemObj ? itemObj.name : "Event Item",
-                category: category,
-                status: status || "Final Result",
-                p1: {
-                    name: document.getElementById('p1_name').value.trim(),
-                    code: document.getElementById('p1_code').value.trim(),
-                    mission: document.getElementById('p1_mission').value
-                },
-                p2: {
-                    name: document.getElementById('p2_name').value.trim(),
-                    code: document.getElementById('p2_code').value.trim(),
-                    mission: document.getElementById('p2_mission').value
-                },
-                p3: {
-                    name: document.getElementById('p3_name').value.trim(),
-                    code: document.getElementById('p3_code').value.trim(),
-                    mission: document.getElementById('p3_mission').value
-                }
-            };
+    function closeShareModal() {
+        document.getElementById('shareModal').classList.add('hidden');
+    }
 
-            if (!updatedResult.p1.name) {
-                alert("Please enter 1st place winner details.");
-                return;
-            }
+    function copyPageUrl() {
+        const dummy = document.createElement('input');
+        document.body.appendChild(dummy);
+        dummy.value = window.location.href;
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        alert("Website link copied to clipboard!");
+    }
 
-            if (editingResultIndex !== null) {
-                itemResults[editingResultIndex] = updatedResult;
-                alert("Result updated successfully!");
-            } else {
-                itemResults.unshift(updatedResult);
-                showSystemNotification(
-                    `🎉 New Result: ${updatedResult.itemName} (${updatedResult.category})`,
-                    `🥇 1st: ${updatedResult.p1.name} (${updatedResult.p1.mission})`
-                );
-                alert("Result published successfully!");
-            }
-
+    function deleteAllResults() {
+        if (confirm("CRITICAL WARNING: Are you sure you want to delete ALL published results? This will reset all mission points to zero.")) {
+            itemResults = [];
             saveData();
             renderResults();
-            resetResultForm();
+            alert("All results have been wiped clean.");
+        }
+    }
+
+    function renderSchedule() {
+        const tbody = document.getElementById('scheduleTableBody');
+        tbody.innerHTML = scheduleData.map((s, idx) => `
+            <tr class="hover:bg-slate-50 transition">
+                <td class="p-3 font-bold text-slate-900 whitespace-nowrap">${s.time}</td>
+                <td class="p-3 font-bold text-brand-700">${s.item}</td>
+                <td class="p-3 font-semibold text-slate-600">${s.category}</td>
+                <td class="p-3 font-extrabold text-amber-600">${s.stage}</td>
+                ${adminAuthenticated ? `<td class="p-3 text-right"><button onclick="deleteScheduleItem(${idx})" class="text-xs text-red-500 font-bold hover:underline">Remove</button></td>` : ''}
+            </tr>
+        `).join('');
+
+        const header = document.getElementById('schedAdminHeader');
+        if (header) {
+            if (adminAuthenticated) header.classList.remove('hidden');
+            else header.classList.add('hidden');
+        }
+    }
+
+    function addScheduleItem() {
+        const time = document.getElementById('schedTimeInput').value.trim();
+        const item = document.getElementById('schedItemInput').value.trim();
+        const category = document.getElementById('schedCatInput').value.trim();
+        const stage = document.getElementById('schedStageInput').value.trim();
+
+        if (!time || !item) {
+            alert("Please enter at least Time and Item Name.");
+            return;
         }
 
-        function deleteResult(index) {
-            if (confirm("Are you sure you want to delete this result?")) {
-                itemResults.splice(index, 1);
-                saveData();
-                renderResults();
+        scheduleData.push({ time, item, category: category || 'All', stage: stage || 'TBA' });
+        saveData();
+        renderSchedule();
+
+        document.getElementById('schedTimeInput').value = '';
+        document.getElementById('schedItemInput').value = '';
+        document.getElementById('schedCatInput').value = '';
+        document.getElementById('schedStageInput').value = '';
+    }
+
+    function deleteScheduleItem(idx) {
+        scheduleData.splice(idx, 1);
+        saveData();
+        renderSchedule();
+    }
+
+    function openAdminAuth() {
+        document.getElementById('adminModal').classList.remove('hidden');
+    }
+
+    function closeAdminModal() {
+        document.getElementById('adminModal').classList.add('hidden');
+    }
+
+    function verifyAdminPasscode() {
+        const input = document.getElementById('adminPassInput').value;
+        if (input === 'kalotsavam2026') {
+            adminAuthenticated = true;
+            document.getElementById('adminAuthSection').classList.add('hidden');
+            document.getElementById('adminControlsSection').classList.remove('hidden');
+            renderResults();
+            renderStages();
+            renderSchedule();
+        } else {
+            document.getElementById('adminAuthErr').classList.remove('hidden');
+        }
+    }
+
+    function saveLogos() {
+        const left = document.getElementById('leftLogoUrlInput').value.trim();
+        const right = document.getElementById('rightLogoUrlInput').value.trim();
+
+        localStorage.setItem('csmegb_logos_2026_v3', JSON.stringify({ left, right }));
+        applyLogos(left, right);
+        alert("Logos updated successfully!");
+    }
+
+    function editResult(index) {
+        editingResultIndex = index;
+        const res = itemResults[index];
+        if (!res) return;
+
+        openAdminAuth();
+
+        document.getElementById('adminResultFormTitle').innerText = "Edit Declared Result";
+        document.getElementById('cancelEditResultBtn').classList.remove('hidden');
+        document.getElementById('publishResultBtn').innerText = "Update Result & Save Changes";
+
+        const matrixIndex = PROGRAM_MATRIX.findIndex(p => p.name === res.itemName);
+        if (matrixIndex !== -1) {
+            document.getElementById('adminItemSelect').value = matrixIndex;
+            updateCategoryDropdown();
+        }
+        
+        document.getElementById('adminCategorySelect').value = res.category;
+        document.getElementById('adminResultStatusSelect').value = res.status || "Final Result";
+
+        document.getElementById('p1_name').value = res.p1 && res.p1.name ? res.p1.name : '';
+        document.getElementById('p1_code').value = res.p1 && res.p1.code ? res.p1.code : '';
+        document.getElementById('p1_mission').value = res.p1 && res.p1.mission ? res.p1.mission : REGIONAL_MISSIONS[0];
+
+        document.getElementById('p2_name').value = res.p2 && res.p2.name ? res.p2.name : '';
+        document.getElementById('p2_code').value = res.p2 && res.p2.code ? res.p2.code : '';
+        document.getElementById('p2_mission').value = res.p2 && res.p2.mission ? res.p2.mission : REGIONAL_MISSIONS[0];
+
+        document.getElementById('p3_name').value = res.p3 && res.p3.name ? res.p3.name : '';
+        document.getElementById('p3_code').value = res.p3 && res.p3.code ? res.p3.code : '';
+        document.getElementById('p3_mission').value = res.p3 && res.p3.mission ? res.p3.mission : REGIONAL_MISSIONS[0];
+    }
+
+    function resetResultForm() {
+        editingResultIndex = null;
+        document.getElementById('adminResultFormTitle').innerText = "Publish New Event Result";
+        document.getElementById('cancelEditResultBtn').classList.add('hidden');
+        document.getElementById('publishResultBtn').innerText = "Publish Result & Update Standings";
+
+        ['p1_name', 'p1_code', 'p2_name', 'p2_code', 'p3_name', 'p3_code'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        document.getElementById('adminResultStatusSelect').value = "Final Result";
+    }
+
+    function publishResult() {
+        const itemIdx = document.getElementById('adminItemSelect').value;
+        const itemObj = PROGRAM_MATRIX[itemIdx];
+        const category = document.getElementById('adminCategorySelect').value;
+        const status = document.getElementById('adminResultStatusSelect').value;
+
+        const updatedResult = {
+            itemName: itemObj ? itemObj.name : "Event Item",
+            category: category,
+            status: status || "Final Result",
+            p1: {
+                name: document.getElementById('p1_name').value.trim(),
+                code: document.getElementById('p1_code').value.trim(),
+                mission: document.getElementById('p1_mission').value
+            },
+            p2: {
+                name: document.getElementById('p2_name').value.trim(),
+                code: document.getElementById('p2_code').value.trim(),
+                mission: document.getElementById('p2_mission').value
+            },
+            p3: {
+                name: document.getElementById('p3_name').value.trim(),
+                code: document.getElementById('p3_code').value.trim(),
+                mission: document.getElementById('p3_mission').value
             }
+        };
+
+        if (!updatedResult.p1.name) {
+            alert("Please enter 1st place winner details.");
+            return;
         }
 
-        function initLucide() {
-            if (window.lucide && typeof lucide.createIcons === 'function') {
-                lucide.createIcons();
-            }
+        if (editingResultIndex !== null) {
+            itemResults[editingResultIndex] = updatedResult;
+            alert("Result updated successfully!");
+        } else {
+            itemResults.unshift(updatedResult);
+            showSystemNotification(
+                `🎉 New Result: ${updatedResult.itemName} (${updatedResult.category})`,
+                `🥇 1st: ${updatedResult.p1.name} (${updatedResult.p1.mission})`
+            );
+            alert("Result published successfully!");
         }
-    </script>
-</body>
-</html>
+
+        saveData();
+        renderResults();
+        resetResultForm();
+    }
+
+    function deleteResult(index) {
+        if (confirm("Are you sure you want to delete this result?")) {
+            itemResults.splice(index, 1);
+            saveData();
+            renderResults();
+        }
+    }
+
+    function initLucide() {
+        if (window.lucide && typeof lucide.createIcons === 'function') {
+            lucide.createIcons();
+        }
+    }
+</script>

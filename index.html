@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSMEGB Regional Bible Kalotsavam Bristol Cardiff Region 2026</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QR Code Generator JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        gold: '#D4AF37',
+                        silver: '#C0C0C0',
+                        bronze: '#CD7F32',
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gold-gradient { background: linear-gradient(135deg, #FFF9E6 0%, #FDF0A6 100%); border-color: #FACC15; }
+        .silver-gradient { background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%); border-color: #94A3B8; }
+        .bronze-gradient { background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%); border-color: #FB923C; }
+    </style>
+</head>
+<body class="h-full text-slate-800 font-sans flex flex-col antialiased">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-brand-900 text-white shadow-lg sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <!-- Left Logo: CSMEGB Eparchial Emblem -->
+                    <div class="bg-white p-1 rounded-xl shadow-md border border-amber-300 flex items-center justify-center shrink-0 w-12 h-12 sm:w-14 sm:h-14 overflow-hidden relative group">
+                        <!-- Custom Image Logo Container -->
+                        <img id="leftLogoImg" src="" alt="CSMEGB Logo" class="hidden w-full h-full object-contain" onError="handleLogoError('left')">
+                        <!-- SVG Fallback Logo -->
+                        <svg id="leftLogoSvg" class="w-9 h-9 sm:w-10 sm:h-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="46" fill="#0C4A6E" stroke="#D4AF37" stroke-width="4"/>
+                            <circle cx="50" cy="50" r="41" fill="#0369A1" stroke="#FACC15" stroke-width="1.5" stroke-dasharray="3 3"/>
+                            <!-- St. Thomas Cross emblem -->
+                            <path d="M50 16 L50 78 M30 36 L70 36" stroke="#FACC15" stroke-width="6" stroke-linecap="round"/>
+                            <circle cx="50" cy="36" r="4" fill="#FFFFFF"/>
+                            <!-- Lotus base symbol -->
+                            <path d="M30 76 C 40 68, 60 68, 70 76 C 60 82, 40 82, 30 76 Z" fill="#D4AF37"/>
+                            <!-- Holy Bible Rays -->
+                            <path d="M50 48 L22 62 L50 56 L78 62 Z" fill="#FFFFFF" opacity="0.9"/>
+                            <path d="M50 48 L22 62 L50 52 Z" fill="#E2E8F0"/>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-amber-400 block">Catholic Syro-Malabar Eparchy of Great Britain</span>
+                        <h1 class="text-xs sm:text-base md:text-lg font-extrabold leading-tight">CSMEGB Regional Bible Kalotsavam Bristol Cardiff Region 2026</h1>
+                    </div>
+
+                    <!-- Right Logo: Bible Apostolate Logo -->
+                    <div class="bg-white p-1 rounded-xl shadow-md border border-amber-300 flex items-center justify-center shrink-0 w-12 h-12 sm:w-14 sm:h-14 overflow-hidden relative group">
+                        <!-- Custom Image Logo Container -->
+                        <img id="rightLogoImg" src="" alt="Bible Apostolate Logo" class="hidden w-full h-full object-contain" onError="handleLogoError('right')">
+                        <!-- SVG Fallback Logo -->
+                        <svg id="rightLogoSvg" class="w-9 h-9 sm:w-10 sm:h-10" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="46" fill="#1E1B4B" stroke="#D4AF37" stroke-width="4"/>
+                            <!-- Holy Spirit Dove Emblem -->
+                            <path d="M50 25 C40 25, 30 35, 30 45 C35 42, 42 42, 50 48 C58 42, 65 42, 70 45 C70 35, 60 25, 50 25 Z" fill="#FFFFFF"/>
+                            <!-- Open Bible Pages -->
+                            <path d="M22 72 C35 65, 48 68, 50 78 C52 68, 65 65, 78 72 L78 52 C65 46, 52 48, 50 56 C48 48, 35 46, 22 52 Z" fill="#FACC15"/>
+                            <path d="M50 56 L50 78" stroke="#0C4A6E" stroke-width="2"/>
+                            <!-- Rays of Wisdom -->
+                            <path d="M50 15 L50 20 M30 20 L33 24 M70 20 L67 24" stroke="#FACC15" stroke-width="3" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <button onclick="openLogoModal()" class="flex items-center space-x-2 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 transition px-3 py-2 rounded-lg text-xs font-semibold backdrop-blur-sm border border-amber-400/30">
+                        <i class="fa-solid fa-image"></i>
+                        <span class="hidden md:inline">Set Logos</span>
+                    </button>
+                    <button onclick="openQRModal()" class="flex items-center space-x-2 bg-white/10 hover:bg-white/20 transition px-3 py-2 rounded-lg text-xs font-semibold backdrop-blur-sm border border-white/20">
+                        <i class="fa-solid fa-qrcode text-amber-400"></i>
+                        <span class="hidden md:inline">Share Page</span>
+                    </button>
+                    <button onclick="toggleAdminPanel()" class="flex items-center space-x-2 bg-amber-500 hover:bg-amber-600 text-brand-900 font-bold px-3.5 py-2 rounded-lg text-xs transition shadow-md">
+                        <i class="fa-solid fa-lock-open"></i>
+                        <span id="adminBtnText" class="hidden sm:inline">Admin Panel</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+        <!-- Banner / Hero Section -->
+        <section class="bg-gradient-to-r from-brand-900 via-brand-800 to-indigo-950 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+            <div class="absolute right-4 top-2 opacity-10">
+                <i class="fa-solid fa-book-bible text-[200px]"></i>
+            </div>
+            <div class="relative z-10 max-w-3xl">
+                <div class="inline-flex items-center space-x-2 bg-amber-400/20 text-amber-300 border border-amber-400/30 px-3 py-1 rounded-full text-xs font-semibold mb-3">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>Bristol-Cardiff Region • Official CSMEGB Eparchial Guidelines</span>
+                </div>
+                <h2 class="text-xl sm:text-3xl font-black tracking-tight mb-2">CSMEGB Regional Bible Kalotsavam Bristol Cardiff Region 2026</h2>
+                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">Official points tally, category scoring, and competition listings strictly aligned with CSMEGB Bible Apostolate guidelines for all 12 regional missions.</p>
+                
+                <div class="mt-5 flex flex-wrap gap-3 text-xs">
+                    <div class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
+                        <span class="text-slate-300">Solo Items:</span> <strong class="text-amber-400">1st (5 pts), 2nd (3 pts), 3rd (1 pt)</strong>
+                    </div>
+                    <div class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
+                        <span class="text-slate-300">Group Items:</span> <strong class="text-amber-400">1st (10 pts), 2nd (6 pts), 3rd (2 pts)</strong>
+                    </div>
+                    <div class="bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
+                        <span class="text-slate-300">Max Limit:</span> <strong class="text-amber-400">3 Solo & 3 Group Items per participant</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Entry Panel (Hidden by default) -->
+        <section id="adminSection" class="hidden bg-white rounded-2xl shadow-lg border-2 border-amber-400 p-6 transition-all duration-300">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-amber-100 p-2 rounded-lg text-amber-700">
+                        <i class="fa-solid fa-pen-to-square text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Admin Result Entry & Management</h3>
+                        <p class="text-xs text-slate-500">Publish regional event results according to CSMEGB Eparchy scoring standards.</p>
+                    </div>
+                </div>
+                <button onclick="toggleAdminPanel()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form id="resultForm" onsubmit="handleResultSubmit(event)" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Item Category / Type</label>
+                        <select id="itemType" onchange="updateFormItemsList()" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm focus:ring-brand-500 focus:border-brand-500">
+                            <option value="Solo">Solo Item (5, 3, 1 pts)</option>
+                            <option value="Group">Group Item (10, 6, 2 pts)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Competition Item Name</label>
+                        <select id="itemNameSelect" required class="w-full rounded-lg border-slate-300 border p-2.5 text-sm focus:ring-brand-500 focus:border-brand-500">
+                            <!-- Populated dynamically based on guidelines -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Age Category (CSMEGB I-VII)</label>
+                        <select id="itemCategory" class="w-full rounded-lg border-slate-300 border p-2.5 text-sm focus:ring-brand-500 focus:border-brand-500">
+                            <option value="Up to 7 yrs (Cat I)">Up to 7 yrs (Category I)</option>
+                            <option value="8-10 yrs (Cat II)">8-10 yrs (Category II)</option>
+                            <option value="11-13 yrs (Cat III)">11-13 yrs (Category III)</option>
+                            <option value="14-17 yrs (Cat IV)">14-17 yrs (Category IV)</option>
+                            <option value="18-24 yrs (Cat V)">18-24 yrs / Youth (Category V)</option>
+                            <option value="Adults 25+ (Cat VI)">Adults 25+ (Category VI)</option>
+                            <option value="All Ages (Cat VII)">All Ages (Category VII)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <!-- 1st Place -->
+                    <div class="space-y-2">
+                        <span class="inline-flex items-center space-x-1 text-xs font-bold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full">
+                            <i class="fa-solid fa-trophy text-amber-500"></i>
+                            <span>1st Place Winner</span>
+                        </span>
+                        <div>
+                            <label class="block text-xs text-slate-600 mb-0.5">Mission</label>
+                            <select id="firstMission" required class="w-full rounded-lg border-slate-300 border p-2 text-sm focus:ring-amber-500">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-600 mb-0.5">Participant / Team Name</label>
+                            <input type="text" id="firstWinner" placeholder="Name (optional)" class="w-full rounded-lg border-slate-300 border p-2 text-sm">
+                        </div>
+                    </div>
+
+                    <!-- 2nd Place -->
+                    <div class="space-y-2">
+                        <span class="inline-flex items-center space-x-1 text-xs font-bold text-slate-700 bg-slate-200 px-2.5 py-1 rounded-full">
+                            <i class="fa-solid fa-medal text-slate-400"></i>
+                            <span>2nd Place Winner</span>
+                        </span>
+                        <div>
+                            <label class="block text-xs text-slate-600 mb-0.5">Mission</label>
+                            <select id="secondMission" required class="w-full rounded-lg border-slate-300 border p-2 text-sm focus:ring-slate-500">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-600 mb-0.5">Participant / Team Name</label>
+                            <input type="text" id="secondWinner" placeholder="Name (optional)" class="w-full rounded-lg border-slate-300 border p-2 text-sm">
+                        </div>
+                    </div>
+
+                    <!-- 3rd Place -->
+                    <div class="space-y-2">
+                        <span class="inline-flex items-center space-x-1 text-xs font-bold text-amber-900 bg-amber-200 px-2.5 py-1 rounded-full">
+                            <i class="fa-solid fa-award text-amber-700"></i>
+                            <span>3rd Place Winner</span>
+                        </span>
+                        <div>
+                            <label class="block text-xs text-slate-600 mb-0.5">Mission</label>
+                            <select id="thirdMission" required class="w-full rounded-lg border-slate-300 border p-2 text-sm focus:ring-amber-700">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-600 mb-0.5">Participant / Team Name</label>
+                            <input type="text" id="thirdWinner" placeholder="Name (optional)" class="w-full rounded-lg border-slate-300 border p-2 text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="resetForm()" class="px-4 py-2 border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-100 font-medium">Reset</button>
+                    <button type="submit" class="px-6 py-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg text-sm shadow-md transition">Publish Result</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Overall Mission Leaderboard Section -->
+        <section>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-trophy text-amber-500"></i>
+                        <span>Overall Mission Leaderboard</span>
+                    </h2>
+                    <p class="text-xs text-slate-500">Standings calculated strictly according to CSMEGB Bible Kalotsavam guidelines.</p>
+                </div>
+                <div class="text-xs bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg self-start border border-slate-200">
+                    <span id="totalItemsCount" class="font-bold text-brand-600">0</span> items announced
+                </div>
+            </div>
+
+            <!-- Top 3 Podium Cards -->
+            <div id="podiumContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Dynamically Populated Top 3 -->
+            </div>
+
+            <!-- Remaining Missions Grid -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 border-b pb-2">All Mission Rankings</h3>
+                <div id="remainingMissionsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <!-- Dynamically Populated -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Item-Wise Results & Dropdown Filtering Section -->
+        <section class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b">
+                    <div>
+                        <h2 class="text-xl font-extrabold text-slate-900 flex items-center space-x-2">
+                            <i class="fa-solid fa-filter text-brand-600"></i>
+                            <span>Filter Results by Dropdowns</span>
+                        </h2>
+                        <p class="text-xs text-slate-500">Filter regional competition results by Item Type, Age Category, or Mission</p>
+                    </div>
+                    <button onclick="clearAllFilters()" class="self-start text-xs text-brand-600 hover:text-brand-800 font-semibold underline">
+                        Clear Filters
+                    </button>
+                </div>
+
+                <!-- Three Mandatory Dropdowns -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <!-- 1. Programs Filter (Group & Solo Separately) -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center space-x-1">
+                            <i class="fa-solid fa-layer-group text-slate-500"></i>
+                            <span>1. Program Type / Items</span>
+                        </label>
+                        <select id="filterProgramType" onchange="applyFilters()" class="w-full bg-slate-50 rounded-xl border border-slate-300 p-2.5 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                            <option value="All">All Program Types (Solo & Group)</option>
+                            <optgroup label="Type Breakdown">
+                                <option value="Solo">Solo Items Only</option>
+                                <option value="Group">Group Items Only</option>
+                            </optgroup>
+                            <optgroup label="Official CSMEGB Solo Programs">
+                                <option value="Bible Reading (English)">Bible Reading (English)</option>
+                                <option value="Bible Reading (Malayalam)">Bible Reading (Malayalam)</option>
+                                <option value="Devotional Solo Song">Devotional Solo Song</option>
+                                <option value="Bible Story Telling">Bible Story Telling</option>
+                                <option value="Bible Mono Act">Bible Mono Act</option>
+                                <option value="Bible Elocution">Bible Elocution</option>
+                                <option value="Pencil Drawing / Sketching">Pencil Drawing / Sketching</option>
+                                <option value="Biblical Painting (Water Colour/Acrylic)">Biblical Painting</option>
+                                <option value="Bible Essay Writing (English)">Bible Essay Writing (English)</option>
+                                <option value="Bible Essay Writing (Malayalam)">Bible Essay Writing (Malayalam)</option>
+                                <option value="Bible Costume Character">Bible Costume Character</option>
+                            </optgroup>
+                            <optgroup label="Official CSMEGB Group Programs">
+                                <option value="Bible Quiz">Bible Quiz (Group)</option>
+                                <option value="Devotional Group Song">Devotional Group Song</option>
+                                <option value="Margamkali">Margamkali (Group Dance)</option>
+                                <option value="Bible Group Dance">Bible Group Dance</option>
+                                <option value="Bible Tableau">Bible Tableau</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- 2. Age Category Filter -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center space-x-1">
+                            <i class="fa-solid fa-users text-slate-500"></i>
+                            <span>2. Age Category</span>
+                        </label>
+                        <select id="filterAgeCategory" onchange="applyFilters()" class="w-full bg-slate-50 rounded-xl border border-slate-300 p-2.5 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                            <option value="All">All Age Categories (I - VII)</option>
+                            <option value="Up to 7 yrs (Cat I)">Up to 7 yrs (Category I)</option>
+                            <option value="8-10 yrs (Cat II)">8-10 yrs (Category II)</option>
+                            <option value="11-13 yrs (Cat III)">11-13 yrs (Category III)</option>
+                            <option value="14-17 yrs (Cat IV)">14-17 yrs (Category IV)</option>
+                            <option value="18-24 yrs (Cat V)">18-24 yrs / Youth (Category V)</option>
+                            <option value="Adults 25+ (Cat VI)">Adults 25+ (Category VI)</option>
+                            <option value="All Ages (Cat VII)">All Ages (Category VII)</option>
+                        </select>
+                    </div>
+
+                    <!-- 3. Mission Filter -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5 flex items-center space-x-1">
+                            <i class="fa-solid fa-church text-slate-500"></i>
+                            <span>3. Mission Filter</span>
+                        </label>
+                        <select id="filterMission" onchange="applyFilters()" class="w-full bg-slate-50 rounded-xl border border-slate-300 p-2.5 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                            <option value="All">All 12 Regional Missions</option>
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item Grid -->
+            <div id="itemResultsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically Generated Item Cards -->
+            </div>
+        </section>
+
+        <!-- Points Matrix Table -->
+    <!-- Logo Management Modal -->
+    <div id="logoModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+            <button onclick="closeLogoModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="bg-amber-100 text-amber-700 w-10 h-10 rounded-xl flex items-center justify-center">
+                    <i class="fa-solid fa-icons text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg text-slate-900">Configure Logos</h3>
+                    <p class="text-xs text-slate-500">Upload image files or paste image URLs for the official logos.</p>
+                </div>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <!-- Left Logo Config -->
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                    <label class="font-bold text-slate-800 block">1. CSMEGB Eparchy Emblem (Left)</label>
+                    <input type="file" id="leftLogoFile" accept="image/*" onchange="handleFileUpload(event, 'left')" class="w-full text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100">
+                    <div class="text-center text-slate-400 font-medium my-1">- OR -</div>
+                    <input type="text" id="leftLogoUrl" placeholder="Paste image URL (e.g. https://.../logo.png)" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
+                </div>
+
+                <!-- Right Logo Config -->
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                    <label class="font-bold text-slate-800 block">2. Bible Apostolate Logo (Right)</label>
+                    <input type="file" id="rightLogoFile" accept="image/*" onchange="handleFileUpload(event, 'right')" class="w-full text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100">
+                    <div class="text-center text-slate-400 font-medium my-1">- OR -</div>
+                    <input type="text" id="rightLogoUrl" placeholder="Paste image URL (e.g. https://.../apostolate.jpg)" class="w-full rounded-lg border-slate-300 border p-2 text-xs">
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-100">
+                <button onclick="resetLogos()" class="text-xs text-red-600 hover:text-red-800 font-semibold underline">Reset to Default SVGs</button>
+                <div class="space-x-2">
+                    <button onclick="closeLogoModal()" class="px-4 py-2 border border-slate-300 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50">Cancel</button>
+                    <button onclick="saveLogoUrls()" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold shadow-sm">Save Logos</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Sharing Modal -->
+    <div id="qrModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl relative">
+            <button onclick="closeQRModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="bg-amber-100 text-amber-700 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                <i class="fa-solid fa-qrcode text-xl"></i>
+            </div>
+            <h3 class="font-bold text-lg text-slate-900">Scan & Share Results</h3>
+            <p class="text-xs text-slate-500 mb-4">Scan this QR code to view live regional Kalotsavam results on mobile.</p>
+            
+            <div class="bg-slate-50 p-4 rounded-xl inline-block border border-slate-200 mb-4">
+                <div id="qrcode" class="flex justify-center"></div>
+            </div>
+
+            <button onclick="copyPageUrl()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 rounded-lg text-xs transition flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-copy"></i>
+                <span id="copyBtnText">Copy Web Link</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // 12 CSMEGB Regional Missions in Bristol-Cardiff Region
+        const MISSIONS = [
+            "Exeter", "Taunton", "Weston-Super-Mare", "Bristol", 
+            "Bath", "Newport", "Cardiff", "Barry", 
+            "Hereford", "Gloucester", "Swansea", "Swindon"
+        ];
+
+        // CSMEGB Official Scoring Guidelines
+        // Solo Items: 1st Place = 5 pts, 2nd Place = 3 pts, 3rd Place = 1 pt
+        // Group Items: 1st Place = 10 pts, 2nd Place = 6 pts, 3rd Place = 2 pts
+        const RULES = {
+            Solo: { 1: 5, 2: 3, 3: 1 },
+            Group: { 1: 10, 2: 6, 3: 2 }
+        };
+
+        // Official CSMEGB Regional Items Catalog
+        const OFFICIAL_SOLO_ITEMS = [
+            "Bible Reading (English)",
+            "Bible Reading (Malayalam)",
+            "Devotional Solo Song",
+            "Bible Story Telling",
+            "Bible Mono Act",
+            "Bible Elocution",
+            "Pencil Drawing / Sketching",
+            "Biblical Painting (Water Colour/Acrylic)",
+            "Bible Essay Writing (English)",
+            "Bible Essay Writing (Malayalam)",
+            "Bible Costume Character"
+        ];
+
+        const OFFICIAL_GROUP_ITEMS = [
+            "Bible Quiz",
+            "Devotional Group Song",
+            "Margamkali",
+            "Bible Group Dance",
+            "Bible Tableau"
+        ];
+
+        // Published Regional Results adhering strictly to CSMEGB guidelines
+        let itemResults = [
+            {
+                id: 1,
+                name: "Bible Reading (Malayalam)",
+                category: "11-13 yrs (Cat III)",
+                type: "Solo",
+                first: { mission: "Bristol", winner: "Johann Paul" },
+                second: { mission: "Cardiff", winner: "Maria Joseph" },
+                third: { mission: "Taunton", winner: "Anna Thomas" }
+            },
+            {
+                id: 2,
+                name: "Margamkali",
+                category: "14-17 yrs (Cat IV)",
+                type: "Group",
+                first: { mission: "Gloucester", winner: "St. Thomas Team" },
+                second: { mission: "Bristol", winner: "St. Marys Group" },
+                third: { mission: "Swindon", winner: "Swindon Youth" }
+            },
+            {
+                id: 3,
+                name: "Bible Quiz",
+                category: "11-13 yrs (Cat III)",
+                type: "Group",
+                first: { mission: "Exeter", winner: "Exeter Scholars" },
+                second: { mission: "Bath", winner: "Bath Believers" },
+                third: { mission: "Cardiff", winner: "Cardiff Stars" }
+            },
+            {
+                id: 4,
+                name: "Devotional Solo Song",
+                category: "Up to 7 yrs (Cat I)",
+                type: "Solo",
+                first: { mission: "Swindon", winner: "Eva Mary" },
+                second: { mission: "Weston-Super-Mare", winner: "Luke George" },
+                third: { mission: "Newport", winner: "Tessa Mathew" }
+            },
+            {
+                id: 5,
+                name: "Bible Mono Act",
+                category: "8-10 yrs (Cat II)",
+                type: "Solo",
+                first: { mission: "Cardiff", winner: "Aaron Francis" },
+                second: { mission: "Bristol", winner: "Teresa John" },
+                third: { mission: "Swansea", winner: "Kevin Boban" }
+            },
+            {
+                id: 6,
+                name: "Devotional Group Song",
+                category: "All Ages (Cat VII)",
+                type: "Group",
+                first: { mission: "Bristol", winner: "Bristol Choir" },
+                second: { mission: "Gloucester", winner: "Gloucester Harmonizers" },
+                third: { mission: "Taunton", winner: "Taunton Singers" }
+            },
+            {
+                id: 7,
+                name: "Bible Essay Writing (English)",
+                category: "18-24 yrs (Cat V)",
+                type: "Solo",
+                first: { mission: "Bath", winner: "Angela Roy" },
+                second: { mission: "Cardiff", winner: "Mathew Alex" },
+                third: { mission: "Hereford", winner: "Sneha Kurian" }
+            }
+        ];
+
+        // Initialize App
+        document.addEventListener("DOMContentLoaded", () => {
+            populateMissionDropdowns();
+            updateFormItemsList();
+            renderApp();
+            initQRCode();
+            loadSavedLogos();
+        });
+
+        // Logo Handler Functions
+        function openLogoModal() {
+            document.getElementById('logoModal').classList.remove('hidden');
+        }
+
+        function closeLogoModal() {
+            document.getElementById('logoModal').classList.add('hidden');
+        }
+
+        function updateLogoDisplay(position, src) {
+            const imgEl = document.getElementById(`${position}LogoImg`);
+            const svgEl = document.getElementById(`${position}LogoSvg`);
+
+            if (src && src.trim() !== "") {
+                imgEl.src = src;
+                imgEl.classList.remove('hidden');
+                svgEl.classList.add('hidden');
+            } else {
+                imgEl.classList.add('hidden');
+                svgEl.classList.remove('hidden');
+            }
+        }
+
+        function handleLogoError(position) {
+            // Revert back to SVG if image URL fails to load
+            updateLogoDisplay(position, "");
+        }
+
+        function handleFileUpload(event, position) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const dataUrl = e.target.result;
+                    document.getElementById(`${position}LogoUrl`).value = dataUrl;
+                    updateLogoDisplay(position, dataUrl);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveLogoUrls() {
+            const leftUrl = document.getElementById('leftLogoUrl').value;
+            const rightUrl = document.getElementById('rightLogoUrl').value;
+
+            updateLogoDisplay('left', leftUrl);
+            updateLogoDisplay('right', rightUrl);
+
+            try {
+                localStorage.setItem('csmegb_left_logo', leftUrl);
+                localStorage.setItem('csmegb_right_logo', rightUrl);
+            } catch(e) {
+                console.warn('LocalStorage limit exceeded or restricted.');
+            }
+
+            closeLogoModal();
+        }
+
+        function loadSavedLogos() {
+            const leftUrl = localStorage.getItem('csmegb_left_logo') || "";
+            const rightUrl = localStorage.getItem('csmegb_right_logo') || "";
+
+            if (leftUrl) {
+                document.getElementById('leftLogoUrl').value = leftUrl;
+                updateLogoDisplay('left', leftUrl);
+            }
+            if (rightUrl) {
+                document.getElementById('rightLogoUrl').value = rightUrl;
+                updateLogoDisplay('right', rightUrl);
+            }
+        }
+
+        function resetLogos() {
+            document.getElementById('leftLogoUrl').value = "";
+            document.getElementById('rightLogoUrl').value = "";
+            document.getElementById('leftLogoFile').value = "";
+            document.getElementById('rightLogoFile').value = "";
+            
+            localStorage.removeItem('csmegb_left_logo');
+            localStorage.removeItem('csmegb_right_logo');
+
+            updateLogoDisplay('left', "");
+            updateLogoDisplay('right', "");
+            closeLogoModal();
+        }
+
+        function updateFormItemsList() {
+            const type = document.getElementById('itemType').value;
+            const select = document.getElementById('itemNameSelect');
+            const items = type === 'Solo' ? OFFICIAL_SOLO_ITEMS : OFFICIAL_GROUP_ITEMS;
+            
+            select.innerHTML = items.map(item => `<option value="${item}">${item}</option>`).join('');
+        }
+
+        function computeScores() {
+            let scores = {};
+            MISSIONS.forEach(m => {
+                scores[m] = {
+                    name: m,
+                    total: 0,
+                    soloPoints: 0,
+                    groupPoints: 0,
+                    firsts: 0,
+                    seconds: 0,
+                    thirds: 0
+                };
+            });
+
+            itemResults.forEach(item => {
+                const pointsTable = RULES[item.type];
+                
+                if (scores[item.first.mission]) {
+                    const pts = pointsTable[1];
+                    scores[item.first.mission].total += pts;
+                    scores[item.first.mission].firsts += 1;
+                    if (item.type === 'Solo') scores[item.first.mission].soloPoints += pts;
+                    else scores[item.first.mission].groupPoints += pts;
+                }
+                if (scores[item.second.mission]) {
+                    const pts = pointsTable[2];
+                    scores[item.second.mission].total += pts;
+                    scores[item.second.mission].seconds += 1;
+                    if (item.type === 'Solo') scores[item.second.mission].soloPoints += pts;
+                    else scores[item.second.mission].groupPoints += pts;
+                }
+                if (scores[item.third.mission]) {
+                    const pts = pointsTable[3];
+                    scores[item.third.mission].total += pts;
+                    scores[item.third.mission].thirds += 1;
+                    if (item.type === 'Solo') scores[item.third.mission].soloPoints += pts;
+                    else scores[item.third.mission].groupPoints += pts;
+                }
+            });
+
+            return Object.values(scores).sort((a, b) => b.total - a.total || b.firsts - a.firsts);
+        }
+
+        function renderApp() {
+            const standings = computeScores();
+            renderPodium(standings);
+            renderRemainingMissions(standings);
+            renderFilteredResults();
+            renderMatrixTable(standings);
+            document.getElementById('totalItemsCount').innerText = itemResults.length;
+        }
+
+        function renderPodium(standings) {
+            const container = document.getElementById('podiumContainer');
+            if (standings.length < 3) return;
+
+            const [first, second, third] = standings;
+
+            container.innerHTML = `
+                <!-- 2nd Place -->
+                <div class="order-2 md:order-1 silver-gradient rounded-2xl p-6 border-2 shadow-sm flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 opacity-10 text-slate-700">
+                        <i class="fa-solid fa-medal text-8xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="inline-flex items-center space-x-1 text-xs font-bold bg-slate-200 text-slate-700 px-3 py-1 rounded-full">
+                                <i class="fa-solid fa-medal"></i>
+                                <span>2nd Place Runner-Up</span>
+                            </span>
+                            <span class="text-2xl font-black text-slate-600">#2</span>
+                        </div>
+                        <h3 class="text-2xl font-extrabold text-slate-800">${second.name}</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">${second.firsts} Gold • ${second.seconds} Silver • ${second.thirds} Bronze</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-300/60 flex justify-between items-baseline">
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Total Points</span>
+                        <span class="text-3xl font-black text-slate-800">${second.total} <span class="text-xs font-normal">pts</span></span>
+                    </div>
+                </div>
+
+                <!-- 1st Place Gold -->
+                <div class="order-1 md:order-2 gold-gradient rounded-2xl p-6 border-2 shadow-md flex flex-col justify-between relative overflow-hidden transform md:-translate-y-2">
+                    <div class="absolute -right-4 -bottom-4 opacity-15 text-amber-700">
+                        <i class="fa-solid fa-trophy text-9xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="inline-flex items-center space-x-1 text-xs font-bold bg-amber-200 text-amber-900 px-3 py-1 rounded-full shadow-sm">
+                                <i class="fa-solid fa-crown text-amber-600"></i>
+                                <span>1st Place Champion</span>
+                            </span>
+                            <span class="text-2xl font-black text-amber-700">#1</span>
+                        </div>
+                        <h3 class="text-3xl font-black text-slate-900">${first.name}</h3>
+                        <p class="text-xs text-amber-800 mt-0.5 font-medium">${first.firsts} Gold • ${first.seconds} Silver • ${first.thirds} Bronze</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-amber-300/80 flex justify-between items-baseline">
+                        <span class="text-xs text-amber-800 font-bold uppercase tracking-wider">Total Points</span>
+                        <span class="text-4xl font-black text-amber-900">${first.total} <span class="text-xs font-semibold">pts</span></span>
+                    </div>
+                </div>
+
+                <!-- 3rd Place Bronze -->
+                <div class="order-3 bronze-gradient rounded-2xl p-6 border-2 shadow-sm flex flex-col justify-between relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 opacity-10 text-amber-900">
+                        <i class="fa-solid fa-award text-8xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="inline-flex items-center space-x-1 text-xs font-bold bg-amber-200 text-amber-900 px-3 py-1 rounded-full">
+                                <i class="fa-solid fa-award"></i>
+                                <span>3rd Place</span>
+                            </span>
+                            <span class="text-2xl font-black text-amber-800">#3</span>
+                        </div>
+                        <h3 class="text-2xl font-extrabold text-slate-800">${third.name}</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">${third.firsts} Gold • ${third.seconds} Silver • ${third.thirds} Bronze</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-orange-200 flex justify-between items-baseline">
+                        <span class="text-xs text-slate-500 font-semibold uppercase">Total Points</span>
+                        <span class="text-3xl font-black text-slate-800">${third.total} <span class="text-xs font-normal">pts</span></span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRemainingMissions(standings) {
+            const container = document.getElementById('remainingMissionsList');
+            const remaining = standings.slice(3);
+
+            container.innerHTML = remaining.map((m, index) => `
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100/80 transition border border-slate-100">
+                    <div class="flex items-center space-x-3">
+                        <span class="w-6 text-center text-xs font-bold text-slate-400">#${index + 4}</span>
+                        <div>
+                            <span class="text-sm font-semibold text-slate-800 block">${m.name}</span>
+                            <span class="text-[10px] text-slate-400">${m.firsts} 1st • ${m.seconds} 2nd • ${m.thirds} 3rd</span>
+                        </div>
+                    </div>
+                    <span class="text-sm font-bold text-slate-700 bg-white px-2.5 py-1 rounded-md border border-slate-200">${m.total} pts</span>
+                </div>
+            `).join('');
+        }
+
+        // Apply dropdown filters
+        function applyFilters() {
+            renderFilteredResults();
+        }
+
+        function clearAllFilters() {
+            document.getElementById('filterProgramType').value = 'All';
+            document.getElementById('filterAgeCategory').value = 'All';
+            document.getElementById('filterMission').value = 'All';
+            renderFilteredResults();
+        }
+
+        function renderFilteredResults() {
+            const container = document.getElementById('itemResultsGrid');
+            const selectedProgram = document.getElementById('filterProgramType').value;
+            const selectedAge = document.getElementById('filterAgeCategory').value;
+            const selectedMission = document.getElementById('filterMission').value;
+
+            let filtered = itemResults.filter(item => {
+                // Program / Item filter
+                let programMatch = true;
+                if (selectedProgram === 'Solo') programMatch = item.type === 'Solo';
+                else if (selectedProgram === 'Group') programMatch = item.type === 'Group';
+                else if (selectedProgram !== 'All') programMatch = item.name === selectedProgram;
+
+                // Age Category filter
+                let ageMatch = (selectedAge === 'All') || (item.category === selectedAge);
+
+                // Mission filter
+                let missionMatch = (selectedMission === 'All') || 
+                    (item.first.mission === selectedMission || 
+                     item.second.mission === selectedMission || 
+                     item.third.mission === selectedMission);
+
+                return programMatch && ageMatch && missionMatch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full bg-white rounded-2xl p-8 text-center text-slate-400 border border-slate-200">
+                        <i class="fa-solid fa-filter-circle-xmark text-4xl mb-2 text-slate-300"></i>
+                        <p class="text-sm font-semibold text-slate-600">No results found matching selected criteria.</p>
+                        <button onclick="clearAllFilters()" class="mt-3 text-xs bg-brand-50 text-brand-600 px-3 py-1.5 rounded-lg border border-brand-200">Reset Filters</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(item => `
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-2 py-0.5 rounded-md border border-brand-100">
+                                ${item.category}
+                            </span>
+                            <h4 class="text-base font-extrabold text-slate-900 mt-1">${item.name}</h4>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full font-bold ${item.type === 'Group' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}">
+                            ${item.type} (${item.type === 'Solo' ? '5-3-1' : '10-6-2'} pts)
+                        </span>
+                    </div>
+
+                    <div class="space-y-2 mt-4 text-xs">
+                        <!-- First -->
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-amber-50/60 border border-amber-200/60">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-trophy text-amber-500"></i>
+                                <div>
+                                    <span class="font-bold text-slate-800">${item.first.mission}</span>
+                                    ${item.first.winner ? `<span class="text-slate-500 text-[11px] block">${item.first.winner}</span>` : ''}
+                                </div>
+                            </div>
+                            <span class="font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded text-[11px]">1st Place</span>
+                        </div>
+
+                        <!-- Second -->
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-200/60">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-medal text-slate-400"></i>
+                                <div>
+                                    <span class="font-bold text-slate-800">${item.second.mission}</span>
+                                    ${item.second.winner ? `<span class="text-slate-500 text-[11px] block">${item.second.winner}</span>` : ''}
+                                </div>
+                            </div>
+                            <span class="font-bold text-slate-600 bg-slate-200 px-2 py-0.5 rounded text-[11px]">2nd Place</span>
+                        </div>
+
+                        <!-- Third -->
+                        <div class="flex items-center justify-between p-2 rounded-lg bg-amber-900/5 border border-amber-900/10">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-award text-amber-700"></i>
+                                <div>
+                                    <span class="font-bold text-slate-800">${item.third.mission}</span>
+                                    ${item.third.winner ? `<span class="text-slate-500 text-[11px] block">${item.third.winner}</span>` : ''}
+                                </div>
+                            </div>
+                            <span class="font-bold text-amber-800 bg-amber-200/60 px-2 py-0.5 rounded text-[11px]">3rd Place</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMatrixTable(standings) {
+            const tbody = document.getElementById('matrixTableBody');
+            tbody.innerHTML = standings.map((m, idx) => `
+                <tr class="hover:bg-slate-50/80 transition">
+                    <td class="p-3.5 font-bold text-slate-900 sticky left-0 bg-white shadow-sm flex items-center space-x-2">
+                        <span class="text-slate-400 w-4">${idx + 1}.</span>
+                        <span>${m.name}</span>
+                    </td>
+                    <td class="p-3.5 text-center text-slate-600">${m.firsts}</td>
+                    <td class="p-3.5 text-center text-slate-600">${m.seconds}</td>
+                    <td class="p-3.5 text-center text-slate-600">${m.thirds}</td>
+                    <td class="p-3.5 text-center text-slate-600">${m.soloPoints}</td>
+                    <td class="p-3.5 text-center text-slate-600">${m.groupPoints}</td>
+                    <td class="p-3.5 text-right font-extrabold text-brand-600 text-sm">${m.total} pts</td>
+                </tr>
+            `).join('');
+        }
+
+        function toggleAdminPanel() {
+            const adminSection = document.getElementById('adminSection');
+            adminSection.classList.toggle('hidden');
+            if (!adminSection.classList.contains('hidden')) {
+                adminSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function handleResultSubmit(e) {
+            e.preventDefault();
+            
+            const newItem = {
+                id: Date.now(),
+                name: document.getElementById('itemNameSelect').value,
+                category: document.getElementById('itemCategory').value,
+                type: document.getElementById('itemType').value,
+                first: {
+                    mission: document.getElementById('firstMission').value,
+                    winner: document.getElementById('firstWinner').value
+                },
+                second: {
+                    mission: document.getElementById('secondMission').value,
+                    winner: document.getElementById('secondWinner').value
+                },
+                third: {
+                    mission: document.getElementById('thirdMission').value,
+                    winner: document.getElementById('thirdWinner').value
+                }
+            };
+
+            itemResults.unshift(newItem);
+            renderApp();
+            resetForm();
+            toggleAdminPanel();
+        }
+
+        function resetForm() {
+            document.getElementById('resultForm').reset();
+        }
+
+        function initQRCode() {
+            const qrcodeContainer = document.getElementById("qrcode");
+            qrcodeContainer.innerHTML = "";
+            new QRCode(qrcodeContainer, {
+                text: window.location.href,
+                width: 160,
+                height: 160,
+                colorDark: "#0c4a6e",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        function openQRModal() {
+            document.getElementById('qrModal').classList.remove('hidden');
+        }
+
+        function closeQRModal() {
+            document.getElementById('qrModal').classList.add('hidden');
+        }
+
+        function copyPageUrl() {
+            const dummy = document.createElement('input');
+            document.body.appendChild(dummy);
+            dummy.value = window.location.href;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+
+            const btnText = document.getElementById('copyBtnText');
+            btnText.innerText = 'Copied to Clipboard!';
+            setTimeout(() => {
+                btnText.innerText = 'Copy Web Link';
+            }, 2000);
+        }
+    </script>

@@ -27,48 +27,50 @@
     </script>
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- QRCode.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
 
     <header class="bg-brand-900 text-white border-b-4 border-amber-500 sticky top-0 z-40 shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
             <div class="flex items-center space-x-3 sm:space-x-4">
                 <!-- Left Logo Container -->
-                <div id="headerLeftLogo" class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
-                    <i data-lucide="book-open" class="text-amber-400 w-6 h-6"></i>
+                <div id="headerLeftLogo" class="w-12 h-12 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
+                    <i data-lucide="book-open" class="text-amber-400 w-6 h-6 sm:w-8 sm:h-8"></i>
                 </div>
                 <div>
-                    <h1 class="text-xs sm:text-base font-black text-white leading-tight tracking-wide">9TH BRISTOL-CARDIFF REGIONAL</h1>
-                    <p class="text-[11px] sm:text-xs font-bold text-amber-400">SYRO-MALABAR EPARCHY OF GREAT BRITAIN</p>
-                    <p class="text-[10px] text-slate-300 font-medium">BIBLE KALOTSAVAM 2026</p>
+                    <!-- Increased Title Sizes as requested -->
+                    <h1 class="text-sm sm:text-xl md:text-2xl font-black text-white leading-tight tracking-wide">9TH BRISTOL-CARDIFF REGIONAL</h1>
+                    <p class="text-xs sm:text-sm font-extrabold text-amber-400">SYRO-MALABAR EPARCHY OF GREAT BRITAIN</p>
+                    <p class="text-[11px] sm:text-xs text-slate-300 font-bold">BIBLE KALOTSAVAM 2026</p>
                 </div>
             </div>
             
             <div class="flex items-center space-x-3">
                 <!-- Right Logo Container -->
-                <div id="headerRightLogo" class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
-                    <i data-lucide="award" class="text-amber-400 w-6 h-6"></i>
+                <div id="headerRightLogo" class="w-12 h-12 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
+                    <i data-lucide="award" class="text-amber-400 w-6 h-6 sm:w-8 sm:h-8"></i>
                 </div>
                 
-                <!-- Share Button -->
-                <button onclick="sharePage()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition shadow">
-                    <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
-                    <span class="hidden sm:inline">Share Page</span>
+                <!-- Share & QR Button -->
+                <button onclick="openShareModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-2 rounded-lg text-xs font-black flex items-center gap-1.5 transition shadow">
+                    <i data-lucide="qr-code" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Share / QR Code</span>
                 </button>
             </div>
         </div>
     </header>
 
     <!-- Theme Banner -->
-    <div class="bg-amber-500 text-slate-950 py-1.5 px-4 text-center text-xs font-extrabold shadow-inner">
+    <div class="bg-amber-500 text-slate-950 py-1.5 px-4 text-center text-xs sm:text-sm font-extrabold shadow-inner">
         Theme: "The Lord disciplines those whom he loves..." (Hebrews 12:6) | "താൻ സ്നേഹിക്കുന്നവന് കർത്താവു ശിക്ഷണം നൽകുന്നു..." (ഹെബ്രായർ 12:6)
     </div>
 
-    <!-- Main Content Container -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
 
         <!-- Navigation Tabs -->
@@ -167,7 +169,7 @@
                     </span>
                     <div>
                         <h3 class="font-bold text-slate-900 text-sm">Live 9-Stage Progress Tracker</h3>
-                        <p class="text-xs text-slate-600">Stage details and schedule allocations will be updated live by administrators.</p>
+                        <p class="text-xs text-slate-600">Stage details and schedule allocations are updated live by administrators.</p>
                     </div>
                 </div>
             </div>
@@ -185,7 +187,7 @@
                         <i data-lucide="clock" class="w-5 h-5 text-brand-700"></i>
                         Official Competition Programme Schedule
                     </h2>
-                    <span id="adminScheduleNotice" class="text-xs text-slate-500 font-medium">Schedule subject to updates</span>
+                    <span id="adminScheduleNotice" class="text-xs text-slate-500 font-medium">Schedule subject to live updates</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs sm:text-sm">
@@ -231,6 +233,16 @@
                                 </tr>
                             </thead>
                             <tbody id="matrixTableBody" class="divide-y divide-slate-200 text-slate-700 font-semibold">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
     <!-- Footer with discrete Admin portal access -->
     <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-3">
@@ -240,6 +252,32 @@
             </button>
         </div>
     </footer>
+
+    <!-- SHARE & QR CODE MODAL -->
+    <div id="shareModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4 flex items-center justify-center">
+        <div class="max-w-md w-full bg-white text-slate-900 rounded-2xl shadow-2xl p-6 space-y-5 border border-slate-200 my-auto">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                    <i data-lucide="qr-code" class="w-5 h-5 text-amber-500"></i>
+                    Scan or Share Results
+                </h3>
+                <button onclick="closeShareModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="flex flex-col items-center justify-center space-y-3 py-2">
+                <div id="qrcode" class="p-3 bg-white border border-slate-200 rounded-xl shadow-inner"></div>
+                <p class="text-xs text-slate-500 font-semibold text-center">Scan this QR code with any mobile camera to view live results instantly.</p>
+            </div>
+
+            <div class="space-y-2 pt-2 border-t border-slate-100">
+                <button onclick="copyPageUrl()" class="w-full bg-brand-700 hover:bg-brand-900 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                    <i data-lucide="copy" class="w-4 h-4"></i> Copy Page Link
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- MISSION PRIZE BREAKDOWN MODAL -->
     <div id="missionPrizeModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4 sm:p-6 flex items-center justify-center">
@@ -462,10 +500,11 @@
         let selectedMissionFilter = null;
         let adminAuthenticated = false;
         let editingResultIndex = null;
+        let qrcodeObj = null;
 
-        // Default 9 stages (Blank stage names for future editing)
+        // Default 9 stages
         let stageData = Array.from({ length: 9 }, (_, i) => ({
-            stage: "",
+            stage: `Stage ${i + 1}`,
             ongoing: "To be allocated",
             time: "Awaiting Schedule",
             next: "To be updated"
@@ -502,7 +541,6 @@
             const savedResults = localStorage.getItem('csmegb_results_2026_v3');
             if (savedResults) {
                 itemResults = JSON.parse(savedResults);
-                // Standardize default status on old cached items if missing
                 itemResults.forEach(r => {
                     if (!r.status) r.status = "Final Result";
                 });
@@ -650,6 +688,56 @@
 
             document.getElementById('totalDeclaredBadge').innerText = `${itemResults.length} Items Declared`;
             initLucide();
+        }
+
+        // Render Live 9-Stage Tracker
+        function renderStages() {
+            const container = document.getElementById('stagesContainer');
+            const adminContainer = document.getElementById('adminStagesControlList');
+
+            if (container) {
+                container.innerHTML = stageData.map((stg, i) => `
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3 relative overflow-hidden">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                            <h3 class="font-black text-slate-900 text-sm flex items-center gap-2">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-amber-500"></i>
+                                ${stg.stage || `Stage ${i + 1}`}
+                            </h3>
+                            <span class="text-[10px] font-extrabold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">${stg.time || 'Awaiting'}</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider block mb-0.5">Ongoing Event</span>
+                            <p class="text-xs font-black text-slate-800">${stg.ongoing || 'To be allocated'}</p>
+                        </div>
+                        <div class="pt-2 border-t border-slate-50">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Upcoming Next</span>
+                            <p class="text-xs font-bold text-slate-600">${stg.next || 'To be updated'}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            if (adminContainer) {
+                adminContainer.innerHTML = stageData.map((stg, i) => `
+                    <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-700 space-y-2">
+                        <span class="text-amber-400 font-bold text-xs">Stage #${i + 1} Configuration</span>
+                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                            <input type="text" value="${stg.stage || ''}" onchange="updateStageField(${i}, 'stage', this.value)" placeholder="Stage Name" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                            <input type="text" value="${stg.ongoing || ''}" onchange="updateStageField(${i}, 'ongoing', this.value)" placeholder="Ongoing Event" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                            <input type="text" value="${stg.time || ''}" onchange="updateStageField(${i}, 'time', this.value)" placeholder="Time Range" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                            <input type="text" value="${stg.next || ''}" onchange="updateStageField(${i}, 'next', this.value)" placeholder="Upcoming Next" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            initLucide();
+        }
+
+        function updateStageField(index, field, value) {
+            stageData[index][field] = value;
+            saveData();
+            renderStages();
         }
 
         function showMissionPrizes(missionName) {
@@ -860,25 +948,39 @@
             initLucide();
         }
 
-        // Share Page Functionality
-        function sharePage() {
-            const shareData = {
-                title: 'CSMEGB Bible Kalotsavam 2026 Results',
-                text: 'Check live results and standings for 9th Bristol-Cardiff Regional Bible Kalotsavam 2026!',
-                url: window.location.href
-            };
+        // Share & QR Modal Handlers
+        function openShareModal() {
+            const modal = document.getElementById('shareModal');
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
 
-            if (navigator.share) {
-                navigator.share(shareData).catch(() => {});
-            } else {
-                const dummy = document.createElement('input');
-                document.body.appendChild(dummy);
-                dummy.value = window.location.href;
-                dummy.select();
-                document.execCommand('copy');
-                document.body.removeChild(dummy);
-                alert("Website link copied to clipboard!");
+            if (window.QRCode) {
+                qrcodeObj = new QRCode(qrContainer, {
+                    text: window.location.href,
+                    width: 160,
+                    height: 160,
+                    colorDark : "#061224",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
             }
+
+            modal.classList.remove('hidden');
+            initLucide();
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModal').classList.add('hidden');
+        }
+
+        function copyPageUrl() {
+            const dummy = document.createElement('input');
+            document.body.appendChild(dummy);
+            dummy.value = window.location.href;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            alert("Website link copied to clipboard!");
         }
 
         // Admin: Delete All Results
@@ -889,12 +991,6 @@
                 renderResults();
                 alert("All results have been wiped clean.");
             }
-        }
-
-        function updateStageField(index, field, value) {
-            stageData[index][field] = value;
-            saveData();
-            renderStages();
         }
 
         function renderSchedule() {
@@ -957,8 +1053,8 @@
                 adminAuthenticated = true;
                 document.getElementById('adminAuthSection').classList.add('hidden');
                 document.getElementById('adminControlsSection').classList.remove('hidden');
-                document.getElementById('adminBtnText').innerText = "Admin Enabled";
                 renderResults();
+                renderStages();
                 renderSchedule();
             } else {
                 document.getElementById('adminAuthErr').classList.remove('hidden');
@@ -986,7 +1082,6 @@
             document.getElementById('cancelEditResultBtn').classList.remove('hidden');
             document.getElementById('publishResultBtn').innerText = "Update Result & Save Changes";
 
-            // Find matching item index in matrix
             const matrixIndex = PROGRAM_MATRIX.findIndex(p => p.name === res.itemName);
             if (matrixIndex !== -1) {
                 document.getElementById('adminItemSelect').value = matrixIndex;

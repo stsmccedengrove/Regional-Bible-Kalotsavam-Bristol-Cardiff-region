@@ -42,7 +42,7 @@
             <div class="flex items-center justify-between gap-3 sm:gap-6">
                 
                 <!-- Left Logo Container -->
-                <div id="headerLogoLeftContainer" class="w-11 h-11 sm:w-14 sm:h-14 flex-shrink-0 bg-white rounded-xl p-1 shadow-inner border border-amber-400/40 flex items-center justify-center overflow-hidden self-center">
+                <div id="headerLogoLeftContainer" class="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-white rounded-xl p-1 shadow-inner border border-amber-400/40 flex items-center justify-center overflow-hidden self-center">
                 </div>
 
                 <!-- Center Title Group -->
@@ -54,7 +54,7 @@
                 </div>
 
                 <!-- Right Logo Container -->
-                <div id="headerLogoRightContainer" class="w-11 h-11 sm:w-14 sm:h-14 flex-shrink-0 bg-white rounded-xl p-1 shadow-inner border border-amber-400/40 flex items-center justify-center overflow-hidden self-center">
+                <div id="headerLogoRightContainer" class="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-white rounded-xl p-1 shadow-inner border border-amber-400/40 flex items-center justify-center overflow-hidden self-center">
                 </div>
 
                 <!-- Navigation Controls -->
@@ -1213,12 +1213,12 @@
             const leftContainer = document.getElementById('headerLogoLeftContainer');
             const rightContainer = document.getElementById('headerLogoRightContainer');
 
-            const defaultLeftSvg = `<svg class="w-full h-full text-brand-800 object-contain p-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
-            const defaultRightSvg = `<svg class="w-full h-full text-amber-600 object-contain p-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-5 14h-2v-3H8v-2h3V8h2v3h3v2h-3v3z"/></svg>`;
+            const defaultLeftSvg = `<svg class="w-full h-full text-brand-800 object-contain p-0.5 mx-auto" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
+            const defaultRightSvg = `<svg class="w-full h-full text-amber-600 object-contain p-0.5 mx-auto" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-5 14h-2v-3H8v-2h3V8h2v3h3v2h-3v3z"/></svg>`;
 
             if (leftContainer) {
                 if (left) {
-                    leftContainer.innerHTML = `<img src="${left}" class="w-full h-full object-contain object-center rounded-lg" alt="Eparchial Emblem" onerror="this.outerHTML='${defaultLeftSvg.replace(/'/g, "\\'")}'">`;
+                    leftContainer.innerHTML = `<img src="${left}" class="w-full h-full object-contain object-center rounded-lg mx-auto my-auto block" alt="Eparchial Emblem" onerror="this.outerHTML='${defaultLeftSvg.replace(/'/g, "\\'")}'">`;
                 } else {
                     leftContainer.innerHTML = defaultLeftSvg;
                 }
@@ -1226,7 +1226,7 @@
 
             if (rightContainer) {
                 if (right) {
-                    rightContainer.innerHTML = `<img src="${right}" class="w-full h-full object-contain object-center rounded-lg" alt="Bible Apostolate Logo" onerror="this.outerHTML='${defaultRightSvg.replace(/'/g, "\\'")}'">`;
+                    rightContainer.innerHTML = `<img src="${right}" class="w-full h-full object-contain object-center rounded-lg mx-auto my-auto block" alt="Bible Apostolate Logo" onerror="this.outerHTML='${defaultRightSvg.replace(/'/g, "\\'")}'">`;
                 } else {
                     rightContainer.innerHTML = defaultRightSvg;
                 }

@@ -39,10 +39,10 @@
     <!-- Navigation Header -->
     <header class="bg-brand-900 text-white shadow-xl sticky top-0 z-40 border-b border-amber-600/30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-            <div class="flex items-center justify-between gap-3 sm:gap-6">
+            <div class="flex items-center justify-between gap-2 sm:gap-4">
                 
                 <!-- Left Logo Container -->
-                <div id="headerLogoLeftContainer" class="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-white rounded-xl p-1 shadow-inner border border-amber-400/40 flex items-center justify-center overflow-hidden self-center">
+                <div id="headerLogoLeftContainer" class="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-white rounded-xl p-1 shadow-inner border border-amber-400/40 flex items-center justify-center overflow-hidden">
                 </div>
 
                 <!-- Center Title Group -->
@@ -54,11 +54,11 @@
                 </div>
 
                 <!-- Right Logo Container -->
-                <div id="headerLogoRightContainer" class="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-white rounded-xl p-1 shadow-inner border border-amber-400/40 flex items-center justify-center overflow-hidden self-center">
+                <div id="headerLogoRightContainer" class="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 bg-white rounded-xl p-1 shadow-inner border border-amber-400/40 flex items-center justify-center overflow-hidden">
                 </div>
 
                 <!-- Navigation Controls -->
-                <div class="flex items-center space-x-2 flex-shrink-0 ml-1 sm:ml-2">
+                <div class="flex items-center space-x-2 flex-shrink-0 ml-1">
                     <!-- Share Button -->
                     <button onclick="openQRModal()" title="Share QR Code" class="flex items-center space-x-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 transition p-2 sm:px-3 sm:py-2 rounded-lg text-xs font-semibold border border-amber-400/30">
                         <i class="fa-solid fa-qrcode text-amber-400 text-sm"></i>
@@ -170,13 +170,15 @@
                         <label class="block text-[11px] font-bold text-slate-500 uppercase mb-1">Filter Age Category</label>
                         <select id="filterCategory" onchange="applyFilters()" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500">
                             <option value="ALL">All Age Categories</option>
-                            <option value="Up to 7 yrs</option>
-                            <option value="8 - 10 yrs</option>
-                            <option value="11 - 13 yrs</option>
-                            <option value="14 - 17 yrs</option>
-                            <option value="18 - 24 yrs</option>
-                            <option value="25+ yrs</option>
-                            <option value="All Ages General</option>
+                            <option value="Cat I">Category I (Up to 7 yrs)</option>
+                            <option value="Cat II">Category II (8 - 10 yrs)</option>
+                            <option value="Cat III">Category III (11 - 13 yrs)</option>
+                            <option value="Cat IV">Category IV (14 - 17 yrs)</option>
+                            <option value="Cat V">Category V (Youth 18 - 24 yrs)</option>
+                            <option value="Cat VI">Category VI (Adults 25+ yrs)</option>
+                            <option value="Cat VII">Category VII (All Ages General)</option>
+                            <option value="Margamkali Under 30">Margamkali (Under 30 yrs)</option>
+                            <option value="Margamkali 30+">Margamkali (30+ yrs)</option>
                         </select>
                     </div>
 
@@ -308,13 +310,15 @@
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-300 mb-1">Age Category</label>
                                 <select id="adminCategory" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-amber-500">
-                                    <option value="Up to 7 yrs</option>
-                                    <option value="8 - 10 yrs</option>
-                                    <option value="11 - 13 yrs</option>
-                                    <option value="14 - 17 yrs</option>
-                                    <option value="18 - 24 yrs</option>
-                                    <option value="25+ yrs</option>
-                                    <option value="All Ages General</option>
+                                    <option value="Cat I">Category I (Up to 7 yrs)</option>
+                                    <option value="Cat II">Category II (8 - 10 yrs)</option>
+                                    <option value="Cat III">Category III (11 - 13 yrs)</option>
+                                    <option value="Cat IV">Category IV (14 - 17 yrs)</option>
+                                    <option value="Cat V">Category V (Youth 18 - 24 yrs)</option>
+                                    <option value="Cat VI">Category VI (Adults 25+ yrs)</option>
+                                    <option value="Cat VII">Category VII (All Ages General)</option>
+                                    <option value="Margamkali Under 30">Margamkali (Under 30 yrs)</option>
+                                    <option value="Margamkali 30+">Margamkali (30+ yrs)</option>
                                 </select>
                             </div>
                         </div>
@@ -527,7 +531,7 @@
         let selectedMissionFilter = null;
 
         let stageData = [
-            { stage: "Stage 1 (Main Hall)", ongoing: "Devotional Group Song", time: "Cat VII • In Progress", next: "Margamkali (Cat IV)" },
+            { stage: "Stage 1 (Main Hall)", ongoing: "Devotional Group Song", time: "Cat VII • In Progress", next: "Margamkali (30+ yrs)" },
             { stage: "Stage 2 (St. Mary's Hall)", ongoing: "Bible Reading (Malayalam)", time: "Cat III • In Progress", next: "Bible Mono Act (Cat II)" },
             { stage: "Stage 3 (Auditorium B)", ongoing: "Bible Story Telling", time: "Cat I • In Progress", next: "Pencil Drawing (Cat III)" },
             { stage: "Stage 4 (Conference Room)", ongoing: "Bible Essay Writing", time: "Cat V • In Progress", next: "Biblical Painting (Cat IV)" }
@@ -536,7 +540,7 @@
         let scheduleData = [
             { time: "09:00 AM - 10:00 AM", item: "Bible Reading (Malayalam)", category: "Cat III (11-13 yrs)", stage: "Stage 2 (St. Mary's Hall)" },
             { time: "10:00 AM - 11:30 AM", item: "Devotional Group Song", category: "Cat VII (All Ages)", stage: "Stage 1 (Main Hall)" },
-            { time: "11:30 AM - 01:00 PM", item: "Margamkali", category: "Cat IV (14-17 yrs)", stage: "Stage 1 (Main Hall)" },
+            { time: "11:30 AM - 01:00 PM", item: "Margamkali", category: "Margamkali Under 30 / 30+ yrs", stage: "Stage 1 (Main Hall)" },
             { time: "01:30 PM - 03:00 PM", item: "Bible Quiz", category: "Cat III (11-13 yrs)", stage: "Stage 3 (Auditorium B)" }
         ];
 
@@ -1213,8 +1217,8 @@
             const leftContainer = document.getElementById('headerLogoLeftContainer');
             const rightContainer = document.getElementById('headerLogoRightContainer');
 
-            const defaultLeftSvg = `<svg class="w-full h-full text-brand-800 object-contain p-0.5 mx-auto" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
-            const defaultRightSvg = `<svg class="w-full h-full text-amber-600 object-contain p-0.5 mx-auto" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-5 14h-2v-3H8v-2h3V8h2v3h3v2h-3v3z"/></svg>`;
+            const defaultLeftSvg = `<svg class="w-full h-full text-brand-800 object-contain mx-auto" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
+            const defaultRightSvg = `<svg class="w-full h-full text-amber-600 object-contain mx-auto" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-5 14h-2v-3H8v-2h3V8h2v3h3v2h-3v3z"/></svg>`;
 
             if (leftContainer) {
                 if (left) {

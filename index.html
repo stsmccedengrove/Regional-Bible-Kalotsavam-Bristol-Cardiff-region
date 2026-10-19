@@ -54,10 +54,10 @@
                     <i data-lucide="award" class="text-amber-400 w-6 h-6"></i>
                 </div>
                 
-                <!-- Admin Portal Trigger Button -->
-                <button onclick="openAdminAuth()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition shadow">
-                    <i data-lucide="lock" class="w-3.5 h-3.5"></i>
-                    <span id="adminBtnText" class="hidden sm:inline">Admin Portal</span>
+                <!-- Share Button -->
+                <button onclick="sharePage()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition shadow">
+                    <i data-lucide="share-2" class="w-3.5 h-3.5"></i>
+                    <span class="hidden sm:inline">Share Page</span>
                 </button>
             </div>
         </div>
@@ -231,15 +231,15 @@
                                 </tr>
                             </thead>
                             <tbody id="matrixTableBody" class="divide-y divide-slate-200 text-slate-700 font-semibold">
-                                <!-- Populated dynamically based on exact image data -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
+    <!-- Footer with discrete Admin portal access -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p>© 2026 CSMEGB Bible Kalotsavam - Bristol-Cardiff Region</p>
+            <button onclick="openAdminAuth()" class="text-slate-600 hover:text-slate-400 transition text-[11px]">
+                Official Login
+            </button>
+        </div>
+    </footer>
 
     <!-- MISSION PRIZE BREAKDOWN MODAL -->
     <div id="missionPrizeModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4 sm:p-6 flex items-center justify-center">
@@ -307,6 +307,17 @@
                         </div>
                     </div>
                     <button onclick="saveLogos()" class="bg-amber-500 text-slate-950 px-4 py-1.5 rounded text-xs font-bold hover:bg-amber-400">Save Logos</button>
+                </div>
+
+                <!-- Section 1B: Danger Zone / Delete All Results -->
+                <div class="bg-red-950/40 p-5 rounded-xl border border-red-800/60 space-y-3">
+                    <h3 class="font-bold text-sm text-red-400 uppercase tracking-wider flex items-center gap-2">
+                        <i data-lucide="alert-triangle" class="w-4 h-4 text-red-400"></i> Danger Zone
+                    </h3>
+                    <p class="text-xs text-slate-300">Wipe all published results and clear points standings for a fresh start.</p>
+                    <button onclick="deleteAllResults()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-xs font-extrabold transition flex items-center gap-1.5">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Clear All Results Data
+                    </button>
                 </div>
 
                 <!-- Section 2: Publish / Edit Event Result -->
@@ -474,6 +485,13 @@
             renderResults();
             renderStages();
             renderSchedule();
+
+            // Keyboard shortcut Ctrl + Shift + A for hidden Admin Portal
+            window.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+                    openAdminAuth();
+                }
+            });
         });
 
         function initLucide() {
@@ -566,11 +584,28 @@
             const top3 = sortedMissions.slice(0, 3);
 
             top3Container.innerHTML = [0, 1, 2].map(idx => {
-                const missionName = top3[idx] || "Awaiting Result";
-                const pts = top3[idx] ? tally[top3[idx]].points : 0;
+                const missionName = top3[idx];
+                const pts = tally[missionName]?.points || 0;
                 const posLabel = idx === 0 ? "1st Champion" : idx === 1 ? "2nd Runner Up" : "3rd Runner Up";
                 const badgeColor = idx === 0 ? "bg-amber-500 text-slate-950" : idx === 1 ? "bg-slate-300 text-slate-900" : "bg-amber-700 text-white";
                 
+                if (itemResults.length === 0 || pts === 0) {
+                    return `
+                        <div class="bg-white p-5 rounded-2xl border border-dashed border-slate-300 shadow-sm relative overflow-hidden flex flex-col justify-between opacity-80">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${badgeColor}">${posLabel}</span>
+                                    <span class="text-xs font-bold text-slate-400">0 Pts</span>
+                                </div>
+                                <h3 class="text-base font-extrabold text-slate-400 mt-1">Results Coming Soon</h3>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400 italic">
+                                Standings will update as event results are published.
+                            </div>
+                        </div>
+                    `;
+                }
+
                 return `
                     <div onclick="showMissionPrizes('${missionName}')" class="bg-white p-5 rounded-2xl border ${idx === 0 ? 'border-amber-400 ring-2 ring-amber-400/30' : 'border-slate-200'} shadow-sm relative overflow-hidden flex flex-col justify-between cursor-pointer hover:border-amber-500 hover:shadow-md transition">
                         <div>
@@ -594,21 +629,24 @@
 
             // Render All 12 Missions in Table
             const tallyBody = document.getElementById('missionTallyBody');
-            tallyBody.innerHTML = sortedMissions.map((m, idx) => `
-                <tr onclick="showMissionPrizes('${m}')" class="hover:bg-amber-50/50 transition cursor-pointer ${idx < 3 ? 'bg-amber-50/20' : ''}">
-                    <td class="p-3.5 font-black text-slate-900">
-                        ${idx === 0 ? '🥇 1' : idx === 1 ? '🥈 2' : idx === 2 ? '🥉 3' : idx + 1}
-                    </td>
-                    <td class="p-3.5 font-black text-brand-700 hover:underline flex items-center gap-1.5">
-                        ${m}
-                        <i data-lucide="award" class="w-3.5 h-3.5 text-amber-500"></i>
-                    </td>
-                    <td class="p-3.5 text-center text-amber-600 font-bold">${tally[m].first}</td>
-                    <td class="p-3.5 text-center text-slate-600 font-bold">${tally[m].second}</td>
-                    <td class="p-3.5 text-center text-amber-800 font-bold">${tally[m].third}</td>
-                    <td class="p-3.5 text-right font-black text-brand-700 text-base">${tally[m].points}</td>
-                </tr>
-            `).join('');
+            tallyBody.innerHTML = sortedMissions.map((m, idx) => {
+                const pts = tally[m].points;
+                return `
+                    <tr onclick="showMissionPrizes('${m}')" class="hover:bg-amber-50/50 transition cursor-pointer ${idx < 3 && pts > 0 ? 'bg-amber-50/20' : ''}">
+                        <td class="p-3.5 font-black text-slate-900">
+                            ${pts > 0 ? (idx === 0 ? '🥇 1' : idx === 1 ? '🥈 2' : idx === 2 ? '🥉 3' : idx + 1) : '-'}
+                        </td>
+                        <td class="p-3.5 font-black text-brand-700 hover:underline flex items-center gap-1.5">
+                            ${m}
+                            ${pts > 0 ? '<i data-lucide="award" class="w-3.5 h-3.5 text-amber-500"></i>' : ''}
+                        </td>
+                        <td class="p-3.5 text-center text-amber-600 font-bold">${tally[m].first}</td>
+                        <td class="p-3.5 text-center text-slate-600 font-bold">${tally[m].second}</td>
+                        <td class="p-3.5 text-center text-amber-800 font-bold">${tally[m].third}</td>
+                        <td class="p-3.5 text-right font-black ${pts > 0 ? 'text-brand-700' : 'text-slate-400'} text-base">${pts}</td>
+                    </tr>
+                `;
+            }).join('');
 
             document.getElementById('totalDeclaredBadge').innerText = `${itemResults.length} Items Declared`;
             initLucide();
@@ -724,6 +762,18 @@
             const container = document.getElementById('publishedResultsContainer');
             const searchVal = (document.getElementById('searchItemInput').value || '').toLowerCase();
 
+            if (itemResults.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-500 space-y-2">
+                        <i data-lucide="clock" class="w-10 h-10 mx-auto text-amber-500 stroke-1"></i>
+                        <h3 class="text-base font-extrabold text-slate-800">Results Coming Soon</h3>
+                        <p class="text-xs font-semibold text-slate-500">Official results will appear here as soon as judging and verification are completed.</p>
+                    </div>
+                `;
+                initLucide();
+                return;
+            }
+
             let filtered = itemResults.filter(res => {
                 const matchesSearch = !searchVal || 
                     res.itemName.toLowerCase().includes(searchVal) ||
@@ -751,7 +801,6 @@
             }
 
             container.innerHTML = filtered.map((res, index) => {
-                // Determine Badge Style according to status
                 const status = res.status || "Final Result";
                 let statusBadgeStyle = "bg-emerald-500/20 text-emerald-400 border-emerald-500/40";
                 let statusIcon = "check-circle-2";
@@ -771,7 +820,6 @@
                             <span class="font-extrabold text-sm sm:text-base">${res.itemName}</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <!-- Status Pill Badge -->
                             <span class="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-1 rounded-md border ${statusBadgeStyle}">
                                 <i data-lucide="${statusIcon}" class="w-3 h-3"></i>
                                 ${status}
@@ -812,46 +860,34 @@
             initLucide();
         }
 
-        function renderStages() {
-            const container = document.getElementById('stagesContainer');
-            if (container) {
-                container.innerHTML = stageData.map((s, idx) => `
-                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative overflow-hidden">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-xs font-black text-brand-700 uppercase tracking-wider bg-brand-50 px-2.5 py-1 rounded-md border border-brand-100">
-                                ${s.stage && s.stage.trim() !== "" ? s.stage : 'Stage ' + (idx + 1)}
-                            </span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold ${s.ongoing === 'To be allocated' ? 'bg-slate-100 text-slate-600' : 'bg-green-100 text-green-800'}">
-                                ${s.ongoing === 'To be allocated' ? 'Idle' : 'Live Now'}
-                            </span>
-                        </div>
-                        <div class="space-y-1">
-                            <h4 class="text-sm font-black text-slate-900">${s.ongoing}</h4>
-                            <p class="text-xs font-semibold text-slate-500">${s.time}</p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
-                            <span class="text-slate-400 font-medium">Up Next:</span>
-                            <span class="font-bold text-slate-700">${s.next}</span>
-                        </div>
-                    </div>
-                `).join('');
-            }
+        // Share Page Functionality
+        function sharePage() {
+            const shareData = {
+                title: 'CSMEGB Bible Kalotsavam 2026 Results',
+                text: 'Check live results and standings for 9th Bristol-Cardiff Regional Bible Kalotsavam 2026!',
+                url: window.location.href
+            };
 
-            const ctrlList = document.getElementById('adminStagesControlList');
-            if (ctrlList) {
-                ctrlList.innerHTML = stageData.map((s, idx) => `
-                    <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-800 space-y-2">
-                        <div class="flex items-center justify-between gap-2">
-                            <label class="text-[11px] font-bold text-amber-400 uppercase">Stage ${idx + 1} Name</label>
-                            <input type="text" value="${s.stage || ''}" onchange="updateStageField(${idx}, 'stage', this.value)" placeholder="Custom Stage Name" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white flex-1 max-w-[200px]">
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            <input type="text" value="${s.ongoing || ''}" onchange="updateStageField(${idx}, 'ongoing', this.value)" placeholder="Ongoing Item" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <input type="text" value="${s.time || ''}" onchange="updateStageField(${idx}, 'time', this.value)" placeholder="Time Status" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <input type="text" value="${s.next || ''}" onchange="updateStageField(${idx}, 'next', this.value)" placeholder="Up Next" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
-                        </div>
-                    </div>
-                `).join('');
+            if (navigator.share) {
+                navigator.share(shareData).catch(() => {});
+            } else {
+                const dummy = document.createElement('input');
+                document.body.appendChild(dummy);
+                dummy.value = window.location.href;
+                dummy.select();
+                document.execCommand('copy');
+                document.body.removeChild(dummy);
+                alert("Website link copied to clipboard!");
+            }
+        }
+
+        // Admin: Delete All Results
+        function deleteAllResults() {
+            if (confirm("CRITICAL WARNING: Are you sure you want to delete ALL published results? This will reset all mission points to zero.")) {
+                itemResults = [];
+                saveData();
+                renderResults();
+                alert("All results have been wiped clean.");
             }
         }
 

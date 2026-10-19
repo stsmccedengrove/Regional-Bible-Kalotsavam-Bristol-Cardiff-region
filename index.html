@@ -44,14 +44,25 @@
                     <i data-lucide="book-open" class="text-amber-400 w-6 h-6 sm:w-8 sm:h-8"></i>
                 </div>
                 <div>
-                    <!-- Increased Title Sizes as requested -->
                     <h1 class="text-sm sm:text-xl md:text-2xl font-black text-white leading-tight tracking-wide">9TH BRISTOL-CARDIFF REGIONAL</h1>
                     <p class="text-xs sm:text-sm font-extrabold text-amber-400">SYRO-MALABAR EPARCHY OF GREAT BRITAIN</p>
                     <p class="text-[11px] sm:text-xs text-slate-300 font-bold">BIBLE KALOTSAVAM 2026</p>
                 </div>
             </div>
             
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- Live Sync Indicator & Manual Refresh Button -->
+                <button onclick="fetchLatestData(true)" title="Force Refresh" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                    <i data-lucide="refresh-cw" id="refreshSpinner" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span id="syncText" class="hidden md:inline">Live Sync</span>
+                </button>
+
+                <!-- Push Notification Permission Toggle -->
+                <button id="notifToggleBtn" onclick="toggleNotifications()" title="Enable Result Notifications" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition">
+                    <i data-lucide="bell" id="notifIcon" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span id="notifText" class="hidden md:inline">Alerts</span>
+                </button>
+
                 <!-- Right Logo Container -->
                 <div id="headerRightLogo" class="w-12 h-12 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
                     <i data-lucide="award" class="text-amber-400 w-6 h-6 sm:w-8 sm:h-8"></i>
@@ -60,7 +71,7 @@
                 <!-- Share & QR Button -->
                 <button onclick="openShareModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-2 rounded-lg text-xs font-black flex items-center gap-1.5 transition shadow">
                     <i data-lucide="qr-code" class="w-4 h-4"></i>
-                    <span class="hidden sm:inline">Share / QR Code</span>
+                    <span class="hidden sm:inline">Share / QR</span>
                 </button>
             </div>
         </div>
@@ -69,6 +80,25 @@
     <!-- Theme Banner -->
     <div class="bg-amber-500 text-slate-950 py-1.5 px-4 text-center text-xs sm:text-sm font-extrabold shadow-inner">
         Theme: "The Lord disciplines those whom he loves..." (Hebrews 12:6) | "താൻ സ്നേഹിക്കുന്നവന് കർത്താവു ശിക്ഷണം നൽകുന്നു..." (ഹെബ്രായർ 12:6)
+    </div>
+
+    <!-- Live Floating Toast Notification Banner -->
+    <div id="liveToast" class="hidden fixed bottom-5 right-5 z-50 max-w-sm w-full bg-slate-900 border-2 border-amber-400 text-white p-4 rounded-2xl shadow-2xl transition-all duration-300 transform translate-y-0">
+        <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3">
+                <div class="p-2 bg-amber-500 text-slate-950 rounded-xl shrink-0">
+                    <i data-lucide="bell-ring" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">New Result Published!</span>
+                    <h4 id="toastTitle" class="text-xs font-black text-white mt-0.5">Programme Name</h4>
+                    <p id="toastMessage" class="text-[11px] text-slate-300 font-medium mt-1">1st Place: Winner Name</p>
+                </div>
+            </div>
+            <button onclick="dismissToast()" class="text-slate-400 hover:text-white p-1">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
     </div>
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
@@ -456,25 +486,20 @@
     <script>
         // Official 12 Competing Missions (Short Place Names)
         const REGIONAL_MISSIONS = [
-            "Exeter",
-            "Taunton",
-            "Weston Super Mare",
-            "Bristol",
-            "Bath",
-            "Newport",
-            "Cardiff",
-            "Barry",
-            "Hereford",
-            "Gloucester",
-            "Swansea",
-            "Swindon"
+            "Exeter", "Taunton", "Weston Super Mare", "Bristol",
+            "Bath", "Newport", "Cardiff", "Barry",
+            "Hereford", "Gloucester", "Swansea", "Swindon"
         ];
 
-        // Default GitHub raw image URLs for logos so they display automatically on QR code scans
+        // Default GitHub raw image URLs
         const DEFAULT_LEFT_LOGO = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0159.JPG";
         const DEFAULT_RIGHT_LOGO = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0160.JPG";
 
-        // Exact Program Matrix dataset matching official image
+        // Local & Remote relative sync URLs
+        const PRIMARY_DATA_URL = "./data.json";
+        const FALLBACK_DATA_URL = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/data.json";
+
+        // Program Matrix dataset
         const PROGRAM_MATRIX = [
             { name: "Bible Reading - English", duration: "2 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
             { name: "Bible Reading - Malayalam", duration: "2 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
@@ -505,8 +530,9 @@
         let adminAuthenticated = false;
         let editingResultIndex = null;
         let qrcodeObj = null;
+        let notificationsEnabled = false;
+        let initialDataLoaded = false;
 
-        // Default 9 stages
         let stageData = Array.from({ length: 9 }, (_, i) => ({
             stage: `Stage ${i + 1}`,
             ongoing: "To be allocated",
@@ -522,6 +548,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadSavedData();
             initLucide();
+            checkNotificationStatus();
             renderProgramMatrixTable();
             renderMissionFilters();
             renderDropdowns();
@@ -529,7 +556,11 @@
             renderStages();
             renderSchedule();
 
-            // Keyboard shortcut Ctrl + Shift + A for hidden Admin Portal
+            // Auto-fetch remote data every 15 seconds to sync all devices automatically
+            fetchLatestData();
+            setInterval(() => fetchLatestData(), 15000);
+
+            // Ctrl + Shift + A for Admin Portal
             window.addEventListener('keydown', (e) => {
                 if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
                     openAdminAuth();
@@ -537,17 +568,138 @@
             });
         });
 
-        function initLucide() {
-            if (window.lucide) window.lucide.createIcons();
+        function checkNotificationStatus() {
+            if ("Notification" in window) {
+                if (Notification.permission === "granted") {
+                    notificationsEnabled = true;
+                    updateNotifButtonUI(true);
+                } else {
+                    updateNotifButtonUI(false);
+                }
+            } else {
+                const btn = document.getElementById('notifToggleBtn');
+                if (btn) btn.classList.add('hidden');
+            }
+        }
+
+        function toggleNotifications() {
+            if (!("Notification" in window)) {
+                alert("Browser notifications are not supported on this device.");
+                return;
+            }
+
+            if (Notification.permission === "granted") {
+                alert("Notifications are already enabled for live result updates!");
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        notificationsEnabled = true;
+                        updateNotifButtonUI(true);
+                        showSystemNotification("Notifications Enabled!", "You will now receive automatic alerts when new results are declared.");
+                    } else {
+                        alert("Notification permission denied. You can re-enable it anytime from your browser settings.");
+                    }
+                });
+            } else {
+                alert("Notifications are currently blocked by your browser settings. Please unblock notifications for this site to receive updates.");
+            }
+        }
+
+        function updateNotifButtonUI(enabled) {
+            const btnText = document.getElementById('notifText');
+            const btnIcon = document.getElementById('notifIcon');
+            const btn = document.getElementById('notifToggleBtn');
+
+            if (enabled) {
+                if (btnText) btnText.innerText = "Alerts On";
+                if (btn) btn.className = "bg-amber-500 text-slate-950 px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition shadow";
+            } else {
+                if (btnText) btnText.innerText = "Alerts";
+                if (btn) btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition";
+            }
+        }
+
+        function showSystemNotification(title, body) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                try {
+                    new Notification(title, {
+                        body: body,
+                        icon: 'https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0160.JPG'
+                    });
+                } catch (e) {
+                    console.log("Notification trigger error:", e);
+                }
+            }
+            triggerToast(title, body);
+        }
+
+        function triggerToast(title, message) {
+            const toast = document.getElementById('liveToast');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastMessage').innerText = message;
+            
+            toast.classList.remove('hidden');
+            initLucide();
+
+            setTimeout(() => {
+                dismissToast();
+            }, 8000);
+        }
+
+        function dismissToast() {
+            const toast = document.getElementById('liveToast');
+            if (toast) toast.classList.add('hidden');
+        }
+
+        async function fetchLatestData(manualTrigger = false) {
+            const spinner = document.getElementById('refreshSpinner');
+            if (spinner) spinner.classList.add('animate-spin');
+
+            try {
+                // Try relative path first to avoid CORS issues
+                let res = await fetch(`${PRIMARY_DATA_URL}?t=${Date.now()}`);
+                if (!res.ok) {
+                    // Fallback to absolute GitHub raw URL
+                    res = await fetch(`${FALLBACK_DATA_URL}?t=${Date.now()}`);
+                }
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.results) {
+                        if (initialDataLoaded && data.results.length > itemResults.length) {
+                            const newestResult = data.results[0];
+                            showSystemNotification(
+                                `🎉 New Result: ${newestResult.itemName} (${newestResult.category})`,
+                                `🥇 1st: ${newestResult.p1.name || 'Winner'} (${newestResult.p1.mission})`
+                            );
+                        }
+
+                        itemResults = data.results;
+                        if (data.stages) stageData = data.stages;
+                        if (data.schedule) scheduleData = data.schedule;
+
+                        saveData(false);
+                        renderResults();
+                        renderStages();
+                        renderSchedule();
+                        initialDataLoaded = true;
+                    }
+                }
+            } catch (err) {
+                console.log("Remote sync offline or using cached local data.", err);
+            } finally {
+                if (spinner) {
+                    setTimeout(() => spinner.classList.remove('animate-spin'), 600);
+                }
+                if (manualTrigger) alert("Data refreshed.");
+            }
         }
 
         function loadSavedData() {
             const savedResults = localStorage.getItem('csmegb_results_2026_v3');
             if (savedResults) {
                 itemResults = JSON.parse(savedResults);
-                itemResults.forEach(r => {
-                    if (!r.status) r.status = "Final Result";
-                });
+                itemResults.forEach(r => { if (!r.status) r.status = "Final Result"; });
             }
 
             const savedStages = localStorage.getItem('csmegb_stages_2026_v3');
@@ -565,10 +717,12 @@
             }
         }
 
-        function saveData() {
-            localStorage.setItem('csmegb_results_2026_v3', JSON.stringify(itemResults));
-            localStorage.setItem('csmegb_stages_2026_v3', JSON.stringify(stageData));
-            localStorage.setItem('csmegb_schedule_2026_v3', JSON.stringify(scheduleData));
+        function saveData(syncLocal = true) {
+            if (syncLocal) {
+                localStorage.setItem('csmegb_results_2026_v3', JSON.stringify(itemResults));
+                localStorage.setItem('csmegb_stages_2026_v3', JSON.stringify(stageData));
+                localStorage.setItem('csmegb_schedule_2026_v3', JSON.stringify(scheduleData));
+            }
         }
 
         function applyLogos(leftUrl, rightUrl) {
@@ -624,7 +778,6 @@
                 if (tally[res.p3.mission]) { tally[res.p3.mission].third += 1; tally[res.p3.mission].points += 1; }
             });
 
-            // Sort missions strictly by Total Points (descending), then alphabetically if tied
             const sortedMissions = Object.keys(tally).sort((a, b) => {
                 if (tally[b].points !== tally[a].points) {
                     return tally[b].points - tally[a].points;
@@ -632,7 +785,6 @@
                 return a.localeCompare(b);
             });
 
-            // Render Top 3 Podium
             const top3Container = document.getElementById('top3PodiumContainer');
             const top3 = sortedMissions.slice(0, 3);
 
@@ -680,7 +832,6 @@
                 `;
             }).join('');
 
-            // Render All 12 Missions in Table ranked by total points
             const tallyBody = document.getElementById('missionTallyBody');
             tallyBody.innerHTML = sortedMissions.map((m, idx) => {
                 const pts = tally[m].points;
@@ -705,7 +856,6 @@
             initLucide();
         }
 
-        // Render Live 9-Stage Tracker
         function renderStages() {
             const container = document.getElementById('stagesContainer');
             const adminContainer = document.getElementById('adminStagesControlList');
@@ -998,7 +1148,6 @@
             alert("Website link copied to clipboard!");
         }
 
-        // Admin: Delete All Results
         function deleteAllResults() {
             if (confirm("CRITICAL WARNING: Are you sure you want to delete ALL published results? This will reset all mission points to zero.")) {
                 itemResults = [];
@@ -1092,7 +1241,6 @@
 
             openAdminAuth();
 
-            // Set Form Values
             document.getElementById('adminResultFormTitle').innerText = "Edit Declared Result";
             document.getElementById('cancelEditResultBtn').classList.remove('hidden');
             document.getElementById('publishResultBtn').innerText = "Update Result & Save Changes";
@@ -1168,6 +1316,10 @@
                 alert("Result updated successfully!");
             } else {
                 itemResults.unshift(updatedResult);
+                showSystemNotification(
+                    `🎉 New Result: ${updatedResult.itemName} (${updatedResult.category})`,
+                    `🥇 1st: ${updatedResult.p1.name} (${updatedResult.p1.mission})`
+                );
                 alert("Result published successfully!");
             }
 
@@ -1181,6 +1333,12 @@
                 itemResults.splice(index, 1);
                 saveData();
                 renderResults();
+            }
+        }
+
+        function initLucide() {
+            if (window.lucide && typeof lucide.createIcons === 'function') {
+                lucide.createIcons();
             }
         }
     </script>

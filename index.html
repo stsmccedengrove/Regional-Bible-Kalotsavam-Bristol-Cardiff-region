@@ -39,31 +39,31 @@
     <!-- Navigation Header -->
     <header class="bg-brand-900 text-white shadow-xl sticky top-0 z-40 border-b border-amber-600/30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between gap-2 sm:gap-4">
                 <!-- Dual Logos and Title Group -->
-                <div class="flex items-center space-x-3 sm:space-x-4">
-                    <!-- Left Logo Container (Displays uploaded logo or default vector logo for public viewers) -->
-                    <div id="headerLogoLeftContainer" class="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 bg-white/10 rounded-xl p-1 border border-amber-400/30 flex items-center justify-center overflow-hidden">
+                <div class="flex items-center justify-between w-full md:w-auto flex-1 gap-2 sm:gap-4">
+                    <!-- Left Logo Container -->
+                    <div id="headerLogoLeftContainer" class="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 bg-white/10 rounded-xl p-1 border border-amber-400/30 flex items-center justify-center overflow-hidden self-center">
                     </div>
 
-                    <div>
-                        <span class="text-[10px] sm:text-xs uppercase tracking-widest text-amber-400 font-bold block">CSMEGB Eparchy</span>
-                        <h1 class="text-xs sm:text-base md:text-lg font-black tracking-tight text-white line-clamp-1">
+                    <div class="text-center md:text-left flex-1 min-w-0 px-1">
+                        <span class="text-[9px] sm:text-xs uppercase tracking-widest text-amber-400 font-bold block truncate">CSMEGB Eparchy</span>
+                        <h1 class="text-xs sm:text-base md:text-lg font-black tracking-tight text-white leading-tight line-clamp-2 sm:line-clamp-1">
                             Regional Bible Kalotsavam Bristol-Cardiff 2026
                         </h1>
                     </div>
 
-                    <!-- Right Logo Container (Displays uploaded logo or default vector logo for public viewers) -->
-                    <div id="headerLogoRightContainer" class="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 bg-white/10 rounded-xl p-1 border border-amber-400/30 flex items-center justify-center overflow-hidden">
+                    <!-- Right Logo Container -->
+                    <div id="headerLogoRightContainer" class="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 bg-white/10 rounded-xl p-1 border border-amber-400/30 flex items-center justify-center overflow-hidden self-center">
                     </div>
                 </div>
 
                 <!-- Navigation Controls -->
-                <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
                     <!-- Share Button (Visible to everyone) -->
-                    <button onclick="openQRModal()" class="flex items-center space-x-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 transition px-3 py-2 rounded-lg text-xs font-semibold border border-amber-400/30">
+                    <button onclick="openQRModal()" class="flex items-center space-x-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 transition px-2.5 sm:px-3 py-2 rounded-lg text-xs font-semibold border border-amber-400/30">
                         <i class="fa-solid fa-qrcode text-amber-400"></i>
-                        <span>Share Results</span>
+                        <span class="hidden xs:inline">Share</span>
                     </button>
                     <!-- Admin status badge (only visible when logged in) -->
                     <button id="adminStatusBadge" onclick="toggleAdminPanel()" class="hidden flex items-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-brand-900 font-bold px-3 py-2 rounded-lg text-xs transition shadow-md">
@@ -1158,13 +1158,13 @@
             const defaultRightSvg = `<svg class="w-full h-full text-amber-300" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-5 14h-2v-3H8v-2h3V8h2v3h3v2h-3v3z"/></svg>`;
 
             if (left) {
-                leftContainer.innerHTML = `<img src="${left}" class="w-full h-full object-contain" alt="Eparchial Emblem" onerror="this.outerHTML='${defaultLeftSvg.replace(/'/g, "\\'")}'">`;
+                leftContainer.innerHTML = `<img src="${left}" class="w-full h-full object-contain max-h-full max-w-full m-auto" alt="Eparchial Emblem" onerror="this.outerHTML='${defaultLeftSvg.replace(/'/g, "\\'")}'">`;
             } else {
                 leftContainer.innerHTML = defaultLeftSvg;
             }
 
             if (right) {
-                rightContainer.innerHTML = `<img src="${right}" class="w-full h-full object-contain" alt="Bible Apostolate Logo" onerror="this.outerHTML='${defaultRightSvg.replace(/'/g, "\\'")}'">`;
+                rightContainer.innerHTML = `<img src="${right}" class="w-full h-full object-contain max-h-full max-w-full m-auto" alt="Bible Apostolate Logo" onerror="this.outerHTML='${defaultRightSvg.replace(/'/g, "\\'")}'">`;
             } else {
                 rightContainer.innerHTML = defaultRightSvg;
             }

@@ -742,27 +742,30 @@
         function renderPodiumAndMatrix() {
             const standings = calculateMissionTotals();
 
-            // Render Gold
-            document.getElementById('goldMissionName').innerText = standings[0].total > 0 ? standings[0].mission : 'Awaiting Results';
-            document.getElementById('goldMissionPoints').innerText = `${standings[0].total} Pts`;
+            // Render Gold (1st Place Overall)
+            const goldMission = standings[0];
+            document.getElementById('goldMissionName').innerText = goldMission && goldMission.total > 0 ? goldMission.mission : 'Awaiting Results';
+            document.getElementById('goldMissionPoints').innerText = `${goldMission ? goldMission.total : 0} Pts`;
 
-            // Render Silver
-            document.getElementById('silverMissionName').innerText = standings[1].total > 0 ? standings[1].mission : 'Awaiting Results';
-            document.getElementById('silverMissionPoints').innerText = `${standings[1].total} Pts`;
+            // Render Silver (2nd Place Overall)
+            const silverMission = standings[1];
+            document.getElementById('silverMissionName').innerText = silverMission && silverMission.total > 0 ? silverMission.mission : 'Awaiting Results';
+            document.getElementById('silverMissionPoints').innerText = `${silverMission ? silverMission.total : 0} Pts`;
 
-            // Render Bronze
-            document.getElementById('bronzeMissionName').innerText = standings[2].total > 0 ? standings[2].mission : 'Awaiting Results';
-            document.getElementById('bronzeMissionPoints').innerText = `${standings[2].total} Pts`;
+            // Render Bronze (3rd Place Overall)
+            const bronzeMission = standings[2];
+            document.getElementById('bronzeMissionName').innerText = bronzeMission && bronzeMission.total > 0 ? bronzeMission.mission : 'Awaiting Results';
+            document.getElementById('bronzeMissionPoints').innerText = `${bronzeMission ? bronzeMission.total : 0} Pts`;
 
-            // Render Matrix Table
+            // Render Matrix Table dynamically ranked 1 through 12 by score
             const matrixBody = document.getElementById('missionMatrixBody');
             matrixBody.innerHTML = standings.map((st, idx) => `
-                <tr class="hover:bg-slate-50 transition cursor-pointer" onclick="filterByMission('${st.mission}')">
+                <tr class="hover:bg-amber-50/50 transition cursor-pointer" onclick="filterByMission('${st.mission}')">
                     <td class="p-3 font-bold text-slate-500">${idx + 1}</td>
                     <td class="p-3 font-bold text-slate-900">${st.mission}</td>
                     <td class="p-3 text-center text-slate-600">${st.solo}</td>
                     <td class="p-3 text-center text-slate-600">${st.group}</td>
-                    <td class="p-3 text-center font-extrabold text-amber-700 bg-amber-50/50">${st.total}</td>
+                    <td class="p-3 text-center font-extrabold text-amber-700 bg-amber-50/80">${st.total}</td>
                 </tr>
             `).join('');
         }

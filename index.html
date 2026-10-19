@@ -1100,10 +1100,12 @@
                                 ${status}
                             </span>
                             <span class="text-xs text-amber-400 font-semibold bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">${res.category}</span>
-                            <div class="flex items-center gap-1.5 ml-2">
-                                <button onclick="editResult(${index})" class="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-2 py-0.5 rounded">Edit</button>
-                                <button onclick="deleteResult(${index})" class="text-xs text-red-400 hover:text-red-300 font-bold px-1">Delete</button>
-                            </div>
+                            ${adminAuthenticated ? `
+                                <div class="flex items-center gap-1.5 ml-2">
+                                    <button onclick="editResult(${index})" class="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-2 py-0.5 rounded">Edit</button>
+                                    <button onclick="deleteResult(${index})" class="text-xs text-red-400 hover:text-red-300 font-bold px-1">Delete</button>
+                                </div>
+                            ` : ''}
                         </div>
                     </div>
                     <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">

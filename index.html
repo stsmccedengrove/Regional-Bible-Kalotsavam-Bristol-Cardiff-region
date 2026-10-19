@@ -449,22 +449,22 @@
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
             <h3 class="font-bold text-lg text-slate-900 mb-1">Configure Official Logos</h3>
-            <p class="text-xs text-slate-500 mb-4">Set image URLs or upload files for header branding.</p>
+            <p class="text-xs text-slate-500 mb-4">Upload image files or paste direct web URLs for header branding across all mobile devices.</p>
 
             <div class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Left Logo (Eparchial Emblem)</label>
-                    <input type="text" id="logoLeftUrlInput" placeholder="Paste image URL" class="w-full text-xs p-2 border rounded-lg mb-1">
+                    <input type="text" id="logoLeftUrlInput" placeholder="Paste direct image URL (e.g. https://...)" class="w-full text-xs p-2 border rounded-lg mb-1">
                     <input type="file" id="logoLeftFileInput" accept="image/*" onchange="handleFileUpload(event, 'left')" class="text-xs text-slate-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Right Logo (Bible Apostolate)</label>
-                    <input type="text" id="logoRightUrlInput" placeholder="Paste image URL" class="w-full text-xs p-2 border rounded-lg mb-1">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Right Logo (Bible Apostolate Logo)</label>
+                    <input type="text" id="logoRightUrlInput" placeholder="Paste direct image URL (e.g. https://...)" class="w-full text-xs p-2 border rounded-lg mb-1">
                     <input type="file" id="logoRightFileInput" accept="image/*" onchange="handleFileUpload(event, 'right')" class="text-xs text-slate-500">
                 </div>
-                <div class="flex justify-between pt-2">
-                    <button onclick="resetLogos()" class="text-xs text-red-600 hover:underline">Reset Default Vector Logos</button>
-                    <button onclick="saveCustomLogos()" class="bg-brand-600 text-white px-4 py-2 rounded-lg text-xs font-bold shadow">Save Logos</button>
+                <div class="flex justify-between items-center pt-2">
+                    <button onclick="resetLogos()" class="text-xs text-red-600 hover:underline">Reset Default Logos</button>
+                    <button onclick="saveCustomLogos()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg text-xs font-bold shadow transition">Save Logos</button>
                 </div>
             </div>
         </div>
@@ -1092,8 +1092,8 @@
         }
 
         function saveCustomLogos() {
-            const leftUrl = document.getElementById('logoLeftUrlInput').value;
-            const rightUrl = document.getElementById('logoRightUrlInput').value;
+            const leftUrl = document.getElementById('logoLeftUrlInput').value.trim();
+            const rightUrl = document.getElementById('logoRightUrlInput').value.trim();
             if (leftUrl) localStorage.setItem('csmegb_logo_left', leftUrl);
             if (rightUrl) localStorage.setItem('csmegb_logo_right', rightUrl);
             loadSavedLogos();
@@ -1103,7 +1103,48 @@
         function resetLogos() {
             localStorage.removeItem('csmegb_logo_left');
             localStorage.removeItem('csmegb_logo_right');
-            location.reload();
+            document.getElementById('logoLeftUrlInput').value = '';
+            document.getElementById('logoRightUrlInput').value = '';
+            loadSavedLogos();
+            closeLogoModal();
+        }
+
+        function handleFileUpload(e, target) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = 120;
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > height) {
+                        if (width > maxDim) {
+                            height *= maxDim / width;
+                            width = maxDim;
+                        }
+                    } else {
+                        if (height > maxDim) {
+                            width *= maxDim / height;
+                            height = maxDim;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressedDataUrl = canvas.toDataURL('image/png');
+                    if (target === 'left') {
+                        document.getElementById('logoLeftUrlInput').value = compressedDataUrl;
+                    } else {
+                        document.getElementById('logoRightUrlInput').value = compressedDataUrl;
+                    }
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
         function loadSavedLogos() {
@@ -1113,18 +1154,17 @@
             const leftContainer = document.getElementById('headerLogoLeftContainer');
             const rightContainer = document.getElementById('headerLogoRightContainer');
 
-            // Default Vector SVG Logos
             const defaultLeftSvg = `<svg class="w-full h-full text-amber-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
-            const defaultRightSvg = `<svg class="w-full h-full text-amber-300" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-5 14h-2v-3H8v-2h3V8h2v3h3v2h-3v3z"/></svg>`;
+            const defaultRightSvg = `<svg class="w-full h-full text-amber-300" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-5 14h-2v-3H8v-2h3V8h2v3h3v2h-3v3z"/></svg>`;
 
             if (left) {
-                leftContainer.innerHTML = `<img src="${left}" class="w-full h-full object-contain" alt="Eparchial Emblem">`;
+                leftContainer.innerHTML = `<img src="${left}" class="w-full h-full object-contain" alt="Eparchial Emblem" onerror="this.outerHTML='${defaultLeftSvg.replace(/'/g, "\\'")}'">`;
             } else {
                 leftContainer.innerHTML = defaultLeftSvg;
             }
 
             if (right) {
-                rightContainer.innerHTML = `<img src="${right}" class="w-full h-full object-contain" alt="Bible Apostolate Logo">`;
+                rightContainer.innerHTML = `<img src="${right}" class="w-full h-full object-contain" alt="Bible Apostolate Logo" onerror="this.outerHTML='${defaultRightSvg.replace(/'/g, "\\'")}'">`;
             } else {
                 rightContainer.innerHTML = defaultRightSvg;
             }

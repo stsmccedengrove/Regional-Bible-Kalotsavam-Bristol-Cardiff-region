@@ -42,13 +42,8 @@
             <div class="flex items-center justify-between">
                 <!-- Dual Logos and Title Group -->
                 <div class="flex items-center space-x-3 sm:space-x-4">
-                    <!-- Left Logo Container -->
+                    <!-- Left Logo Container (Displays uploaded logo or default vector logo for public viewers) -->
                     <div id="headerLogoLeftContainer" class="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 bg-white/10 rounded-xl p-1 border border-amber-400/30 flex items-center justify-center overflow-hidden">
-                        <svg viewBox="0 0 100 100" class="w-full h-full text-amber-400 fill-current">
-                            <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="6"/>
-                            <path d="M50 20 L50 80 M25 40 L75 40" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
-                            <circle cx="50" cy="50" r="10" fill="currentColor"/>
-                        </svg>
                     </div>
 
                     <div>
@@ -58,28 +53,22 @@
                         </h1>
                     </div>
 
-                    <!-- Right Logo Container -->
-                    <div id="headerLogoRightContainer" class="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 bg-white/10 rounded-xl p-1 border border-amber-400/30 flex items-center justify-center overflow-hidden hidden sm:flex">
-                        <svg viewBox="0 0 100 100" class="w-full h-full text-amber-400 fill-current">
-                            <path d="M20 30 Q 50 15, 80 30 L 80 80 Q 50 65, 20 80 Z" fill="none" stroke="currentColor" stroke-width="6"/>
-                            <path d="M50 20 L 50 72" stroke="currentColor" stroke-width="4"/>
-                        </svg>
+                    <!-- Right Logo Container (Displays uploaded logo or default vector logo for public viewers) -->
+                    <div id="headerLogoRightContainer" class="w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 bg-white/10 rounded-xl p-1 border border-amber-400/30 flex items-center justify-center overflow-hidden">
                     </div>
                 </div>
 
                 <!-- Navigation Controls -->
                 <div class="flex items-center space-x-2 sm:space-x-3">
-                    <button onclick="openLogoModal()" class="flex items-center space-x-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 transition px-2.5 py-2 rounded-lg text-xs font-semibold border border-amber-400/30">
-                        <i class="fa-solid fa-image"></i>
-                        <span class="hidden md:inline">Logos</span>
-                    </button>
-                    <button onclick="openQRModal()" class="flex items-center space-x-1.5 bg-white/10 hover:bg-white/20 transition px-2.5 py-2 rounded-lg text-xs font-semibold border border-white/20">
+                    <!-- Share Button (Visible to everyone) -->
+                    <button onclick="openQRModal()" class="flex items-center space-x-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 transition px-3 py-2 rounded-lg text-xs font-semibold border border-amber-400/30">
                         <i class="fa-solid fa-qrcode text-amber-400"></i>
-                        <span class="hidden md:inline">Share</span>
+                        <span>Share Results</span>
                     </button>
-                    <button id="adminAccessBtn" onclick="handleAdminAccessClick()" class="flex items-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-brand-900 font-bold px-3 py-2 rounded-lg text-xs transition shadow-md">
-                        <i id="adminAccessIcon" class="fa-solid fa-lock"></i>
-                        <span id="adminAccessText" class="hidden sm:inline">Admin Login</span>
+                    <!-- Admin status badge (only visible when logged in) -->
+                    <button id="adminStatusBadge" onclick="toggleAdminPanel()" class="hidden flex items-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-brand-900 font-bold px-3 py-2 rounded-lg text-xs transition shadow-md">
+                        <i class="fa-solid fa-unlock-keyhole"></i>
+                        <span class="hidden sm:inline">Admin Panel</span>
                     </button>
                 </div>
             </div>
@@ -291,9 +280,14 @@
                         <p class="text-xs text-slate-400">Authenticated Management Interface</p>
                     </div>
                 </div>
-                <button onclick="logoutAdmin()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg border border-slate-700 transition">
-                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Log Out
-                </button>
+                <div class="flex items-center space-x-2">
+                    <button onclick="openLogoModal()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 text-xs px-3 py-1.5 rounded-lg border border-slate-700 transition">
+                        <i class="fa-solid fa-image mr-1"></i> Manage Logos
+                    </button>
+                    <button onclick="logoutAdmin()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg border border-slate-700 transition">
+                        <i class="fa-solid fa-right-from-bracket mr-1"></i> Log Out
+                    </button>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -401,6 +395,19 @@
             </div>
         </section>
     </main>
+
+    <!-- Discreet Footer with Admin Access Link -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>© 2026 CSMEGB Bristol-Cardiff Region. All rights reserved.</p>
+            <div class="flex items-center space-x-4 text-[11px]">
+                <span class="text-slate-600">Press Ctrl+Shift+A or tap discrete link to log in</span>
+                <button onclick="openAdminAuthModal()" class="text-slate-600 hover:text-slate-400 transition underline">
+                    <i class="fa-solid fa-user-lock text-[10px] mr-1"></i>Official Login
+                </button>
+            </div>
+        </div>
+    </footer>
 
     <!-- Modals -->
     <!-- Admin Login Modal -->
@@ -548,6 +555,18 @@
             initQRCode();
             loadSavedLogos();
             updateAdminUIState();
+
+            // Keyboard shortcut for quick admin access: Ctrl + Shift + A
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                    e.preventDefault();
+                    if (isAdminLoggedIn) {
+                        toggleAdminPanel();
+                    } else {
+                        openAdminAuthModal();
+                    }
+                }
+            });
         });
 
         function loadAdminSession() {
@@ -608,17 +627,14 @@
         }
 
         function updateAdminUIState() {
-            const btnText = document.getElementById('adminAccessText');
-            const btnIcon = document.getElementById('adminAccessIcon');
+            const adminBadge = document.getElementById('adminStatusBadge');
             const editBtns = document.querySelectorAll('.admin-only-controls');
 
             if (isAdminLoggedIn) {
-                btnText.innerText = "Admin Panel";
-                btnIcon.className = "fa-solid fa-unlock-keyhole";
+                if (adminBadge) adminBadge.classList.remove('hidden');
                 editBtns.forEach(el => el.classList.remove('hidden'));
             } else {
-                btnText.innerText = "Admin Login";
-                btnIcon.className = "fa-solid fa-lock";
+                if (adminBadge) adminBadge.classList.add('hidden');
                 editBtns.forEach(el => el.classList.add('hidden'));
             }
         }
@@ -1094,13 +1110,23 @@
             const left = localStorage.getItem('csmegb_logo_left');
             const right = localStorage.getItem('csmegb_logo_right');
 
+            const leftContainer = document.getElementById('headerLogoLeftContainer');
+            const rightContainer = document.getElementById('headerLogoRightContainer');
+
+            // Default Vector SVG Logos
+            const defaultLeftSvg = `<svg class="w-full h-full text-amber-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
+            const defaultRightSvg = `<svg class="w-full h-full text-amber-300" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-5 14h-2v-3H8v-2h3V8h2v3h3v2h-3v3z"/></svg>`;
+
             if (left) {
-                document.getElementById('headerLogoLeftContainer').innerHTML = `<img src="${left}" class="w-full h-full object-contain" alt="Eparchial Emblem">`;
+                leftContainer.innerHTML = `<img src="${left}" class="w-full h-full object-contain" alt="Eparchial Emblem">`;
+            } else {
+                leftContainer.innerHTML = defaultLeftSvg;
             }
+
             if (right) {
-                const rightContainer = document.getElementById('headerLogoRightContainer');
-                rightContainer.classList.remove('hidden');
                 rightContainer.innerHTML = `<img src="${right}" class="w-full h-full object-contain" alt="Bible Apostolate Logo">`;
+            } else {
+                rightContainer.innerHTML = defaultRightSvg;
             }
         }
 

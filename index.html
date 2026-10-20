@@ -51,13 +51,13 @@
             </div>
             
             <div class="flex items-center space-x-1.5 sm:space-x-3">
-                <!-- Live Sync Indicator & Manual Refresh Button -->
-                <button onclick="fetchLatestData(true)" title="Force Refresh Data" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition">
+                <!-- Sync Button -->
+                <button onclick="forceSyncFromGithub()" title="Force Refresh Data from Server" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition">
                     <i data-lucide="refresh-cw" id="refreshSpinner" class="w-3.5 h-3.5 text-amber-400"></i>
                     <span id="syncText" class="inline">Sync</span>
                 </button>
 
-                <!-- Push Notification Permission Toggle -->
+                <!-- Push Notification Toggle -->
                 <button id="notifToggleBtn" onclick="toggleNotifications()" title="Enable Result Notifications" class="bg-amber-500 text-slate-950 border border-amber-400 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow hover:bg-amber-400">
                     <i data-lucide="bell" id="notifIcon" class="w-3.5 h-3.5 text-slate-950"></i>
                     <span id="notifText" class="inline">Alerts</span>
@@ -101,6 +101,15 @@
     </div>
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+
+        <!-- Local Override Notice Banner (Shows when local admin edits exist) -->
+        <div id="adminLocalNotice" class="hidden bg-amber-50 border border-amber-300 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-2 text-amber-900 font-bold">
+                <i data-lucide="alert-circle" class="w-4 h-4 text-amber-600 shrink-0"></i>
+                <span>You have unsynced local admin edits! Download <strong>data.json</strong> in the Admin Portal and commit it to GitHub so everyone sees these changes.</span>
+            </div>
+            <button onclick="forceSyncFromGithub()" class="bg-amber-600 text-white px-3 py-1 rounded-lg font-bold hover:bg-amber-700">Discard Local Edits & Sync GitHub</button>
+        </div>
 
         <!-- Navigation Tabs -->
         <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-2">
@@ -258,7 +267,6 @@
                                 <th class="p-3">Programme Item</th>
                                 <th class="p-3">Category</th>
                                 <th class="p-3">Stage / Hall</th>
-                                <th id="schedAdminHeader" class="p-3 text-right hidden">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="scheduleTableBody" class="divide-y divide-slate-100 text-slate-700">
@@ -565,9 +573,8 @@
         let selectedMissionFilter = null;
         let adminAuthenticated = false;
         let editingResultIndex = null;
-        let qrcodeObj = null;
         let notificationsEnabled = false;
-        let localAdminModified = false;
+        let localAdminModified = localStorage.getItem('csmegb_admin_dirty') === 'true';
 
         let stageData = Array.from({ length: 9 }, (_, i) => ({
             stage: `Stage ${i + 1}`,
@@ -580,6 +587,27 @@
             { time: "08:00 AM", item: "Registration & Inauguration", category: "All", stage: "Main Hall" },
             { time: "09:00 AM", item: "Bible Reading - English", category: "Up to 7, 8-10", stage: "Stage 1" }
         ];
+
+        function setLocalAdminModified(isModified) {
+            localAdminModified = isModified;
+            if (isModified) {
+                localStorage.setItem('csmegb_admin_dirty', 'true');
+            } else {
+                localStorage.removeItem('csmegb_admin_dirty');
+            }
+            updateAdminNoticeBanner();
+        }
+
+        function updateAdminNoticeBanner() {
+            const noticeEl = document.getElementById('adminLocalNotice');
+            if (noticeEl) {
+                if (localAdminModified) {
+                    noticeEl.classList.remove('hidden');
+                } else {
+                    noticeEl.classList.add('hidden');
+                }
+            }
+        }
 
         function openAdminAuth() {
             const modal = document.getElementById('adminModal');
@@ -638,7 +666,13 @@
             initLucide();
         }
 
+        async function forceSyncFromGithub() {
+            setLocalAdminModified(false);
+            await fetchLatestData(true);
+        }
+
         async function fetchLatestData(manualTrigger = false) {
+            // Prevent auto-fetch overwriting local edits if admin modified local state
             if (localAdminModified && !manualTrigger) {
                 return;
             }
@@ -670,8 +704,8 @@
                         if (data.stages) stageData = data.stages;
                         if (data.schedule) scheduleData = data.schedule;
 
-                        localAdminModified = false;
-                        saveData(false);
+                        setLocalAdminModified(false);
+                        saveData(true);
                         renderResults();
                         renderStages();
                         renderSchedule();
@@ -684,18 +718,15 @@
                     setTimeout(() => spinner.classList.remove('animate-spin'), 600);
                 }
                 if (manualTrigger) {
-                    localAdminModified = false;
-                    alert("Synced latest results successfully!");
+                    alert("Synced latest results from GitHub successfully!");
                 }
             }
         }
 
-        function saveData(syncLocal = true) {
-            if (syncLocal) {
-                localStorage.setItem('csmegb_results_2026_v3', JSON.stringify(itemResults));
-                localStorage.setItem('csmegb_stages_2026_v3', JSON.stringify(stageData));
-                localStorage.setItem('csmegb_schedule_2026_v3', JSON.stringify(scheduleData));
-            }
+        function saveData() {
+            localStorage.setItem('csmegb_results_2026_v3', JSON.stringify(itemResults));
+            localStorage.setItem('csmegb_stages_2026_v3', JSON.stringify(stageData));
+            localStorage.setItem('csmegb_schedule_2026_v3', JSON.stringify(scheduleData));
         }
 
         function loadLocalData() {
@@ -703,26 +734,27 @@
             const savedStages = localStorage.getItem('csmegb_stages_2026_v3');
             const savedSchedule = localStorage.getItem('csmegb_schedule_2026_v3');
 
-            if (savedResults) itemResults = JSON.parse(savedResults);
-            if (savedStages) stageData = JSON.parse(savedStages);
-            if (savedSchedule) scheduleData = JSON.parse(savedSchedule);
+            if (savedResults !== null) itemResults = JSON.parse(savedResults);
+            if (savedStages !== null) stageData = JSON.parse(savedStages);
+            if (savedSchedule !== null) scheduleData = JSON.parse(savedSchedule);
         }
 
         function deleteAllResults() {
-            if (confirm("CRITICAL WARNING: Are you sure you want to delete ALL published results? This will reset all mission points to zero.")) {
+            if (confirm("CRITICAL WARNING: Are you sure you want to delete ALL published results? This will wipe the list and reset points to zero.")) {
                 itemResults = [];
                 previousResultCount = 0;
-                localAdminModified = true;
+                setLocalAdminModified(true);
                 saveData();
                 renderResults();
-                alert("All results have been wiped clean. Make sure to download data.json in the Admin Portal and update GitHub so other devices see the wipe!");
+                closeAdminModal();
+                alert("All results have been wiped clean! Please download data.json in the Admin Portal and commit it to GitHub so all other devices see the clear state.");
             }
         }
 
         function deleteResult(index) {
             if (confirm("Are you sure you want to delete this result?")) {
                 itemResults.splice(index, 1);
-                localAdminModified = true;
+                setLocalAdminModified(true);
                 saveData();
                 renderResults();
             }
@@ -760,7 +792,7 @@
                 return;
             }
 
-            localAdminModified = true;
+            setLocalAdminModified(true);
 
             if (editingResultIndex !== null && editingResultIndex >= 0 && editingResultIndex < itemResults.length) {
                 itemResults[editingResultIndex] = updatedResult;
@@ -772,7 +804,7 @@
             const searchEl = document.getElementById('searchItemInput');
             if (searchEl) searchEl.value = '';
 
-            saveData(true);
+            saveData();
             renderMissionFilters();
             renderResults();
             resetResultForm();
@@ -844,6 +876,9 @@
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
+
+            // Clear dirty local flag since user exported
+            setLocalAdminModified(false);
         }
 
         function calculateMissionStandings() {
@@ -1120,10 +1155,10 @@
 
             container.innerHTML = stageData.map((s, idx) => `
                 <div class="p-3 bg-slate-900 rounded-lg border border-slate-700 grid grid-cols-1 sm:grid-cols-4 gap-2">
-                    <input type="text" value="${s.stage}" onchange="stageData[${idx}].stage = this.value; saveData();" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white font-bold">
-                    <input type="text" value="${s.ongoing}" onchange="stageData[${idx}].ongoing = this.value; saveData();" placeholder="Ongoing" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                    <input type="text" value="${s.next}" onchange="stageData[${idx}].next = this.value; saveData();" placeholder="Next Up" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                    <input type="text" value="${s.time}" onchange="stageData[${idx}].time = this.value; saveData();" placeholder="Time" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                    <input type="text" value="${s.stage}" onchange="stageData[${idx}].stage = this.value; setLocalAdminModified(true); saveData();" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white font-bold">
+                    <input type="text" value="${s.ongoing}" onchange="stageData[${idx}].ongoing = this.value; setLocalAdminModified(true); saveData();" placeholder="Ongoing" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                    <input type="text" value="${s.next}" onchange="stageData[${idx}].next = this.value; setLocalAdminModified(true); saveData();" placeholder="Next Up" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                    <input type="text" value="${s.time}" onchange="stageData[${idx}].time = this.value; setLocalAdminModified(true); saveData();" placeholder="Time" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
                 </div>
             `).join('');
         }
@@ -1140,7 +1175,7 @@
             }
 
             scheduleData.push({ time, item, category: category || "All", stage: stage || "Main Stage" });
-            localAdminModified = true;
+            setLocalAdminModified(true);
             saveData();
             renderSchedule();
 
@@ -1281,6 +1316,7 @@
         window.onload = function() {
             loadLocalData();
             loadLogos();
+            updateAdminNoticeBanner();
             renderMissionFilters();
             renderResults();
             renderStages();

@@ -57,9 +57,9 @@
                     <span id="syncText" class="inline">Sync</span>
                 </button>
 
-                <!-- Push Notification Permission Toggle -->
-                <button id="notifToggleBtn" onclick="toggleNotifications()" title="Enable Result Notifications" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition">
-                    <i data-lucide="bell" id="notifIcon" class="w-3.5 h-3.5 text-amber-400"></i>
+                <!-- Push Notification Permission Toggle (Optimized for Mobile) -->
+                <button id="notifToggleBtn" onclick="toggleNotifications()" title="Enable Result Notifications" class="bg-amber-500 text-slate-950 border border-amber-400 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow hover:bg-amber-400">
+                    <i data-lucide="bell" id="notifIcon" class="w-3.5 h-3.5 text-slate-950"></i>
                     <span id="notifText" class="inline">Alerts</span>
                 </button>
 
@@ -79,6 +79,17 @@
 
     <div class="bg-amber-500 text-slate-950 py-1.5 px-4 text-center text-xs sm:text-sm font-extrabold shadow-inner">
         Theme: "The Lord disciplines those whom he loves..." (Hebrews 12:6) | "താൻ സ്നേഹിക്കുന്നവന് കർത്താവു ശിക്ഷണം നൽകുന്നു..." (ഹെബ്രായർ 12:6)
+    </div>
+
+    <!-- Mobile Live Alert Permission Banner -->
+    <div id="mobileNotifBanner" class="bg-slate-900 border-b border-amber-500 text-white p-3 px-4 flex items-center justify-between gap-3 text-xs sm:hidden">
+        <div class="flex items-center gap-2">
+            <i data-lucide="bell-ring" class="w-4 h-4 text-amber-400 shrink-0"></i>
+            <span class="font-bold text-slate-200">Get live mobile result notifications!</span>
+        </div>
+        <button onclick="toggleNotifications()" class="bg-amber-500 text-slate-950 font-black px-3 py-1 rounded-lg shrink-0 text-[11px]">
+            Enable
+        </button>
     </div>
 
     <!-- Live Floating Toast Notification Banner -->
@@ -554,9 +565,18 @@
             renderStages();
             renderSchedule();
 
-            // Auto-fetch remote data every 12 seconds to sync all visitors automatically
+            // Auto-fetch remote data every 8 seconds to sync all visitors automatically
             fetchLatestData();
-            setInterval(() => fetchLatestData(), 12000);
+            setInterval(() => fetchLatestData(), 8000);
+
+            // Listen to local storage changes across tabs on the same device
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'csmegb_results_2026_v3' || e.key === 'csmegb_stages_2026_v3') {
+                    loadSavedData();
+                    renderResults();
+                    renderStages();
+                }
+            });
 
             // Ctrl + Shift + A for Admin Portal
             window.addEventListener('keydown', (e) => {
@@ -577,6 +597,46 @@
             } else {
                 const btn = document.getElementById('notifToggleBtn');
                 if (btn) btn.classList.add('hidden');
+            }
+        }
+
+        function toggleNotifications() {
+            if (!("Notification" in window)) {
+                alert("Browser notifications are not supported on this browser/device.");
+                return;
+            }
+
+            if (Notification.permission === "granted") {
+                alert("Notifications are enabled! You will get alerts for new results.");
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        notificationsEnabled = true;
+                        updateNotifButtonUI(true);
+                        showSystemNotification("Notifications Enabled!", "You will now receive automatic alerts when new results are declared.");
+                        const mobileBanner = document.getElementById('mobileNotifBanner');
+                        if (mobileBanner) mobileBanner.classList.add('hidden');
+                    } else {
+                        alert("Notification permission was denied. You can enable it in your mobile browser permissions settings.");
+                    }
+                });
+            } else {
+                alert("Notifications are currently blocked by browser settings. Please enable notifications for this site in your phone settings.");
+            }
+        }
+
+        function updateNotifButtonUI(enabled) {
+            const btnText = document.getElementById('notifText');
+            const btn = document.getElementById('notifToggleBtn');
+            const mobileBanner = document.getElementById('mobileNotifBanner');
+
+            if (enabled) {
+                if (btnText) btnText.innerText = "Alerts On";
+                if (btn) btn.className = "bg-emerald-500 text-slate-950 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow";
+                if (mobileBanner) mobileBanner.classList.add('hidden');
+            } else {
+                if (btnText) btnText.innerText = "Alerts";
+                if (btn) btn.className = "bg-amber-500 text-slate-950 border border-amber-400 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow hover:bg-amber-400";
             }
         }
 
@@ -1329,7 +1389,7 @@
             };
 
             if (!updatedResult.p1.name) {
-                alert("Please enter 1st place winner details.");
+                alert("Please enter at least the 1st place winner details.");
                 return;
             }
 
@@ -1339,13 +1399,13 @@
             } else {
                 itemResults.unshift(updatedResult);
                 showSystemNotification(
-                    `🎉 New Result: ${updatedResult.itemName} (${updatedResult.category})`,
+                    `🎉 New Result Published: ${updatedResult.itemName} (${updatedResult.category})`,
                     `🥇 1st: ${updatedResult.p1.name} (${updatedResult.p1.mission})`
                 );
-                alert("Result published successfully!");
+                alert("Result published successfully and updated locally!");
             }
 
-            saveData();
+            saveData(true);
             renderResults();
             resetResultForm();
         }

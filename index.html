@@ -501,19 +501,25 @@
             try {
                 const res = await fetch(cloudEndpoint);
                 const data = await res.json();
-                if (data && data.results) {
-                    itemResults = data.results;
-                    if (data.stages) stageData = data.stages;
-                    if (data.schedule) scheduleData = data.schedule;
-                    localStorage.setItem('csmegb_results', JSON.stringify(itemResults));
-                    localStorage.setItem('csmegb_stages', JSON.stringify(stageData));
-                    renderResults();
-                    renderItemWiseView();
-                    renderStages();
-                    renderSchedule();
-                    showSystemNotification("Synced", "Latest results fetched from cloud!");
+                if (data && Array.isArray(data.results)) {
+                    // Only overwrite local results if cloud has results, or if local is completely empty
+                    if (data.results.length > 0 || itemResults.length === 0) {
+                        itemResults = data.results;
+                        if (data.stages) stageData = data.stages;
+                        if (data.schedule) scheduleData = data.schedule;
+                        localStorage.setItem('csmegb_results', JSON.stringify(itemResults));
+                        localStorage.setItem('csmegb_stages', JSON.stringify(stageData));
+                        renderResults();
+                        renderItemWiseView();
+                        renderStages();
+                        renderSchedule();
+                    } else {
+                        // If cloud is empty but local has items, push local to cloud instead of erasing
+                        pushToCloud();
+                    }
                 }
                 updateSyncBadge(true, "Cloud Synced");
+                showSystemNotification("Synced", "Latest results fetched from cloud!");
             } catch (err) {
                 console.error("Sync fetch failed:", err);
                 updateSyncBadge(false, "Sync Failed");

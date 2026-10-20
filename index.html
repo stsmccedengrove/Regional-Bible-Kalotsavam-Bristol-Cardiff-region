@@ -76,7 +76,7 @@
     </header>
 
     <div class="bg-amber-500 text-slate-950 py-0.5 px-4 text-center text-[11px] font-extrabold shrink-0 shadow-inner">
-        Theme: "The Lord disciplines those whom he loves..." (Hebrews 12:6) 
+        Theme: "The Lord disciplines those whom he loves..." (Hebrews 12:6) | പ്രധാന വേദി തത്സമയ ഫലപ്രഖ്യാപനം
     </div>
 
     <div id="liveToast" class="hidden fixed bottom-5 right-5 z-50 max-w-sm w-full bg-slate-900 border-2 border-amber-400 text-white p-3 rounded-2xl shadow-2xl transition-all duration-300">
@@ -301,11 +301,11 @@
 
     <!-- ADMIN MODAL -->
     <div id="adminModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4">
-        <div class="max-w-2xl mx-auto bg-slate-900 text-white rounded-2xl border border-slate-700 shadow-2xl p-5 space-y-5 my-6">
+        <div class="max-w-3xl mx-auto bg-slate-900 text-white rounded-2xl border border-slate-700 shadow-2xl p-5 space-y-5 my-6">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                 <div class="flex items-center gap-1.5">
                     <i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i>
-                    <h2 class="text-sm font-black">Official Admin Portal & Direct File Export</h2>
+                    <h2 class="text-sm font-black">Official Admin Portal & Management System</h2>
                 </div>
                 <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white p-1">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -324,76 +324,113 @@
             </div>
 
             <!-- Controls Section -->
-            <div id="adminControlsSection" class="hidden space-y-4 max-h-[65vh] overflow-y-auto pr-1">
-                <!-- Cloud Sync Status Notification -->
-                <div class="bg-emerald-950/40 p-3.5 rounded-xl border border-emerald-700/60 space-y-1.5">
-                    <h3 class="text-xs font-black text-emerald-400 uppercase flex items-center gap-1.5">
-                        <i data-lucide="cloud" class="w-4 h-4"></i> Firebase Real-Time Database Connected
-                    </h3>
-                    <p class="text-[11px] text-slate-300">Group items award 10/7/5 points. Single/solo items maintain 5/3/1 points.</p>
-                </div>
-
-                <!-- Stage Live Editor -->
-                <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
-                    <h3 class="font-bold text-xs text-amber-400 uppercase">Manage Live 9 Stages</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <select id="adminStageSelect" onchange="populateStageForm()" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"></select>
-                        <input type="text" id="adminStageTimeInput" placeholder="Time / Status (e.g. 10:30 AM)" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
-                    </div>
-                    <input type="text" id="adminStageOngoingInput" placeholder="Ongoing Programme Item" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
-                    <input type="text" id="adminStageNextInput" placeholder="Next Programme Item" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
-                    <button onclick="saveStageUpdate()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 rounded text-xs transition">
-                        Update Stage Status
+            <div id="adminControlsSection" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-1">
+                
+                <!-- Admin Menu Tabs -->
+                <div class="flex gap-2 border-b border-slate-800 pb-2">
+                    <button onclick="switchAdminSubTab('results')" id="adminSubTab-results" class="px-3 py-1 text-xs font-bold rounded-lg bg-amber-500 text-slate-950">
+                        Results Publisher
+                    </button>
+                    <button onclick="switchAdminSubTab('stages')" id="adminSubTab-stages" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">
+                        Live 9 Stages
+                    </button>
+                    <button onclick="switchAdminSubTab('program')" id="adminSubTab-program" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">
+                        Program & Schedule Editor
                     </button>
                 </div>
 
-                <!-- Publish / Edit Result Form -->
-                <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
-                    <div class="flex justify-between items-center">
-                        <h3 id="adminFormHeaderTitle" class="font-bold text-xs text-amber-400 uppercase">Publish New Event Result</h3>
-                        <button id="cancelEditBtn" onclick="resetAdminForm()" class="hidden text-[10px] text-slate-400 underline">Cancel Edit</button>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                        <select id="adminItemSelect" onchange="updateCategoryDropdown()" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"></select>
-                        <select id="adminCategorySelect" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"></select>
-                        <select id="adminResultStatusSelect" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white font-bold">
-                            <option value="Final Result">Final Result</option>
-                            <option value="Provisional Result">Provisional Result</option>
-                            <option value="Appeal Stage">Appeal Stage</option>
-                        </select>
+                <!-- SUB TAB 1: RESULTS PUBLISHER -->
+                <div id="adminSubView-results" class="space-y-4">
+                    <!-- Publish / Edit Result Form -->
+                    <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 id="adminFormHeaderTitle" class="font-bold text-xs text-amber-400 uppercase">Publish New Event Result</h3>
+                                <p id="adminFormHeaderSub" class="text-[10px] text-slate-400">Select Item and Category to announce result.</p>
+                            </div>
+                            <button id="cancelEditBtn" onclick="resetAdminForm()" class="hidden text-[10px] bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-0.5 rounded">Cancel Edit</button>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <select id="adminItemSelect" onchange="updateCategoryDropdown()" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"></select>
+                            <select id="adminCategorySelect" onchange="checkExistingResultMatch()" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"></select>
+                            <select id="adminResultStatusSelect" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white font-bold">
+                                <option value="Final Result">Final Result</option>
+                                <option value="Provisional Result">Provisional Result</option>
+                                <option value="Appeal Stage">Appeal Stage</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="p-2 bg-slate-900 rounded border border-amber-500/40 grid grid-cols-3 gap-1.5">
+                                <span class="text-amber-400 font-bold text-xs col-span-3">🥇 1st Place</span>
+                                <input type="text" id="p1_name" placeholder="Name" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
+                                <input type="text" id="p1_code" placeholder="Chest No" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
+                                <select id="p1_mission" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white"></select>
+                            </div>
+                            <div class="p-2 bg-slate-900 rounded border border-slate-700 grid grid-cols-3 gap-1.5">
+                                <span class="text-slate-300 font-bold text-xs col-span-3">🥈 2nd Place</span>
+                                <input type="text" id="p2_name" placeholder="Name" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
+                                <input type="text" id="p2_code" placeholder="Chest No" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
+                                <select id="p2_mission" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white"></select>
+                            </div>
+                            <div class="p-2 bg-slate-900 rounded border border-slate-700 grid grid-cols-3 gap-1.5">
+                                <span class="text-amber-700 font-bold text-xs col-span-3">🥉 3rd Place</span>
+                                <input type="text" id="p3_name" placeholder="Name" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
+                                <input type="text" id="p3_code" placeholder="Chest No" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
+                                <select id="p3_mission" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white"></select>
+                            </div>
+                        </div>
+
+                        <button id="publishResultBtn" onclick="publishResult()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-2 rounded text-xs uppercase tracking-wider transition">
+                            Publish Result Live to Cloud
+                        </button>
                     </div>
 
-                    <div class="space-y-2">
-                        <div class="p-2 bg-slate-900 rounded border border-amber-500/40 grid grid-cols-3 gap-1.5">
-                            <span class="text-amber-400 font-bold text-xs col-span-3">🥇 1st Place</span>
-                            <input type="text" id="p1_name" placeholder="Name" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
-                            <input type="text" id="p1_code" placeholder="Chest No" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
-                            <select id="p1_mission" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white"></select>
-                        </div>
-                        <div class="p-2 bg-slate-900 rounded border border-slate-700 grid grid-cols-3 gap-1.5">
-                            <span class="text-slate-300 font-bold text-xs col-span-3">🥈 2nd Place</span>
-                            <input type="text" id="p2_name" placeholder="Name" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
-                            <input type="text" id="p2_code" placeholder="Chest No" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
-                            <select id="p2_mission" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white"></select>
-                        </div>
-                        <div class="p-2 bg-slate-900 rounded border border-slate-700 grid grid-cols-3 gap-1.5">
-                            <span class="text-amber-700 font-bold text-xs col-span-3">🥉 3rd Place</span>
-                            <input type="text" id="p3_name" placeholder="Name" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
-                            <input type="text" id="p3_code" placeholder="Chest No" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
-                            <select id="p3_mission" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white"></select>
-                        </div>
+                    <!-- Existing Results Manager -->
+                    <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2">
+                        <h3 class="font-bold text-xs text-amber-400 uppercase">Manage Published Results</h3>
+                        <div id="adminResultsListContainer" class="space-y-1.5 max-h-40 overflow-y-auto"></div>
                     </div>
-
-                    <button id="publishResultBtn" onclick="publishResult()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-2 rounded text-xs uppercase tracking-wider transition">
-                        Publish Result Live to Cloud
-                    </button>
                 </div>
 
-                <!-- Existing Results Manager -->
-                <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2">
-                    <h3 class="font-bold text-xs text-amber-400 uppercase">Manage Published Results (Edit / Delete)</h3>
-                    <div id="adminResultsListContainer" class="space-y-1.5 max-h-48 overflow-y-auto"></div>
+                <!-- SUB TAB 2: LIVE STAGES -->
+                <div id="adminSubView-stages" class="hidden space-y-4">
+                    <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
+                        <h3 class="font-bold text-xs text-amber-400 uppercase">Manage Live 9 Stages</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <select id="adminStageSelect" onchange="populateStageForm()" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"></select>
+                            <input type="text" id="adminStageTimeInput" placeholder="Time / Status (e.g. 10:30 AM)" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        </div>
+                        <input type="text" id="adminStageOngoingInput" placeholder="Ongoing Programme Item" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        <input type="text" id="adminStageNextInput" placeholder="Next Programme Item" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        <button onclick="saveStageUpdate()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 rounded text-xs transition">
+                            Update Stage Status Live
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SUB TAB 3: PROGRAMME SCHEDULE & MATRIX EDITOR -->
+                <div id="adminSubView-program" class="hidden space-y-4">
+                    <!-- Schedule Form -->
+                    <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
+                        <h3 class="font-bold text-xs text-amber-400 uppercase">Add / Update Schedule Entry</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <input type="text" id="sch_time" placeholder="Time (e.g. 09:30 AM)" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
+                            <input type="text" id="sch_item" placeholder="Programme Name" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
+                            <input type="text" id="sch_cat" placeholder="Category (e.g. 8 to 10)" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
+                            <input type="text" id="sch_stage" placeholder="Stage / Location (e.g. Stage 2)" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
+                        </div>
+                        <button onclick="addScheduleEntry()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-1.5 rounded text-xs transition">
+                            Add to Schedule
+                        </button>
+                    </div>
+
+                    <!-- Current Schedule List -->
+                    <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2">
+                        <h3 class="font-bold text-xs text-amber-400 uppercase">Current Schedule Entries</h3>
+                        <div id="adminScheduleListContainer" class="space-y-1.5 max-h-40 overflow-y-auto text-xs"></div>
+                    </div>
                 </div>
 
                 <div class="pt-2 border-t border-slate-700 flex justify-between items-center">
@@ -442,19 +479,17 @@
             loadLocalFallback();
             const resultsRef = collection(db, 'artifacts', appId, 'public', 'data', 'results');
             
-            // Real-time listener
             onSnapshot(resultsRef, (snapshot) => {
-                if (!snapshot.empty) {
-                    window.itemResults = [];
-                    snapshot.forEach(docSnap => {
-                        window.itemResults.push({ id: docSnap.id, ...docSnap.data() });
-                    });
-                    window.itemResults.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-                    localStorage.setItem('kalotsavam_offline_results', JSON.stringify(window.itemResults));
-                    window.renderResults();
-                    window.renderItemWiseView();
-                    if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
-                }
+                window.itemResults = [];
+                snapshot.forEach(docSnap => {
+                    window.itemResults.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                window.itemResults.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                localStorage.setItem('kalotsavam_offline_results', JSON.stringify(window.itemResults));
+                window.renderResults();
+                window.renderItemWiseView();
+                if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
+                if (typeof window.checkExistingResultMatch === 'function') window.checkExistingResultMatch();
             }, (error) => {
                 console.warn("Firestore listener fallback note:", error);
                 const statusText = document.getElementById('syncStatusText');
@@ -465,24 +500,20 @@
                 }
             });
 
-            // Force Fetch function for Manual Sync button
             window.forceSyncData = async function() {
                 try {
                     const querySnapshot = await getDocs(resultsRef);
-                    if (!querySnapshot.empty) {
-                        window.itemResults = [];
-                        querySnapshot.forEach(docSnap => {
-                            window.itemResults.push({ id: docSnap.id, ...docSnap.data() });
-                        });
-                        window.itemResults.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-                        localStorage.setItem('kalotsavam_offline_results', JSON.stringify(window.itemResults));
-                        window.renderResults();
-                        window.renderItemWiseView();
-                        if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
-                        showSystemNotification("Synced Successfully", `Loaded ${window.itemResults.length} records from Firebase cloud.`);
-                    } else {
-                        showSystemNotification("Sync Complete", "Connected to Firebase, but no results are published yet.");
-                    }
+                    window.itemResults = [];
+                    querySnapshot.forEach(docSnap => {
+                        window.itemResults.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                    window.itemResults.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                    localStorage.setItem('kalotsavam_offline_results', JSON.stringify(window.itemResults));
+                    window.renderResults();
+                    window.renderItemWiseView();
+                    if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
+                    if (typeof window.checkExistingResultMatch === 'function') window.checkExistingResultMatch();
+                    showSystemNotification("Synced Successfully", `Loaded ${window.itemResults.length} records from Firebase cloud.`);
                 } catch (err) {
                     console.error("Force sync failed:", err);
                     showSystemNotification("Sync Notice", "Using cached local data. Check internet connection.");
@@ -500,6 +531,19 @@
                     });
                 }
             }, (err) => console.log("Stages listener notice:", err));
+
+            const scheduleRef = collection(db, 'artifacts', appId, 'public', 'data', 'schedule');
+            onSnapshot(scheduleRef, (snapshot) => {
+                if (!snapshot.empty) {
+                    snapshot.forEach(docSnap => {
+                        if (docSnap.id === 'main_schedule' && docSnap.data().list) {
+                            window.scheduleData = docSnap.data().list;
+                            window.renderSchedule();
+                            if (typeof window.populateAdminScheduleList === 'function') window.populateAdminScheduleList();
+                        }
+                    });
+                }
+            }, (err) => console.log("Schedule listener notice:", err));
         }
 
         window.firebaseCloudSaveResult = async function(resultObj, docId) {
@@ -521,7 +565,7 @@
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'results', finalId);
                 await setDoc(docRef, fullRecord);
             } catch (err) {
-                console.warn("Cloud write note (using local cache):", err);
+                console.warn("Cloud write note:", err);
             }
         }
 
@@ -546,6 +590,15 @@
                 await setDoc(docRef, { list: stagesArray, timestamp: Date.now() });
             } catch (err) {
                 console.warn("Stage save error:", err);
+            }
+        }
+
+        window.firebaseCloudSaveSchedule = async function(scheduleArray) {
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'schedule', 'main_schedule');
+                await setDoc(docRef, { list: scheduleArray, timestamp: Date.now() });
+            } catch (err) {
+                console.warn("Schedule save error:", err);
             }
         }
 
@@ -595,7 +648,7 @@
             next: "To be updated"
         }));
 
-        let scheduleData = [
+        window.scheduleData = [
             { time: "08:00 AM", item: "Registration & Inauguration", category: "All", stage: "Main Hall" },
             { time: "09:00 AM", item: "Bible Reading - English", category: "Up to 7, 8-10", stage: "Stage 1" }
         ];
@@ -618,6 +671,26 @@
                 body.classList.remove('projector-fit-h');
                 if (btnText) btnText.textContent = "Scroll Mode";
                 if (btn) btn.classList.remove('bg-amber-500', 'text-slate-950');
+            }
+        }
+
+        window.switchAdminSubTab = function(subKey) {
+            ['results', 'stages', 'program'].forEach(k => {
+                const view = document.getElementById(`adminSubView-${k}`);
+                const btn = document.getElementById(`adminSubTab-${k}`);
+                if (view) view.classList.add('hidden');
+                if (btn) {
+                    btn.classList.remove('bg-amber-500', 'text-slate-950');
+                    btn.classList.add('bg-slate-800', 'text-slate-300');
+                }
+            });
+
+            const activeView = document.getElementById(`adminSubView-${subKey}`);
+            const activeBtn = document.getElementById(`adminSubTab-${subKey}`);
+            if (activeView) activeView.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+                activeBtn.classList.add('bg-amber-500', 'text-slate-950');
             }
         }
 
@@ -680,7 +753,8 @@
 
         window.deleteAllResults = function() {
             if (confirm("Are you sure you want to delete ALL published results?")) {
-                window.itemResults.forEach(r => {
+                const resultsToDelete = [...window.itemResults];
+                resultsToDelete.forEach(r => {
                     if (r.id && typeof window.firebaseCloudDeleteResult === 'function') {
                         window.firebaseCloudDeleteResult(r.id);
                     }
@@ -714,14 +788,22 @@
                 return;
             }
 
-            if (typeof window.firebaseCloudSaveResult === 'function') {
-                await window.firebaseCloudSaveResult(updatedResult, editingResultDocId);
+            let targetDocId = editingResultDocId;
+            if (!targetDocId) {
+                const match = window.itemResults.find(r => r.itemName === updatedResult.itemName && r.category === updatedResult.category);
+                if (match) {
+                    targetDocId = match.id;
+                }
             }
 
-            if (editingResultDocId) {
-                showSystemNotification("Updated", `Result updated for ${updatedResult.itemName}`);
+            if (typeof window.firebaseCloudSaveResult === 'function') {
+                await window.firebaseCloudSaveResult(updatedResult, targetDocId);
+            }
+
+            if (targetDocId) {
+                showSystemNotification("Updated", `Result updated for ${updatedResult.itemName} (${updatedResult.category})`);
             } else {
-                showSystemNotification("Published", `Result published live for ${updatedResult.itemName}`);
+                showSystemNotification("Published", `Result published live for ${updatedResult.itemName} (${updatedResult.category})`);
             }
 
             resetAdminForm();
@@ -733,7 +815,8 @@
             if (!r) return;
 
             editingResultDocId = docId;
-            document.getElementById('adminFormHeaderTitle').textContent = `Edit Result`;
+            document.getElementById('adminFormHeaderTitle').textContent = `Edit Existing Result`;
+            document.getElementById('adminFormHeaderSub').textContent = `Updating result for ${r.itemName} (${r.category})`;
             document.getElementById('publishResultBtn').textContent = "Update Result Live";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
 
@@ -758,6 +841,8 @@
             document.getElementById('p3_name').value = r.p3?.name || '';
             document.getElementById('p3_code').value = r.p3?.code || '';
             document.getElementById('p3_mission').value = r.p3?.mission || REGIONAL_MISSIONS[0];
+            
+            switchAdminSubTab('results');
         }
 
         window.deleteResult = function(docId) {
@@ -772,12 +857,50 @@
         window.resetAdminForm = function() {
             editingResultDocId = null;
             document.getElementById('adminFormHeaderTitle').textContent = "Publish New Event Result";
+            document.getElementById('adminFormHeaderSub').textContent = "Select Item and Category to announce result.";
             document.getElementById('publishResultBtn').textContent = "Publish Result Live to Cloud";
             document.getElementById('cancelEditBtn').classList.add('hidden');
             ['p1_name', 'p1_code', 'p2_name', 'p2_code', 'p3_name', 'p3_code'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
+            checkExistingResultMatch();
+        }
+
+        window.checkExistingResultMatch = function() {
+            if (editingResultDocId) return;
+
+            const itemIdx = document.getElementById('adminItemSelect')?.value || 0;
+            const itemObj = PROGRAM_MATRIX[itemIdx];
+            const cat = document.getElementById('adminCategorySelect')?.value;
+
+            if (!itemObj || !cat) return;
+
+            const existing = window.itemResults.find(r => r.itemName === itemObj.name && r.category === cat);
+            const subTitleEl = document.getElementById('adminFormHeaderSub');
+            const btnEl = document.getElementById('publishResultBtn');
+
+            if (existing) {
+                if (subTitleEl) subTitleEl.innerHTML = `<span class="text-amber-400 font-extrabold">⚠️ Existing Result Found:</span> Publishing will update the existing entry for ${existing.itemName} (${existing.category}).`;
+                if (btnEl) btnEl.textContent = "Update Existing Result Live";
+                document.getElementById('adminResultStatusSelect').value = existing.status || "Final Result";
+                document.getElementById('p1_name').value = existing.p1?.name || '';
+                document.getElementById('p1_code').value = existing.p1?.code || '';
+                document.getElementById('p1_mission').value = existing.p1?.mission || REGIONAL_MISSIONS[0];
+                document.getElementById('p2_name').value = existing.p2?.name || '';
+                document.getElementById('p2_code').value = existing.p2?.code || '';
+                document.getElementById('p2_mission').value = existing.p2?.mission || REGIONAL_MISSIONS[0];
+                document.getElementById('p3_name').value = existing.p3?.name || '';
+                document.getElementById('p3_code').value = existing.p3?.code || '';
+                document.getElementById('p3_mission').value = existing.p3?.mission || REGIONAL_MISSIONS[0];
+            } else {
+                if (subTitleEl) subTitleEl.textContent = "Select Item and Category to announce result.";
+                if (btnEl) btnEl.textContent = "Publish Result Live to Cloud";
+                ['p1_name', 'p1_code', 'p2_name', 'p2_code', 'p3_name', 'p3_code'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = '';
+                });
+            }
         }
 
         window.saveStageUpdate = function() {
@@ -794,6 +917,60 @@
             }
             window.renderStages();
             showSystemNotification("Stage Updated", `Stage ${parseInt(stageIdx) + 1} updated live.`);
+        }
+
+        window.addScheduleEntry = function() {
+            const time = document.getElementById('sch_time').value.trim();
+            const item = document.getElementById('sch_item').value.trim();
+            const cat = document.getElementById('sch_cat').value.trim();
+            const stage = document.getElementById('sch_stage').value.trim();
+
+            if (!time || !item) {
+                alert("Please enter both Time and Programme Item.");
+                return;
+            }
+
+            window.scheduleData.push({ time, item, category: cat || 'All', stage: stage || 'Main Stage' });
+            if (typeof window.firebaseCloudSaveSchedule === 'function') {
+                window.firebaseCloudSaveSchedule(window.scheduleData);
+            }
+            window.renderSchedule();
+            window.populateAdminScheduleList();
+            document.getElementById('sch_time').value = '';
+            document.getElementById('sch_item').value = '';
+            document.getElementById('sch_cat').value = '';
+            document.getElementById('sch_stage').value = '';
+            showSystemNotification("Schedule Added", `Added ${item} to programme schedule.`);
+        }
+
+        window.deleteScheduleEntry = function(index) {
+            window.scheduleData.splice(index, 1);
+            if (typeof window.firebaseCloudSaveSchedule === 'function') {
+                window.firebaseCloudSaveSchedule(window.scheduleData);
+            }
+            window.renderSchedule();
+            window.populateAdminScheduleList();
+            showSystemNotification("Schedule Removed", "Schedule item deleted.");
+        }
+
+        window.populateAdminScheduleList = function() {
+            const container = document.getElementById('adminScheduleListContainer');
+            if (!container) return;
+
+            if (window.scheduleData.length === 0) {
+                container.innerHTML = `<p class="text-slate-500">No schedule entries available.</p>`;
+                return;
+            }
+
+            container.innerHTML = window.scheduleData.map((s, idx) => `
+                <div class="p-2 bg-slate-900 rounded border border-slate-700 flex justify-between items-center">
+                    <div>
+                        <strong class="text-amber-400">${s.time}</strong> - <span class="text-white">${s.item}</span>
+                        <span class="block text-[10px] text-slate-400">${s.category} | ${s.stage}</span>
+                    </div>
+                    <button onclick="deleteScheduleEntry(${idx})" class="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-[10px]">Delete</button>
+                </div>
+            `).join('');
         }
 
         function calculateMissionStandings() {
@@ -1004,10 +1181,10 @@
             initLucide();
         }
 
-        function renderSchedule() {
+        window.renderSchedule = function() {
             const body = document.getElementById('scheduleTableBody');
             if (!body) return;
-            body.innerHTML = scheduleData.map((item) => `
+            body.innerHTML = window.scheduleData.map((item) => `
                 <tr class="hover:bg-slate-800/40">
                     <td class="p-2 font-bold text-amber-400">${item.time}</td>
                     <td class="p-2 font-black text-white">${item.item}</td>
@@ -1059,6 +1236,7 @@
             }
 
             window.populateAdminResultsList();
+            window.populateAdminScheduleList();
         }
 
         window.populateStageForm = function() {
@@ -1099,8 +1277,12 @@
             const itemObj = PROGRAM_MATRIX[itemIdx];
             const catSelect = document.getElementById('adminCategorySelect');
             if (catSelect && itemObj) {
-                catSelect.innerHTML = itemObj.cat.map(c => `<option value="${c}">${c}</option>`).join('');
+                catSelect.innerHTML = itemObj.cat.map(c => {
+                    const isPublished = window.itemResults.some(r => r.itemName === itemObj.name && r.category === c);
+                    return `<option value="${c}">${c}${isPublished ? ' (ANNOUNCED ✓)' : ''}</option>`;
+                }).join('');
             }
+            checkExistingResultMatch();
         }
 
         window.openMissionPrizeModal = function(missionName) {

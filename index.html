@@ -51,11 +51,11 @@
             </div>
             
             <div class="flex items-center space-x-1.5 sm:space-x-3">
-                <!-- Sync Button -->
-                <button onclick="forceSyncFromGithub()" title="Force Refresh Data from Server" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition">
-                    <i data-lucide="refresh-cw" id="refreshSpinner" class="w-3.5 h-3.5 text-amber-400"></i>
-                    <span id="syncText" class="inline">Sync</span>
-                </button>
+                <!-- Cloud Sync Status Indicator -->
+                <div id="syncStatusBadge" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2.5 py-1.5 rounded-lg text-xs font-extrabold flex items-center gap-1.5" title="Connected to Real-time Cloud">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="hidden md:inline">Cloud Live</span>
+                </div>
 
                 <!-- Push Notification Toggle -->
                 <button id="notifToggleBtn" onclick="toggleNotifications()" title="Enable Result Notifications" class="bg-amber-500 text-slate-950 border border-amber-400 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow hover:bg-amber-400">
@@ -101,15 +101,6 @@
     </div>
 
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
-
-        <!-- Local Override Notice Banner (Shows when local admin edits exist) -->
-        <div id="adminLocalNotice" class="hidden bg-amber-50 border border-amber-300 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <div class="flex items-center gap-2 text-amber-900 font-bold">
-                <i data-lucide="alert-circle" class="w-4 h-4 text-amber-600 shrink-0"></i>
-                <span>You have unsynced local admin edits! Download <strong>data.json</strong> in the Admin Portal and commit it to GitHub so everyone sees these changes.</span>
-            </div>
-            <button onclick="forceSyncFromGithub()" class="bg-amber-600 text-white px-3 py-1 rounded-lg font-bold hover:bg-amber-700">Discard Local Edits & Sync GitHub</button>
-        </div>
 
         <!-- Navigation Tabs -->
         <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-2">
@@ -239,7 +230,7 @@
                     </span>
                     <div>
                         <h3 class="font-bold text-slate-900 text-sm">Live 9-Stage Progress Tracker</h3>
-                        <p class="text-xs text-slate-600">Stage details and schedule allocations are updated live by administrators.</p>
+                        <p class="text-xs text-slate-600">Stage details and schedule allocations are updated in real time by administrators.</p>
                     </div>
                 </div>
             </div>
@@ -257,7 +248,7 @@
                         <i data-lucide="clock" class="w-5 h-5 text-brand-700"></i>
                         Official Competition Programme Schedule
                     </h2>
-                    <span id="adminScheduleNotice" class="text-xs text-slate-500 font-medium">Schedule subject to live updates</span>
+                    <span class="text-xs text-slate-500 font-medium">Schedule updates automatically</span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs sm:text-sm">
@@ -398,15 +389,12 @@
             <!-- Admin Controls Dashboard (Visible after login) -->
             <div id="adminControlsSection" class="hidden space-y-8">
                 
-                <!-- Export Data JSON Section -->
-                <div class="bg-amber-500/10 p-5 rounded-xl border border-amber-500/30 space-y-3">
-                    <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider flex items-center gap-2">
-                        <i data-lucide="download" class="w-4 h-4 text-amber-400"></i> Export & Sync Data File
-                    </h3>
-                    <p class="text-xs text-slate-300">Click below to download updated <code class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300 font-mono">data.json</code> and upload it to GitHub so viewers on other devices see live updates.</p>
-                    <button onclick="downloadDataJson()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-2 rounded-lg text-xs uppercase tracking-wider transition flex items-center gap-2">
-                        <i data-lucide="file-json" class="w-4 h-4"></i> Download data.json
-                    </button>
+                <!-- Cloud Status Notice -->
+                <div class="bg-emerald-500/15 p-4 rounded-xl border border-emerald-500/40 flex items-center justify-between">
+                    <div class="flex items-center gap-2 text-emerald-400 font-bold text-xs">
+                        <i data-lucide="cloud" class="w-4 h-4"></i>
+                        <span>Automatic Cloud Sync is active. All changes save instantly for everyone!</span>
+                    </div>
                 </div>
 
                 <!-- Section 1: Logo URLs Configuration -->
@@ -528,7 +516,23 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'csmegb-kalotsavam-2026';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "mock", projectId: "mock" };
+
+        let app, db, auth;
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+        } catch (e) {
+            console.log("Firebase init note:", e);
+        }
+
         const REGIONAL_MISSIONS = [
             "Exeter", "Taunton", "Weston Super Mare", "Bristol",
             "Bath", "Newport", "Cardiff", "Barry",
@@ -537,9 +541,6 @@
 
         const DEFAULT_LEFT_LOGO = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0159.JPG";
         const DEFAULT_RIGHT_LOGO = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0160.JPG";
-
-        const PRIMARY_DATA_URL = "./data.json";
-        const FALLBACK_DATA_URL = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/data.json";
 
         const PROGRAM_MATRIX = [
             { name: "Bible Reading - English", duration: "2 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
@@ -574,7 +575,6 @@
         let adminAuthenticated = false;
         let editingResultIndex = null;
         let notificationsEnabled = false;
-        let localAdminModified = localStorage.getItem('csmegb_admin_dirty') === 'true';
 
         let stageData = Array.from({ length: 9 }, (_, i) => ({
             stage: `Stage ${i + 1}`,
@@ -588,29 +588,70 @@
             { time: "09:00 AM", item: "Bible Reading - English", category: "Up to 7, 8-10", stage: "Stage 1" }
         ];
 
-        function setLocalAdminModified(isModified) {
-            localAdminModified = isModified;
-            if (isModified) {
-                localStorage.setItem('csmegb_admin_dirty', 'true');
-            } else {
-                localStorage.removeItem('csmegb_admin_dirty');
-            }
-            updateAdminNoticeBanner();
-        }
-
-        function updateAdminNoticeBanner() {
-            const noticeEl = document.getElementById('adminLocalNotice');
-            if (noticeEl) {
-                // Only show if explicitly flagged as dirty by admin action
-                if (localAdminModified && localStorage.getItem('csmegb_admin_dirty') === 'true') {
-                    noticeEl.classList.remove('hidden');
+        async function initAuthAndSync() {
+            if (!auth || !db) return;
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
-                    noticeEl.classList.add('hidden');
+                    await signInAnonymously(auth);
                 }
+
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'festival_state');
+                
+                onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        if (data) {
+                            if (data.results && Array.isArray(data.results)) {
+                                if (previousResultCount > 0 && data.results.length > previousResultCount) {
+                                    const latestItem = data.results[0];
+                                    showSystemNotification(
+                                        `🎉 New Result: ${latestItem.itemName} (${latestItem.category})`,
+                                        `🥇 1st Place: ${latestItem.p1?.name || 'Winner'} (${latestItem.p1?.mission || ''})`
+                                    );
+                                }
+                                previousResultCount = data.results.length;
+                                itemResults = data.results;
+                            }
+                            if (data.stages) stageData = data.stages;
+                            if (data.schedule) scheduleData = data.schedule;
+
+                            renderResults();
+                            renderStages();
+                            renderSchedule();
+                        }
+                    } else {
+                        // Seed initial document if empty
+                        saveToCloud();
+                    }
+                }, (error) => {
+                    console.error("Firestore sync error:", error);
+                });
+            } catch (e) {
+                console.log("Auth/Sync note:", e);
             }
         }
 
-        function openAdminAuth() {
+        async function saveToCloud() {
+            if (!db) return;
+            const user = auth.currentUser;
+            if (!user) return;
+
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'festival_state');
+                await setDoc(docRef, {
+                    results: itemResults,
+                    stages: stageData,
+                    schedule: scheduleData,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+            } catch (e) {
+                console.error("Save to cloud error:", e);
+            }
+        }
+
+        window.openAdminAuth = function() {
             const modal = document.getElementById('adminModal');
             if (modal) modal.classList.remove('hidden');
 
@@ -628,12 +669,12 @@
             initLucide();
         }
 
-        function closeAdminModal() {
+        window.closeAdminModal = function() {
             const modal = document.getElementById('adminModal');
             if (modal) modal.classList.add('hidden');
         }
 
-        function verifyAdminPasscode() {
+        window.verifyAdminPasscode = function() {
             const passInput = document.getElementById('adminPassInput');
             const errEl = document.getElementById('adminAuthErr');
             
@@ -646,7 +687,7 @@
             }
         }
 
-        function switchTab(tabKey) {
+        window.switchTab = function(tabKey) {
             ['results', 'stages', 'schedule', 'rules'].forEach(k => {
                 const view = document.getElementById(`view-${k}`);
                 const btn = document.getElementById(`tab-${k}`);
@@ -667,107 +708,25 @@
             initLucide();
         }
 
-        async function forceSyncFromGithub() {
-            setLocalAdminModified(false);
-            await fetchLatestData(true);
-        }
-
-        async function fetchLatestData(manualTrigger = false) {
-            // Prevent auto-fetch overwriting local edits if admin modified local state
-            if (localAdminModified && !manualTrigger) {
-                return;
-            }
-
-            const spinner = document.getElementById('refreshSpinner');
-            if (spinner) spinner.classList.add('animate-spin');
-
-            const cacheBuster = `?_cb=${Date.now()}`;
-
-            try {
-                let res = await fetch(PRIMARY_DATA_URL + cacheBuster, { cache: 'no-store' });
-                if (!res.ok) {
-                    res = await fetch(FALLBACK_DATA_URL + cacheBuster, { cache: 'no-store' });
-                }
-
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && Array.isArray(data.results)) {
-                        if (previousResultCount > 0 && data.results.length > previousResultCount) {
-                            const latestItem = data.results[0];
-                            showSystemNotification(
-                                `🎉 New Result: ${latestItem.itemName} (${latestItem.category})`,
-                                `🥇 1st Place: ${latestItem.p1?.name || 'Winner'} (${latestItem.p1?.mission || ''})`
-                            );
-                        }
-
-                        previousResultCount = data.results.length;
-                        itemResults = data.results;
-                        if (data.stages) stageData = data.stages;
-                        if (data.schedule) scheduleData = data.schedule;
-
-                        // Only clear dirty flag if NOT locally modified or if manual sync requested
-                        if (manualTrigger) {
-                            setLocalAdminModified(false);
-                            saveData(true);
-                        } else if (!localAdminModified) {
-                            saveData(true);
-                        }
-                        
-                        renderResults();
-                        renderStages();
-                        renderSchedule();
-                    }
-                }
-            } catch (err) {
-                console.log("Remote sync note:", err);
-            } finally {
-                if (spinner) {
-                    setTimeout(() => spinner.classList.remove('animate-spin'), 600);
-                }
-                if (manualTrigger) {
-                    alert("Synced latest results from GitHub successfully!");
-                }
-            }
-        }
-
-        function saveData() {
-            localStorage.setItem('csmegb_results_2026_v3', JSON.stringify(itemResults));
-            localStorage.setItem('csmegb_stages_2026_v3', JSON.stringify(stageData));
-            localStorage.setItem('csmegb_schedule_2026_v3', JSON.stringify(scheduleData));
-        }
-
-        function loadLocalData() {
-            const savedResults = localStorage.getItem('csmegb_results_2026_v3');
-            const savedStages = localStorage.getItem('csmegb_stages_2026_v3');
-            const savedSchedule = localStorage.getItem('csmegb_schedule_2026_v3');
-
-            if (savedResults !== null) itemResults = JSON.parse(savedResults);
-            if (savedStages !== null) stageData = JSON.parse(savedStages);
-            if (savedSchedule !== null) scheduleData = JSON.parse(savedSchedule);
-        }
-
-        function deleteAllResults() {
-            if (confirm("CRITICAL WARNING: Are you sure you want to delete ALL published results? This will wipe the list and reset points to zero.")) {
+        window.deleteAllResults = function() {
+            if (confirm("CRITICAL WARNING: Are you sure you want to delete ALL published results? This will wipe the list and reset points to zero for all users.")) {
                 itemResults = [];
                 previousResultCount = 0;
-                setLocalAdminModified(true);
-                saveData();
+                saveToCloud();
                 renderResults();
                 closeAdminModal();
-                alert("All results have been wiped clean! Please download data.json in the Admin Portal and commit it to GitHub so all other devices see the clear state.");
             }
         }
 
-        function deleteResult(index) {
+        window.deleteResult = function(index) {
             if (confirm("Are you sure you want to delete this result?")) {
                 itemResults.splice(index, 1);
-                setLocalAdminModified(true);
-                saveData();
+                saveToCloud();
                 renderResults();
             }
         }
 
-        function publishResult() {
+        window.publishResult = function() {
             const itemIdx = document.getElementById('adminItemSelect').value;
             const itemObj = PROGRAM_MATRIX[itemIdx];
             const category = document.getElementById('adminCategorySelect').value;
@@ -799,8 +758,6 @@
                 return;
             }
 
-            setLocalAdminModified(true);
-
             if (editingResultIndex !== null && editingResultIndex >= 0 && editingResultIndex < itemResults.length) {
                 itemResults[editingResultIndex] = updatedResult;
             } else {
@@ -811,7 +768,7 @@
             const searchEl = document.getElementById('searchItemInput');
             if (searchEl) searchEl.value = '';
 
-            saveData();
+            saveToCloud();
             renderMissionFilters();
             renderResults();
             resetResultForm();
@@ -824,7 +781,7 @@
             );
         }
 
-        function editResult(index) {
+        window.editResult = function(index) {
             editingResultIndex = index;
             const r = itemResults[index];
             openAdminAuth();
@@ -857,7 +814,7 @@
             document.getElementById('p3_mission').value = r.p3?.mission || REGIONAL_MISSIONS[0];
         }
 
-        function resetResultForm() {
+        window.resetResultForm = function() {
             editingResultIndex = null;
             const cancelBtn = document.getElementById('cancelEditResultBtn');
             const titleEl = document.getElementById('adminResultFormTitle');
@@ -868,24 +825,6 @@
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
-        }
-
-        function downloadDataJson() {
-            const exportData = {
-                results: itemResults,
-                stages: stageData,
-                schedule: scheduleData
-            };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "data.json");
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-
-            // Clear dirty local flag since user exported
-            setLocalAdminModified(false);
         }
 
         function calculateMissionStandings() {
@@ -986,7 +925,7 @@
             `).join('');
         }
 
-        function filterByMission(mission) {
+        window.filterByMission = function(mission) {
             selectedMissionFilter = mission;
             const resetBtn = document.getElementById('resetFilterBtn');
             if (resetBtn) {
@@ -1147,7 +1086,7 @@
             renderAdminStagesControl();
         }
 
-        function updateCategoryDropdown() {
+        window.updateCategoryDropdown = function() {
             const itemIdx = document.getElementById('adminItemSelect')?.value || 0;
             const itemObj = PROGRAM_MATRIX[itemIdx];
             const catSelect = document.getElementById('adminCategorySelect');
@@ -1162,15 +1101,15 @@
 
             container.innerHTML = stageData.map((s, idx) => `
                 <div class="p-3 bg-slate-900 rounded-lg border border-slate-700 grid grid-cols-1 sm:grid-cols-4 gap-2">
-                    <input type="text" value="${s.stage}" onchange="stageData[${idx}].stage = this.value; setLocalAdminModified(true); saveData();" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white font-bold">
-                    <input type="text" value="${s.ongoing}" onchange="stageData[${idx}].ongoing = this.value; setLocalAdminModified(true); saveData();" placeholder="Ongoing" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                    <input type="text" value="${s.next}" onchange="stageData[${idx}].next = this.value; setLocalAdminModified(true); saveData();" placeholder="Next Up" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                    <input type="text" value="${s.time}" onchange="stageData[${idx}].time = this.value; setLocalAdminModified(true); saveData();" placeholder="Time" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                    <input type="text" value="${s.stage}" onchange="stageData[${idx}].stage = this.value; saveToCloud();" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white font-bold">
+                    <input type="text" value="${s.ongoing}" onchange="stageData[${idx}].ongoing = this.value; saveToCloud();" placeholder="Ongoing" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                    <input type="text" value="${s.next}" onchange="stageData[${idx}].next = this.value; saveToCloud();" placeholder="Next Up" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                    <input type="text" value="${s.time}" onchange="stageData[${idx}].time = this.value; saveToCloud();" placeholder="Time" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
                 </div>
             `).join('');
         }
 
-        function addScheduleItem() {
+        window.addScheduleItem = function() {
             const time = document.getElementById('schedTimeInput').value.trim();
             const item = document.getElementById('schedItemInput').value.trim();
             const category = document.getElementById('schedCatInput').value.trim();
@@ -1182,8 +1121,7 @@
             }
 
             scheduleData.push({ time, item, category: category || "All", stage: stage || "Main Stage" });
-            setLocalAdminModified(true);
-            saveData();
+            saveToCloud();
             renderSchedule();
 
             document.getElementById('schedTimeInput').value = '';
@@ -1194,7 +1132,7 @@
             showSystemNotification("Schedule Updated", `Added ${item} for ${time}`);
         }
 
-        function openMissionPrizeModal(missionName) {
+        window.openMissionPrizeModal = function(missionName) {
             const standings = calculateMissionStandings();
             const missionData = standings.find(m => m.mission === missionName);
             if (!missionData) return;
@@ -1226,12 +1164,12 @@
             initLucide();
         }
 
-        function closeMissionPrizeModal() {
+        window.closeMissionPrizeModal = function() {
             const modal = document.getElementById('missionPrizeModal');
             if (modal) modal.classList.add('hidden');
         }
 
-        function openShareModal() {
+        window.openShareModal = function() {
             const modal = document.getElementById('shareModal');
             if (modal) modal.classList.remove('hidden');
 
@@ -1247,17 +1185,18 @@
             initLucide();
         }
 
-        function closeShareModal() {
+        window.closeShareModal = function() {
             const modal = document.getElementById('shareModal');
             if (modal) modal.classList.add('hidden');
         }
 
-        function copyPageUrl() {
+        window.copyPageUrl = function() {
+            document.execCommand('copy');
             navigator.clipboard.writeText(window.location.href);
             showSystemNotification("Link Copied", "Page link copied to clipboard!");
         }
 
-        function toggleNotifications() {
+        window.toggleNotifications = function() {
             if (!("Notification" in window)) {
                 showSystemNotification("Alerts", "Notifications are not supported by this web browser.");
                 return;
@@ -1291,12 +1230,12 @@
             }
         }
 
-        function dismissToast() {
+        window.dismissToast = function() {
             const toast = document.getElementById('liveToast');
             if (toast) toast.classList.add('hidden');
         }
 
-        function saveLogos() {
+        window.saveLogos = function() {
             const left = document.getElementById('leftLogoUrlInput').value.trim();
             const right = document.getElementById('rightLogoUrlInput').value.trim();
             if (left) localStorage.setItem('csmegb_left_logo', left);
@@ -1323,18 +1262,14 @@
         }
 
         window.onload = function() {
-            loadLocalData();
             loadLogos();
-            updateAdminNoticeBanner();
             renderMissionFilters();
             renderResults();
             renderStages();
             renderSchedule();
             renderProgramMatrix();
 
-            fetchLatestData();
-            setInterval(() => fetchLatestData(), 10000);
-
+            initAuthAndSync();
             initLucide();
         };
     </script>

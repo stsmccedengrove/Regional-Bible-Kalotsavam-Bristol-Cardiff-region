@@ -424,7 +424,6 @@
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'bristol-cardiff-kalotsavam-2026';
 
         function startFirestoreListeners() {
-            // Listen for results with fallback handling
             const resultsRef = collection(db, 'artifacts', appId, 'public', 'data', 'results');
             onSnapshot(resultsRef, (snapshot) => {
                 window.itemResults = [];
@@ -436,16 +435,15 @@
                 window.renderItemWiseView();
                 if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
             }, (error) => {
-                console.warn("Firestore permissions note: Ensure your Firestore Rules allow public read/write or test mode.", error);
+                console.warn("Firestore permissions note:", error);
                 const statusText = document.getElementById('syncStatusText');
                 const statusBadge = document.getElementById('syncStatusBadge');
                 if (statusText && statusBadge) {
-                    statusText.textContent = "Offline / Check Firestore Rules";
+                    statusText.textContent = "Check Firestore Rules (Allow Read/Write)";
                     statusBadge.className = "bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2.5 py-1 rounded-lg text-xs font-extrabold flex items-center gap-1.5";
                 }
             });
 
-            // Listen for stages
             const stagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stages');
             onSnapshot(stagesRef, (snapshot) => {
                 if (!snapshot.empty) {
@@ -1078,6 +1076,7 @@
             loadLogos();
             renderSchedule();
             renderProgramMatrix();
+            renderResults();
             initLucide();
         };
     </script>

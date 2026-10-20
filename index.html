@@ -601,7 +601,8 @@
         function updateAdminNoticeBanner() {
             const noticeEl = document.getElementById('adminLocalNotice');
             if (noticeEl) {
-                if (localAdminModified) {
+                // Only show if explicitly flagged as dirty by admin action
+                if (localAdminModified && localStorage.getItem('csmegb_admin_dirty') === 'true') {
                     noticeEl.classList.remove('hidden');
                 } else {
                     noticeEl.classList.add('hidden');
@@ -704,8 +705,14 @@
                         if (data.stages) stageData = data.stages;
                         if (data.schedule) scheduleData = data.schedule;
 
-                        setLocalAdminModified(false);
-                        saveData(true);
+                        // Only clear dirty flag if NOT locally modified or if manual sync requested
+                        if (manualTrigger) {
+                            setLocalAdminModified(false);
+                            saveData(true);
+                        } else if (!localAdminModified) {
+                            saveData(true);
+                        }
+                        
                         renderResults();
                         renderStages();
                         renderSchedule();
@@ -1183,6 +1190,8 @@
             document.getElementById('schedItemInput').value = '';
             document.getElementById('schedCatInput').value = '';
             document.getElementById('schedStageInput').value = '';
+            
+            showSystemNotification("Schedule Updated", `Added ${item} for ${time}`);
         }
 
         function openMissionPrizeModal(missionName) {
@@ -1245,21 +1254,21 @@
 
         function copyPageUrl() {
             navigator.clipboard.writeText(window.location.href);
-            alert("Page link copied to clipboard!");
+            showSystemNotification("Link Copied", "Page link copied to clipboard!");
         }
 
         function toggleNotifications() {
             if (!("Notification" in window)) {
-                alert("Notifications are not supported by this web browser.");
+                showSystemNotification("Alerts", "Notifications are not supported by this web browser.");
                 return;
             }
 
             Notification.requestPermission().then(permission => {
                 if (permission === "granted") {
                     notificationsEnabled = true;
-                    alert("Notifications enabled successfully!");
+                    showSystemNotification("Alerts Enabled", "Live result notification alerts have been enabled!");
                 } else {
-                    alert("Permission denied or dismissed. Please allow notifications in browser settings.");
+                    showSystemNotification("Alerts Denied", "Notification permissions were not granted.");
                 }
             });
         }
@@ -1293,7 +1302,7 @@
             if (left) localStorage.setItem('csmegb_left_logo', left);
             if (right) localStorage.setItem('csmegb_right_logo', right);
             loadLogos();
-            alert("Logos updated successfully!");
+            showSystemNotification("Logos Saved", "Header logos updated successfully!");
         }
 
         function loadLogos() {

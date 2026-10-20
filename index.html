@@ -74,7 +74,6 @@
         Theme: "The Lord disciplines those whom he loves..." (Hebrews 12:6) | പ്രധാന വേദി തത്സമയ ഫലപ്രഖ്യാപനം
     </div>
 
-    <!-- Live Toast Notification Banner -->
     <div id="liveToast" class="hidden fixed bottom-5 right-5 z-50 max-w-sm w-full bg-slate-900 border-2 border-amber-400 text-white p-3 rounded-2xl shadow-2xl transition-all duration-300">
         <div class="flex items-start justify-between gap-3">
             <div class="flex items-start gap-2.5">
@@ -119,7 +118,7 @@
                 <div class="flex items-center justify-between">
                     <h2 class="text-xs font-extrabold text-amber-400 flex items-center gap-1.5">
                         <i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400"></i>
-                        Championship Standings - Top 3 Missions
+                        Championship Standings - Top 3 Missions (Group: 10/7/5 Pts | Solo: 5/3/1 Pts)
                     </h2>
                     <span class="text-[10px] text-slate-400">Click mission for prize breakdown</span>
                 </div>
@@ -255,7 +254,6 @@
         </button>
     </footer>
 
-    <!-- SHARE MODAL -->
     <div id="shareModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4 flex items-center justify-center">
         <div class="max-w-md w-full bg-slate-900 text-white rounded-2xl shadow-2xl p-5 space-y-4 border border-slate-700">
             <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
@@ -325,9 +323,9 @@
                 <!-- Cloud Sync Status Notification -->
                 <div class="bg-emerald-950/40 p-3.5 rounded-xl border border-emerald-700/60 space-y-1.5">
                     <h3 class="text-xs font-black text-emerald-400 uppercase flex items-center gap-1.5">
-                        <i data-lucide="cloud" class="w-4 h-4"></i> Firebase Real-Time Database Connected
+                        <i data-lucide="cloud" class="w-4 h-4"></i> Firebase Real-Time Database Connected (Auto-Fallback Active)
                     </h3>
-                    <p class="text-[11px] text-slate-300">All results published here are instantly synchronized across all connected visitor phones and projector screens worldwide via Firebase Firestore.</p>
+                    <p class="text-[11px] text-slate-300">Group items award 10/7/5 points. Single/solo items maintain previous scoring weights.</p>
                 </div>
 
                 <!-- Stage Live Editor -->
@@ -357,6 +355,7 @@
                         <select id="adminResultStatusSelect" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white font-bold">
                             <option value="Final Result">Final Result</option>
                             <option value="Provisional Result">Provisional Result</option>
+                            <option value="Appeal Stage">Appeal Stage</option>
                         </select>
                     </div>
 
@@ -404,7 +403,6 @@
         </div>
     </div>
 
-    <!-- Firebase SDK Imports & Robust Error Guard -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
@@ -423,23 +421,39 @@
         const db = getFirestore(app);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'bristol-cardiff-kalotsavam-2026';
 
+        function loadLocalFallback() {
+            try {
+                const local = localStorage.getItem('kalotsavam_offline_results');
+                if (local) {
+                    window.itemResults = JSON.parse(local);
+                    window.renderResults();
+                    window.renderItemWiseView();
+                    if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
+                }
+            } catch(e) {}
+        }
+
         function startFirestoreListeners() {
+            loadLocalFallback();
             const resultsRef = collection(db, 'artifacts', appId, 'public', 'data', 'results');
             onSnapshot(resultsRef, (snapshot) => {
-                window.itemResults = [];
-                snapshot.forEach(docSnap => {
-                    window.itemResults.push({ id: docSnap.id, ...docSnap.data() });
-                });
-                window.itemResults.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-                window.renderResults();
-                window.renderItemWiseView();
-                if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
+                if (!snapshot.empty) {
+                    window.itemResults = [];
+                    snapshot.forEach(docSnap => {
+                        window.itemResults.push({ id: docSnap.id, ...docSnap.data() });
+                    });
+                    window.itemResults.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                    localStorage.setItem('kalotsavam_offline_results', JSON.stringify(window.itemResults));
+                    window.renderResults();
+                    window.renderItemWiseView();
+                    if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
+                }
             }, (error) => {
-                console.warn("Firestore permissions note:", error);
+                console.warn("Firestore listener fallback note:", error);
                 const statusText = document.getElementById('syncStatusText');
                 const statusBadge = document.getElementById('syncStatusBadge');
                 if (statusText && statusBadge) {
-                    statusText.textContent = "Check Firestore Rules (Allow Read/Write)";
+                    statusText.textContent = "Offline Storage Mode Active";
                     statusBadge.className = "bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2.5 py-1 rounded-lg text-xs font-extrabold flex items-center gap-1.5";
                 }
             });
@@ -458,23 +472,40 @@
         }
 
         window.firebaseCloudSaveResult = async function(resultObj, docId) {
+            const finalId = docId || 'res_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+            const fullRecord = { ...resultObj, id: finalId, timestamp: Date.now() };
+            
+            const existingIdx = window.itemResults.findIndex(r => r.id === finalId);
+            if (existingIdx !== -1) {
+                window.itemResults[existingIdx] = fullRecord;
+            } else {
+                window.itemResults.unshift(fullRecord);
+            }
+            localStorage.setItem('kalotsavam_offline_results', JSON.stringify(window.itemResults));
+            window.renderResults();
+            window.renderItemWiseView();
+            if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
+
             try {
-                const finalId = docId || 'res_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'results', finalId);
-                await setDoc(docRef, { ...resultObj, timestamp: Date.now() });
+                await setDoc(docRef, fullRecord);
             } catch (err) {
-                alert("Permission Error: Please update your Firebase Firestore rules to allow public read/write during the event.");
-                console.error(err);
+                console.warn("Cloud write note (using local cache):", err);
             }
         }
 
         window.firebaseCloudDeleteResult = async function(docId) {
+            window.itemResults = window.itemResults.filter(r => r.id !== docId);
+            localStorage.setItem('kalotsavam_offline_results', JSON.stringify(window.itemResults));
+            window.renderResults();
+            window.renderItemWiseView();
+            if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
+
             try {
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'results', docId);
                 await deleteDoc(docRef);
             } catch (err) {
-                alert("Permission Error: Unable to delete. Check Firestore security rules.");
-                console.error(err);
+                console.warn("Cloud delete note:", err);
             }
         }
 
@@ -483,7 +514,7 @@
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'stages', 'main_stages');
                 await setDoc(docRef, { list: stagesArray, timestamp: Date.now() });
             } catch (err) {
-                console.error("Stage save error:", err);
+                console.warn("Stage save error:", err);
             }
         }
 
@@ -501,28 +532,28 @@
         const DEFAULT_RIGHT_LOGO = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0160.JPG";
 
         const PROGRAM_MATRIX = [
-            { name: "Bible Reading - English", duration: "2 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Bible Reading - Malayalam", duration: "2 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Elocution - English", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24"] },
-            { name: "Elocution - Malayalam", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
-            { name: "Colour Painting", duration: "30 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Pencil Sketching", duration: "30 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Essay Writing - English", duration: "30 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24"] },
-            { name: "Essay Writing – Malayalam or English", duration: "30 mins", cat: ["Adults (25+)"] },
-            { name: "Bible Mono act", duration: "5 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Bible Citation", duration: "15 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
-            { name: "Bible Costume", duration: "30 secs", cat: ["Up to 7", "8 to 10", "11 to 13"] },
-            { name: "Syriac Song Solo", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
-            { name: "Song – Solo", duration: "3-5 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
-            { name: "Song – Group (Max 8)", duration: "3-5 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"] },
-            { name: "Instrumental – Keyboard", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Instrumental – Guitar", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Instrumental – Violin", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Dance – Solo", duration: "5 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Dance – Group (Max 8)", duration: "5 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
-            { name: "Margam Kali (6-8+2, Max 10)", duration: "9 mins", cat: ["Under 30 Years", "30 Years & Above"] },
-            { name: "Bible Tableau (Max 8 + 4 Support)", duration: "1 min", cat: ["All Ages"] },
-            { name: "Bible Skit (Max 8 + 4 Support)", duration: "10 mins", cat: ["All Ages"] }
+            { name: "Bible Reading - English", duration: "2 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"], isGroup: false },
+            { name: "Bible Reading - Malayalam", duration: "2 mins", cat: ["8 to 10", "11 to 13", "14 to 17"], isGroup: false },
+            { name: "Elocution - English", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24"], isGroup: false },
+            { name: "Elocution - Malayalam", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"], isGroup: false },
+            { name: "Colour Painting", duration: "30 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"], isGroup: false },
+            { name: "Pencil Sketching", duration: "30 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"], isGroup: false },
+            { name: "Essay Writing - English", duration: "30 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24"], isGroup: false },
+            { name: "Essay Writing – Malayalam or English", duration: "30 mins", cat: ["Adults (25+)"], isGroup: false },
+            { name: "Bible Mono act", duration: "5 mins", cat: ["8 to 10", "11 to 13", "14 to 17"], isGroup: false },
+            { name: "Bible Citation", duration: "15 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"], isGroup: false },
+            { name: "Bible Costume", duration: "30 secs", cat: ["Up to 7", "8 to 10", "11 to 13"], isGroup: false },
+            { name: "Syriac Song Solo", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"], isGroup: false },
+            { name: "Song – Solo", duration: "3-5 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"], isGroup: false },
+            { name: "Song – Group (Max 8)", duration: "3-5 mins", cat: ["8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)"], isGroup: true },
+            { name: "Instrumental – Keyboard", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17"], isGroup: false },
+            { name: "Instrumental – Guitar", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17"], isGroup: false },
+            { name: "Instrumental – Violin", duration: "3 mins", cat: ["8 to 10", "11 to 13", "14 to 17"], isGroup: false },
+            { name: "Dance – Solo", duration: "5 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"], isGroup: false },
+            { name: "Dance – Group (Max 8)", duration: "5 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"], isGroup: true },
+            { name: "Margam Kali (6-8+2, Max 10)", duration: "9 mins", cat: ["Under 30 Years", "30 Years & Above"], isGroup: true },
+            { name: "Bible Tableau (Max 8 + 4 Support)", duration: "1 min", cat: ["All Ages"], isGroup: true },
+            { name: "Bible Skit (Max 8 + 4 Support)", duration: "10 mins", cat: ["All Ages"], isGroup: true }
         ];
 
         window.itemResults = [];
@@ -617,13 +648,17 @@
         }
 
         window.deleteAllResults = function() {
-            if (confirm("Are you sure you want to delete ALL published results from cloud?")) {
+            if (confirm("Are you sure you want to delete ALL published results?")) {
                 window.itemResults.forEach(r => {
                     if (r.id && typeof window.firebaseCloudDeleteResult === 'function') {
                         window.firebaseCloudDeleteResult(r.id);
                     }
                 });
-                showSystemNotification("Cleared", "All results wiped from cloud.");
+                window.itemResults = [];
+                localStorage.removeItem('kalotsavam_offline_results');
+                window.renderResults();
+                window.renderItemWiseView();
+                showSystemNotification("Cleared", "All results wiped.");
             }
         }
 
@@ -635,6 +670,7 @@
 
             const updatedResult = {
                 itemName: itemObj ? itemObj.name : "Event Item",
+                isGroup: itemObj ? itemObj.isGroup : false,
                 category: category,
                 status: status || "Final Result",
                 p1: { name: document.getElementById('p1_name').value.trim(), code: document.getElementById('p1_code').value.trim(), mission: document.getElementById('p1_mission').value },
@@ -667,7 +703,7 @@
 
             editingResultDocId = docId;
             document.getElementById('adminFormHeaderTitle').textContent = `Edit Result`;
-            document.getElementById('publishResultBtn').textContent = "Update Result Live in Cloud";
+            document.getElementById('publishResultBtn').textContent = "Update Result Live";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
 
             const itemSelect = document.getElementById('adminItemSelect');
@@ -694,11 +730,11 @@
         }
 
         window.deleteResult = function(docId) {
-            if (confirm("Delete this result from cloud?")) {
+            if (confirm("Delete this result?")) {
                 if (typeof window.firebaseCloudDeleteResult === 'function') {
                     window.firebaseCloudDeleteResult(docId);
                 }
-                showSystemNotification("Deleted", "Result removed from cloud.");
+                showSystemNotification("Deleted", "Result removed.");
             }
         }
 
@@ -736,20 +772,32 @@
             });
 
             window.itemResults.forEach(res => {
+                // Determine if item is group based on property or matrix lookup
+                let isGroup = res.isGroup;
+                if (isGroup === undefined) {
+                    const matchMat = PROGRAM_MATRIX.find(p => p.name === res.itemName);
+                    isGroup = matchMat ? matchMat.isGroup : false;
+                }
+
+                // Group items award 10/7/5 points. Single items maintain 5/3/1 (or previous weights).
+                const pts1 = isGroup ? 10 : 5;
+                const pts2 = isGroup ? 7 : 3;
+                const pts3 = isGroup ? 5 : 1;
+
                 if (res.p1?.mission && tally[res.p1.mission]) {
                     tally[res.p1.mission].first++;
-                    tally[res.p1.mission].points += 5;
-                    tally[res.p1.mission].prizes.push({ place: "1st", item: `${res.itemName} (${res.category})`, winner: res.p1.name });
+                    tally[res.p1.mission].points += pts1;
+                    tally[res.p1.mission].prizes.push({ place: "1st", item: `${res.itemName} (${res.category})`, winner: res.p1.name, status: res.status, pts: pts1 });
                 }
                 if (res.p2?.mission && tally[res.p2.mission]) {
                     tally[res.p2.mission].second++;
-                    tally[res.p2.mission].points += 3;
-                    tally[res.p2.mission].prizes.push({ place: "2nd", item: `${res.itemName} (${res.category})`, winner: res.p2.name });
+                    tally[res.p2.mission].points += pts2;
+                    tally[res.p2.mission].prizes.push({ place: "2nd", item: `${res.itemName} (${res.category})`, winner: res.p2.name, status: res.status, pts: pts2 });
                 }
                 if (res.p3?.mission && tally[res.p3.mission]) {
                     tally[res.p3.mission].third++;
-                    tally[res.p3.mission].points += 1;
-                    tally[res.p3.mission].prizes.push({ place: "3rd", item: `${res.itemName} (${res.category})`, winner: res.p3.name });
+                    tally[res.p3.mission].points += pts3;
+                    tally[res.p3.mission].prizes.push({ place: "3rd", item: `${res.itemName} (${res.category})`, winner: res.p3.name, status: res.status, pts: pts3 });
                 }
             });
 
@@ -820,25 +868,38 @@
                 return;
             }
 
-            container.innerHTML = filtered.map((r) => `
-                <div class="bg-slate-950 rounded-lg border border-slate-800 p-2 space-y-1">
-                    <div class="flex justify-between items-center">
-                        <span class="text-[9px] font-black uppercase text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">${r.category}</span>
-                        <h4 class="text-xs font-black text-white">${r.itemName}</h4>
+            container.innerHTML = filtered.map((r) => {
+                let statusBadgeColor = "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+                if (r.status === 'Provisional Result') statusBadgeColor = "bg-amber-500/20 text-amber-400 border-amber-500/30";
+                if (r.status === 'Appeal Stage') statusBadgeColor = "bg-purple-500/20 text-purple-400 border-purple-500/30";
+
+                let isGroup = r.isGroup;
+                if (isGroup === undefined) {
+                    const matchMat = PROGRAM_MATRIX.find(p => p.name === r.itemName);
+                    isGroup = matchMat ? matchMat.isGroup : false;
+                }
+                const badgeLabel = isGroup ? "Group (10/7/5)" : "Single (5/3/1)";
+
+                return `
+                    <div class="bg-slate-950 rounded-lg border border-slate-800 p-2 space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[9px] font-black uppercase ${statusBadgeColor} px-2 py-0.5 rounded border">${r.status || 'Final Result'} • ${r.category} • <span class="text-amber-400">${badgeLabel}</span></span>
+                            <h4 class="text-xs font-black text-white">${r.itemName}</h4>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1 text-[10px]">
+                            <div class="bg-amber-500/10 p-1 rounded border border-amber-500/30 truncate">
+                                <span class="text-amber-400 font-bold">1st:</span> ${r.p1?.name || 'N/A'} (${r.p1?.mission || ''})
+                            </div>
+                            <div class="bg-slate-900 p-1 rounded border border-slate-700 truncate">
+                                <span class="text-slate-300 font-bold">2nd:</span> ${r.p2?.name || 'N/A'} (${r.p2?.mission || ''})
+                            </div>
+                            <div class="bg-amber-900/10 p-1 rounded border border-amber-800/30 truncate">
+                                <span class="text-amber-700 font-bold">3rd:</span> ${r.p3?.name || 'N/A'} (${r.p3?.mission || ''})
+                            </div>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-3 gap-1 text-[10px]">
-                        <div class="bg-amber-500/10 p-1 rounded border border-amber-500/30 truncate">
-                            <span class="text-amber-400 font-bold">1st:</span> ${r.p1?.name || 'N/A'} (${r.p1?.mission || ''})
-                        </div>
-                        <div class="bg-slate-900 p-1 rounded border border-slate-700 truncate">
-                            <span class="text-slate-300 font-bold">2nd:</span> ${r.p2?.name || 'N/A'} (${r.p2?.mission || ''})
-                        </div>
-                        <div class="bg-amber-900/10 p-1 rounded border border-amber-800/30 truncate">
-                            <span class="text-amber-700 font-bold">3rd:</span> ${r.p3?.name || 'N/A'} (${r.p3?.mission || ''})
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
             initLucide();
         }
 
@@ -860,28 +921,39 @@
                 return;
             }
 
-            container.innerHTML = filtered.map(r => `
-                <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800 space-y-2">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                        <h4 class="font-black text-white text-xs">${r.itemName}</h4>
-                        <span class="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded font-bold">${r.category}</span>
+            container.innerHTML = filtered.map(r => {
+                let isGroup = r.isGroup;
+                if (isGroup === undefined) {
+                    const matchMat = PROGRAM_MATRIX.find(p => p.name === r.itemName);
+                    isGroup = matchMat ? matchMat.isGroup : false;
+                }
+                const pts1 = isGroup ? 10 : 5;
+                const pts2 = isGroup ? 7 : 3;
+                const pts3 = isGroup ? 5 : 1;
+
+                return `
+                    <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <h4 class="font-black text-white text-xs">${r.itemName}</h4>
+                            <span class="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded font-bold">${r.status || 'Final'} • ${r.category}</span>
+                        </div>
+                        <div class="space-y-1.5 text-xs">
+                            <div class="flex justify-between items-center bg-amber-500/10 p-2 rounded border border-amber-500/30">
+                                <span class="font-bold text-amber-400">🥇 1st Place (${pts1} pts)</span>
+                                <span class="text-white font-black">${r.p1?.name || 'N/A'} <span class="text-slate-400 font-normal">(${r.p1?.mission || ''})</span></span>
+                            </div>
+                            <div class="flex justify-between items-center bg-slate-800 p-2 rounded border border-slate-700">
+                                <span class="font-bold text-slate-300">🥈 2nd Place (${pts2} pts)</span>
+                                <span class="text-white font-black">${r.p2?.name || 'N/A'} <span class="text-slate-400 font-normal">(${r.p2?.mission || ''})</span></span>
+                            </div>
+                            <div class="flex justify-between items-center bg-amber-900/10 p-2 rounded border border-amber-800/30">
+                                <span class="font-bold text-amber-700">🥉 3rd Place (${pts3} pts)</span>
+                                <span class="text-white font-black">${r.p3?.name || 'N/A'} <span class="text-slate-400 font-normal">(${r.p3?.mission || ''})</span></span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="space-y-1.5 text-xs">
-                        <div class="flex justify-between items-center bg-amber-500/10 p-2 rounded border border-amber-500/30">
-                            <span class="font-bold text-amber-400">🥇 1st Place</span>
-                            <span class="text-white font-black">${r.p1?.name || 'N/A'} <span class="text-slate-400 font-normal">(${r.p1?.mission || ''})</span></span>
-                        </div>
-                        <div class="flex justify-between items-center bg-slate-800 p-2 rounded border border-slate-700">
-                            <span class="font-bold text-slate-300">🥈 2nd Place</span>
-                            <span class="text-white font-black">${r.p2?.name || 'N/A'} <span class="text-slate-400 font-normal">(${r.p2?.mission || ''})</span></span>
-                        </div>
-                        <div class="flex justify-between items-center bg-amber-900/10 p-2 rounded border border-amber-800/30">
-                            <span class="font-bold text-amber-700">🥉 3rd Place</span>
-                            <span class="text-white font-black">${r.p3?.name || 'N/A'} <span class="text-slate-400 font-normal">(${r.p3?.mission || ''})</span></span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
             initLucide();
         }
 
@@ -921,9 +993,10 @@
             if (!body) return;
             body.innerHTML = PROGRAM_MATRIX.map(p => {
                 const check = (cat) => p.cat.includes(cat) ? `<span class="text-amber-400 font-black">✓</span>` : `<span class="text-slate-700">-</span>`;
+                const typeTag = p.isGroup ? `<span class="text-[9px] bg-amber-500/20 text-amber-400 px-1 rounded ml-1">Group</span>` : `<span class="text-[9px] bg-slate-800 text-slate-400 px-1 rounded ml-1">Solo</span>`;
                 return `
                     <tr class="hover:bg-slate-800/40">
-                        <td class="p-1 font-bold text-white">${p.name}</td>
+                        <td class="p-1 font-bold text-white">${p.name} ${typeTag}</td>
                         <td class="p-1 text-slate-400 text-[9px]">${p.duration}</td>
                         <td class="p-1 text-center">${check("Up to 7")}</td>
                         <td class="p-1 text-center">${check("8 to 10")}</td>
@@ -942,7 +1015,7 @@
         function populateAdminControls() {
             const itemSelect = document.getElementById('adminItemSelect');
             if (itemSelect) {
-                itemSelect.innerHTML = PROGRAM_MATRIX.map((p, idx) => `<option value="${idx}">${p.name}</option>`).join('');
+                itemSelect.innerHTML = PROGRAM_MATRIX.map((p, idx) => `<option value="${idx}">${p.name} (${p.isGroup ? 'Group' : 'Solo'})</option>`).join('');
                 updateCategoryDropdown();
             }
             ['p1_mission', 'p2_mission', 'p3_mission'].forEach(id => {
@@ -974,7 +1047,7 @@
             if (!container) return;
 
             if (window.itemResults.length === 0) {
-                container.innerHTML = `<p class="text-[11px] text-slate-500">No results published in cloud yet.</p>`;
+                container.innerHTML = `<p class="text-[11px] text-slate-500">No results published yet.</p>`;
                 return;
             }
 
@@ -982,7 +1055,7 @@
                 <div class="p-2 bg-slate-900 rounded border border-slate-700 flex justify-between items-center text-xs">
                     <div class="truncate pr-2">
                         <strong class="text-white">${r.itemName}</strong> <span class="text-amber-400">(${r.category})</span>
-                        <span class="block text-[10px] text-slate-400">1st: ${r.p1?.name || 'N/A'} (${r.p1?.mission || ''})</span>
+                        <span class="block text-[10px] text-slate-400">1st: ${r.p1?.name || 'N/A'} (${r.p1?.mission || ''}) • <span class="text-amber-300">${r.status || 'Final'}</span></span>
                     </div>
                     <div class="flex items-center gap-1 shrink-0">
                         <button onclick="editResult('${r.id}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded text-[10px]">Edit</button>
@@ -1018,7 +1091,7 @@
                 <div class="p-2 bg-slate-950 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
                     <div>
                         <span class="font-bold text-white block">${p.item}</span>
-                        <span class="text-slate-400 text-[10px]">${p.winner}</span>
+                        <span class="text-slate-400 text-[10px]">${p.winner} (${p.status || 'Final'}) • <span class="text-amber-400">+${p.pts} pts</span></span>
                     </div>
                     <span class="font-black px-2 py-0.5 rounded bg-amber-500 text-slate-950">${p.place}</span>
                 </div>

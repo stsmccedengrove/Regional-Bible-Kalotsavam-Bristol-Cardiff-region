@@ -98,7 +98,6 @@
         </div>
     </div>
 
-    <!-- MAIN APP CONTAINER -->
     <main id="mainAppContainer" class="flex-1 max-w-7xl w-full mx-auto px-4 py-2 flex flex-col gap-3 overflow-hidden">
 
         <div class="flex flex-wrap gap-1.5 border-b border-slate-800 pb-2 shrink-0">
@@ -493,37 +492,35 @@
 
         async function manualCloudSync() {
             if (!cloudEndpoint) {
-                showSystemNotification("Cloud URL Missing", "Please configure your Cloud JSON Bin URL in Admin Portal first.");
-                openAdminAuth();
+                updateSyncBadge(false, "No Cloud URL");
                 return;
             }
-            updateSyncBadge(true, "Syncing...");
             try {
-                const res = await fetch(cloudEndpoint);
+                const res = await fetch(cloudEndpoint + "?t=" + new Date().getTime());
                 const data = await res.json();
                 if (data && Array.isArray(data.results)) {
-                    // Only overwrite local results if cloud has results, or if local is completely empty
+                    // Safety check: Only update local state if cloud has results OR local is empty
                     if (data.results.length > 0 || itemResults.length === 0) {
                         itemResults = data.results;
-                        if (data.stages) stageData = data.stages;
-                        if (data.schedule) scheduleData = data.schedule;
+                        if (data.stages && Array.isArray(data.stages)) stageData = data.stages;
+                        if (data.schedule && Array.isArray(data.schedule)) scheduleData = data.schedule;
+                        
                         localStorage.setItem('csmegb_results', JSON.stringify(itemResults));
                         localStorage.setItem('csmegb_stages', JSON.stringify(stageData));
+                        
                         renderResults();
                         renderItemWiseView();
                         renderStages();
                         renderSchedule();
-                    } else {
-                        // If cloud is empty but local has items, push local to cloud instead of erasing
+                    } else if (itemResults.length > 0 && data.results.length === 0) {
+                        // Cloud bin is empty, push local data to cloud immediately
                         pushToCloud();
                     }
                 }
                 updateSyncBadge(true, "Cloud Synced");
-                showSystemNotification("Synced", "Latest results fetched from cloud!");
             } catch (err) {
                 console.error("Sync fetch failed:", err);
-                updateSyncBadge(false, "Sync Failed");
-                showSystemNotification("Sync Error", "Could not reach cloud endpoint.");
+                updateSyncBadge(false, "Sync Offline");
             }
         }
 
@@ -1058,7 +1055,6 @@
         }
 
         window.copyPageUrl = function() {
-            document.execCommand('copy');
             navigator.clipboard.writeText(window.location.href);
             showSystemNotification("Copied", "Link copied to clipboard!");
         }
@@ -1094,10 +1090,11 @@
             renderSchedule();
             renderProgramMatrix();
             initLucide();
+            
+            // If cloud endpoint is configured, fetch immediately on load and poll every 8 seconds
             if (cloudEndpoint) {
                 manualCloudSync();
-                // Auto sync every 15 seconds so other phones get live updates without refreshing
-                setInterval(manualCloudSync, 15000);
+                setInterval(manualCloudSync, 8000);
             }
         };
     </script>

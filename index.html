@@ -121,6 +121,35 @@
         <!-- TAB 1: RESULTS VIEW -->
         <section id="view-results" class="space-y-6">
 
+            <!-- Summary Stats Banner: Declared vs Remaining -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-slate-900 text-white p-4 rounded-2xl border border-slate-800 shadow-sm flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 bg-emerald-500/20 border border-emerald-500/40 rounded-xl text-emerald-400">
+                            <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-black uppercase text-slate-400 tracking-wider">Results Declared</span>
+                            <h3 id="statPublishedCount" class="text-xl font-black text-emerald-400">0 Items</h3>
+                        </div>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-400">Published</span>
+                </div>
+
+                <div class="bg-slate-900 text-white p-4 rounded-2xl border border-slate-800 shadow-sm flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 bg-amber-500/20 border border-amber-500/40 rounded-xl text-amber-400">
+                            <i data-lucide="clock" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-black uppercase text-slate-400 tracking-wider">Remaining to Announce</span>
+                            <h3 id="statRemainingCount" class="text-xl font-black text-amber-400">80 Items</h3>
+                        </div>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-400">Pending</span>
+                </div>
+            </div>
+
             <!-- TOP 3 MISSIONS PODIUM SECTION -->
             <div class="space-y-3">
                 <div class="flex items-center justify-between">
@@ -366,7 +395,7 @@
                     <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider flex items-center gap-2">
                         <i data-lucide="download" class="w-4 h-4 text-amber-400"></i> Export & Sync Data File
                     </h3>
-                    <p class="text-xs text-slate-300">Click below to download updated <code class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300 font-mono">data.json</code> and upload it to GitHub so viewers on other phones see live updates automatically.</p>
+                    <p class="text-xs text-slate-300">Click below to download updated <code class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300 font-mono">data.json</code> and upload it to GitHub so viewers on other devices see live updates.</p>
                     <button onclick="downloadDataJson()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-2 rounded-lg text-xs uppercase tracking-wider transition flex items-center gap-2">
                         <i data-lucide="file-json" class="w-4 h-4"></i> Download data.json
                     </button>
@@ -529,6 +558,9 @@
             { name: "Bible Skit (Max 8 + 4 Support)", duration: "10 mins", cat: ["All Ages"] }
         ];
 
+        // Total calculated event slots across all matrix programs & age groups
+        const TOTAL_EVENT_SLOTS = PROGRAM_MATRIX.reduce((acc, curr) => acc + curr.cat.length, 0);
+
         let itemResults = [];
         let previousResultCount = 0;
         let selectedMissionFilter = null;
@@ -560,11 +592,9 @@
             renderStages();
             renderSchedule();
 
-            // Auto-fetch remote data every 8 seconds for fast mobile sync
             fetchLatestData();
             setInterval(() => fetchLatestData(), 8000);
 
-            // Listen to local storage updates across tabs
             window.addEventListener('storage', (e) => {
                 if (e.key === 'csmegb_results_2026_v3' || e.key === 'csmegb_stages_2026_v3') {
                     loadSavedData();
@@ -573,7 +603,6 @@
                 }
             });
 
-            // Ctrl + Shift + A shortcut
             window.addEventListener('keydown', (e) => {
                 if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
                     openAdminAuth();
@@ -606,7 +635,7 @@
                     }
                 });
             } else {
-                alert("Notifications are currently blocked in your mobile browser site settings. Tap the lock icon in your browser address bar to allow permissions.");
+                alert("Notifications are currently blocked in your mobile browser site settings.");
             }
         }
 
@@ -856,7 +885,14 @@
                 `;
             }).join('');
 
-            document.getElementById('totalDeclaredBadge').innerText = `${itemResults.length} Items Declared`;
+            // Update Header Counter Stats
+            const declaredCount = itemResults.length;
+            const remainingCount = Math.max(0, TOTAL_EVENT_SLOTS - declaredCount);
+
+            document.getElementById('statPublishedCount').innerText = `${declaredCount} Items`;
+            document.getElementById('statRemainingCount').innerText = `${remainingCount} Items`;
+            document.getElementById('totalDeclaredBadge').innerText = `${declaredCount} Items Declared`;
+
             initLucide();
         }
 
@@ -1308,6 +1344,14 @@
             ['p1_name', 'p1_code', 'p2_name', 'p2_code', 'p3_name', 'p3_code'].forEach(id => {
                 document.getElementById(id).value = '';
             });
+
+            // Reset Item and Category selection to default top item
+            const itemSelect = document.getElementById('adminItemSelect');
+            if (itemSelect) {
+                itemSelect.selectedIndex = 0;
+                updateCategoryDropdown();
+            }
+
             document.getElementById('adminResultStatusSelect').value = "Final Result";
         }
 
@@ -1343,7 +1387,7 @@
                 return;
             }
 
-            if (editingResultIndex !== null) {
+            if (editingResultIndex !== null && editingResultIndex >= 0 && editingResultIndex < itemResults.length) {
                 itemResults[editingResultIndex] = updatedResult;
             } else {
                 itemResults.unshift(updatedResult);

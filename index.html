@@ -54,9 +54,14 @@
                 <span id="projectorModeText">Projector Fit</span>
             </button>
 
+            <button onclick="manualCloudSync()" id="syncButton" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition shadow">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                <span>Sync Cloud</span>
+            </button>
+
             <div id="syncStatusBadge" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2.5 py-1 rounded-lg text-xs font-extrabold flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Live Persistent</span>
+                <span id="syncStatusText">Cloud Synced</span>
             </div>
 
             <div id="headerRightLogo" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
@@ -303,7 +308,7 @@
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                 <div class="flex items-center gap-1.5">
                     <i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i>
-                    <h2 class="text-sm font-black">Official Admin Portal & Results Management</h2>
+                    <h2 class="text-sm font-black">Official Admin Portal & Cloud Sync Setup</h2>
                 </div>
                 <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white p-1">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -323,12 +328,18 @@
 
             <!-- Controls Section -->
             <div id="adminControlsSection" class="hidden space-y-4 max-h-[65vh] overflow-y-auto pr-1">
-                <div class="bg-brand-900/40 p-3 rounded-xl border border-brand-700 flex flex-col gap-2">
-                    <h3 class="text-xs font-black text-amber-400 uppercase">Export & Backup Data File</h3>
-                    <p class="text-[11px] text-slate-300">Download your updated data to keep backups or commit to GitHub.</p>
-                    <button onclick="downloadDataJson()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-2 px-3 rounded text-xs flex items-center justify-center gap-1.5 transition">
-                        <i data-lucide="download" class="w-4 h-4"></i> Download data.json Backup
-                    </button>
+                <!-- Cloud API Configuration -->
+                <div class="bg-brand-900/40 p-3.5 rounded-xl border border-brand-700 space-y-2.5">
+                    <h3 class="text-xs font-black text-amber-400 uppercase flex items-center gap-1.5">
+                        <i data-lucide="cloud" class="w-4 h-4"></i> Cloud JSON Sync Endpoint (Npoint / JSONBin)
+                    </h3>
+                    <p class="text-[11px] text-slate-300">Paste your free cloud JSON Bin URL here. When you publish results, it will automatically save to this URL so all phones and projector screens update instantly.</p>
+                    <div class="flex gap-2">
+                        <input type="text" id="cloudEndpointInput" placeholder="https://api.npoint.io/your-unique-bin-id" class="flex-1 bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white font-mono">
+                        <button onclick="saveCloudEndpoint()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-3 py-1.5 rounded text-xs transition">
+                            Save URL
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Stage Live Editor -->
@@ -383,7 +394,7 @@
                     </div>
 
                     <button id="publishResultBtn" onclick="publishResult()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-2 rounded text-xs uppercase tracking-wider transition">
-                        Publish Result
+                        Publish Result & Push to Cloud
                     </button>
                 </div>
 
@@ -453,6 +464,7 @@
             { time: "09:00 AM", item: "Bible Reading - English", category: "Up to 7, 8-10", stage: "Stage 1" }
         ];
 
+        let cloudEndpoint = localStorage.getItem('csmegb_cloud_endpoint') || '';
         let projectorFitActive = true;
         let editingResultIndex = null;
         let adminAuthenticated = false;
@@ -460,6 +472,74 @@
         function persistData() {
             localStorage.setItem('csmegb_results', JSON.stringify(itemResults));
             localStorage.setItem('csmegb_stages', JSON.stringify(stageData));
+            pushToCloud();
+        }
+
+        async function pushToCloud() {
+            if (!cloudEndpoint) return;
+            try {
+                const payload = { results: itemResults, stages: stageData, schedule: scheduleData, updatedAt: new Date().toISOString() };
+                await fetch(cloudEndpoint, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                updateSyncBadge(true, "Cloud Synced");
+            } catch (err) {
+                console.error("Cloud push failed:", err);
+                updateSyncBadge(false, "Sync Offline");
+            }
+        }
+
+        async function manualCloudSync() {
+            if (!cloudEndpoint) {
+                showSystemNotification("Cloud URL Missing", "Please configure your Cloud JSON Bin URL in Admin Portal first.");
+                openAdminAuth();
+                return;
+            }
+            updateSyncBadge(true, "Syncing...");
+            try {
+                const res = await fetch(cloudEndpoint);
+                const data = await res.json();
+                if (data && data.results) {
+                    itemResults = data.results;
+                    if (data.stages) stageData = data.stages;
+                    if (data.schedule) scheduleData = data.schedule;
+                    localStorage.setItem('csmegb_results', JSON.stringify(itemResults));
+                    localStorage.setItem('csmegb_stages', JSON.stringify(stageData));
+                    renderResults();
+                    renderItemWiseView();
+                    renderStages();
+                    renderSchedule();
+                    showSystemNotification("Synced", "Latest results fetched from cloud!");
+                }
+                updateSyncBadge(true, "Cloud Synced");
+            } catch (err) {
+                console.error("Sync fetch failed:", err);
+                updateSyncBadge(false, "Sync Failed");
+                showSystemNotification("Sync Error", "Could not reach cloud endpoint.");
+            }
+        }
+
+        function updateSyncBadge(isSuccess, text) {
+            const badge = document.getElementById('syncStatusBadge');
+            const txt = document.getElementById('syncStatusText');
+            if (txt) txt.textContent = text;
+            if (badge) {
+                if (isSuccess) {
+                    badge.className = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2.5 py-1 rounded-lg text-xs font-extrabold flex items-center gap-1.5";
+                } else {
+                    badge.className = "bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2.5 py-1 rounded-lg text-xs font-extrabold flex items-center gap-1.5";
+                }
+            }
+        }
+
+        window.saveCloudEndpoint = function() {
+            const val = document.getElementById('cloudEndpointInput')?.value.trim() || '';
+            cloudEndpoint = val;
+            localStorage.setItem('csmegb_cloud_endpoint', cloudEndpoint);
+            showSystemNotification("Endpoint Saved", "Cloud URL successfully linked.");
+            pushToCloud();
         }
 
         window.toggleProjectorMode = function() {
@@ -569,10 +649,10 @@
 
             if (editingResultIndex !== null) {
                 itemResults[editingResultIndex] = updatedResult;
-                showSystemNotification("Updated", `Result updated for ${updatedResult.itemName}`);
+                showSystemNotification("Updated & Cloud Synced", `Result updated for ${updatedResult.itemName}`);
             } else {
                 itemResults.unshift(updatedResult);
-                showSystemNotification("Published", `Result published for ${updatedResult.itemName}`);
+                showSystemNotification("Published & Cloud Synced", `Result published for ${updatedResult.itemName}`);
             }
 
             persistData();
@@ -589,7 +669,7 @@
 
             editingResultIndex = index;
             document.getElementById('adminFormHeaderTitle').textContent = `Edit Result (#${index + 1})`;
-            document.getElementById('publishResultBtn').textContent = "Save Changes";
+            document.getElementById('publishResultBtn').textContent = "Save Changes & Push to Cloud";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
 
             const itemSelect = document.getElementById('adminItemSelect');
@@ -629,7 +709,7 @@
         window.resetAdminForm = function() {
             editingResultIndex = null;
             document.getElementById('adminFormHeaderTitle').textContent = "Publish New Event Result";
-            document.getElementById('publishResultBtn').textContent = "Publish Result";
+            document.getElementById('publishResultBtn').textContent = "Publish Result & Push to Cloud";
             document.getElementById('cancelEditBtn').classList.add('hidden');
             ['p1_name', 'p1_code', 'p2_name', 'p2_code', 'p3_name', 'p3_code'].forEach(id => {
                 const el = document.getElementById(id);
@@ -864,6 +944,9 @@
         }
 
         function populateAdminControls() {
+            const endpointInput = document.getElementById('cloudEndpointInput');
+            if (endpointInput) endpointInput.value = cloudEndpoint;
+
             const itemSelect = document.getElementById('adminItemSelect');
             if (itemSelect) {
                 itemSelect.innerHTML = PROGRAM_MATRIX.map((p, idx) => `<option value="${idx}">${p.name}</option>`).join('');
@@ -974,18 +1057,6 @@
             showSystemNotification("Copied", "Link copied to clipboard!");
         }
 
-        window.downloadDataJson = function() {
-            const dataObj = { results: itemResults, stages: stageData, schedule: scheduleData };
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj, null, 2));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", "data.json");
-            document.body.appendChild(dlAnchor);
-            dlAnchor.click();
-            dlAnchor.remove();
-            showSystemNotification("Downloaded", "data.json ready for upload.");
-        }
-
         function showSystemNotification(title, msg) {
             const toast = document.getElementById('liveToast');
             document.getElementById('toastTitle').textContent = title;
@@ -1017,6 +1088,11 @@
             renderSchedule();
             renderProgramMatrix();
             initLucide();
+            if (cloudEndpoint) {
+                manualCloudSync();
+                // Auto sync every 15 seconds so other phones get live updates without refreshing
+                setInterval(manualCloudSync, 15000);
+            }
         };
     </script>
 </body>

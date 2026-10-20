@@ -49,6 +49,11 @@
         </div>
         
         <div class="flex items-center space-x-2">
+            <button onclick="forceSyncData()" title="Force Sync Data" class="bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/40 px-2.5 py-1 rounded-lg text-xs font-black flex items-center gap-1 transition shadow">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5 animate-spin-slow"></i>
+                <span>Force Sync</span>
+            </button>
+
             <button onclick="toggleProjectorMode()" id="projectorModeBtn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1 rounded-lg text-xs font-black flex items-center gap-1 transition shadow">
                 <i data-lucide="maximize" class="w-3.5 h-3.5"></i>
                 <span id="projectorModeText">Projector Fit</span>
@@ -71,7 +76,7 @@
     </header>
 
     <div class="bg-amber-500 text-slate-950 py-0.5 px-4 text-center text-[11px] font-extrabold shrink-0 shadow-inner">
-        Theme: "The Lord disciplines those whom he loves..." (Hebrews 12:6) | പ്രധാന വേദി തത്സമയ ഫലപ്രഖ്യാപനം
+        Theme: "The Lord disciplines those whom he loves..." (Hebrews 12:6) 
     </div>
 
     <div id="liveToast" class="hidden fixed bottom-5 right-5 z-50 max-w-sm w-full bg-slate-900 border-2 border-amber-400 text-white p-3 rounded-2xl shadow-2xl transition-all duration-300">
@@ -323,9 +328,9 @@
                 <!-- Cloud Sync Status Notification -->
                 <div class="bg-emerald-950/40 p-3.5 rounded-xl border border-emerald-700/60 space-y-1.5">
                     <h3 class="text-xs font-black text-emerald-400 uppercase flex items-center gap-1.5">
-                        <i data-lucide="cloud" class="w-4 h-4"></i> Firebase Real-Time Database Connected (Auto-Fallback Active)
+                        <i data-lucide="cloud" class="w-4 h-4"></i> Firebase Real-Time Database Connected
                     </h3>
-                    <p class="text-[11px] text-slate-300">Group items award 10/7/5 points. Single/solo items maintain previous scoring weights.</p>
+                    <p class="text-[11px] text-slate-300">Group items award 10/7/5 points. Single/solo items maintain 5/3/1 points.</p>
                 </div>
 
                 <!-- Stage Live Editor -->
@@ -405,7 +410,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, deleteDoc, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyC6I7jKKy3vLYCPOQWNNgG4JMbYQMDslLA",
@@ -436,6 +441,8 @@
         function startFirestoreListeners() {
             loadLocalFallback();
             const resultsRef = collection(db, 'artifacts', appId, 'public', 'data', 'results');
+            
+            // Real-time listener
             onSnapshot(resultsRef, (snapshot) => {
                 if (!snapshot.empty) {
                     window.itemResults = [];
@@ -457,6 +464,30 @@
                     statusBadge.className = "bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2.5 py-1 rounded-lg text-xs font-extrabold flex items-center gap-1.5";
                 }
             });
+
+            // Force Fetch function for Manual Sync button
+            window.forceSyncData = async function() {
+                try {
+                    const querySnapshot = await getDocs(resultsRef);
+                    if (!querySnapshot.empty) {
+                        window.itemResults = [];
+                        querySnapshot.forEach(docSnap => {
+                            window.itemResults.push({ id: docSnap.id, ...docSnap.data() });
+                        });
+                        window.itemResults.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                        localStorage.setItem('kalotsavam_offline_results', JSON.stringify(window.itemResults));
+                        window.renderResults();
+                        window.renderItemWiseView();
+                        if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
+                        showSystemNotification("Synced Successfully", `Loaded ${window.itemResults.length} records from Firebase cloud.`);
+                    } else {
+                        showSystemNotification("Sync Complete", "Connected to Firebase, but no results are published yet.");
+                    }
+                } catch (err) {
+                    console.error("Force sync failed:", err);
+                    showSystemNotification("Sync Notice", "Using cached local data. Check internet connection.");
+                }
+            };
 
             const stagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stages');
             onSnapshot(stagesRef, (snapshot) => {
@@ -772,14 +803,12 @@
             });
 
             window.itemResults.forEach(res => {
-                // Determine if item is group based on property or matrix lookup
                 let isGroup = res.isGroup;
                 if (isGroup === undefined) {
                     const matchMat = PROGRAM_MATRIX.find(p => p.name === res.itemName);
                     isGroup = matchMat ? matchMat.isGroup : false;
                 }
 
-                // Group items award 10/7/5 points. Single items maintain 5/3/1 (or previous weights).
                 const pts1 = isGroup ? 10 : 5;
                 const pts2 = isGroup ? 7 : 3;
                 const pts3 = isGroup ? 5 : 1;

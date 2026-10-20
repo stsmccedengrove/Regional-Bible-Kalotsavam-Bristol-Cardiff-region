@@ -52,7 +52,7 @@
             
             <div class="flex items-center space-x-1.5 sm:space-x-3">
                 <!-- Live Sync Indicator & Manual Refresh Button -->
-                <button onclick="fetchLatestData(true)" title="Force Refresh" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition">
+                <button onclick="fetchLatestData(true)" title="Force Refresh Data" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition">
                     <i data-lucide="refresh-cw" id="refreshSpinner" class="w-3.5 h-3.5 text-amber-400"></i>
                     <span id="syncText" class="inline">Sync</span>
                 </button>
@@ -366,7 +366,7 @@
                     <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider flex items-center gap-2">
                         <i data-lucide="download" class="w-4 h-4 text-amber-400"></i> Export & Sync Data File
                     </h3>
-                    <p class="text-xs text-slate-300">Click below to download updated <code class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300 font-mono">data.json</code> to commit to your GitHub repository so all viewers automatically see live updates.</p>
+                    <p class="text-xs text-slate-300">Click below to download updated <code class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300 font-mono">data.json</code> and upload it to GitHub so viewers on other phones see live updates automatically.</p>
                     <button onclick="downloadDataJson()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-2 rounded-lg text-xs uppercase tracking-wider transition flex items-center gap-2">
                         <i data-lucide="file-json" class="w-4 h-4"></i> Download data.json
                     </button>
@@ -433,7 +433,7 @@
                     <div class="space-y-3 pt-2">
                         <!-- 1st Place -->
                         <div class="p-3 bg-slate-900/80 rounded-lg border border-amber-500/40 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            <span class="text-amber-400 font-bold text-xs sm:col-span-3">🥇 1st Place Winner (5 Points)</span>
+                            <span class="text-amber-400 font-bold text-xs sm:col-span-3">🥇 1st Place Winner</span>
                             <input type="text" id="p1_name" placeholder="Participant / Group Name" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
                             <input type="text" id="p1_code" placeholder="Chest / Reg No." class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
                             <select id="p1_mission" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
@@ -443,7 +443,7 @@
 
                         <!-- 2nd Place -->
                         <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-700 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            <span class="text-slate-300 font-bold text-xs sm:col-span-3">🥈 2nd Place Winner (3 Points)</span>
+                            <span class="text-slate-300 font-bold text-xs sm:col-span-3">🥈 2nd Place Winner</span>
                             <input type="text" id="p2_name" placeholder="Participant / Group Name" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
                             <input type="text" id="p2_code" placeholder="Chest / Reg No." class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
                             <select id="p2_mission" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
@@ -453,7 +453,7 @@
 
                         <!-- 3rd Place -->
                         <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-700 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            <span class="text-amber-700 font-bold text-xs sm:col-span-3">🥉 3rd Place Winner (1 Point)</span>
+                            <span class="text-amber-700 font-bold text-xs sm:col-span-3">🥉 3rd Place Winner</span>
                             <input type="text" id="p3_name" placeholder="Participant / Group Name" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
                             <input type="text" id="p3_code" placeholder="Chest / Reg No." class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
                             <select id="p3_mission" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
@@ -530,12 +530,12 @@
         ];
 
         let itemResults = [];
+        let previousResultCount = 0;
         let selectedMissionFilter = null;
         let adminAuthenticated = false;
         let editingResultIndex = null;
         let qrcodeObj = null;
         let notificationsEnabled = false;
-        let initialDataLoaded = false;
 
         let stageData = Array.from({ length: 9 }, (_, i) => ({
             stage: `Stage ${i + 1}`,
@@ -560,9 +560,9 @@
             renderStages();
             renderSchedule();
 
-            // Auto-fetch remote data every 10 seconds
+            // Auto-fetch remote data every 8 seconds for fast mobile sync
             fetchLatestData();
-            setInterval(() => fetchLatestData(), 10000);
+            setInterval(() => fetchLatestData(), 8000);
 
             // Listen to local storage updates across tabs
             window.addEventListener('storage', (e) => {
@@ -590,21 +590,23 @@
 
         function toggleNotifications() {
             if (!("Notification" in window)) {
-                alert("Browser notifications are not supported on this device.");
+                alert("Browser notifications are not supported on this mobile device.");
                 return;
             }
             if (Notification.permission === "granted") {
-                alert("Notifications are enabled!");
+                notificationsEnabled = true;
+                updateNotifButtonUI(true);
+                showSystemNotification("Notifications active!", "You will see alerts as soon as results are published.");
             } else if (Notification.permission !== "denied") {
                 Notification.requestPermission().then(permission => {
                     if (permission === "granted") {
                         notificationsEnabled = true;
                         updateNotifButtonUI(true);
-                        showSystemNotification("Notifications Enabled!", "You will get alerts when new results are declared.");
+                        showSystemNotification("Notifications Enabled!", "You will receive alerts when new results are declared.");
                     }
                 });
             } else {
-                alert("Notifications are currently blocked in your browser settings.");
+                alert("Notifications are currently blocked in your mobile browser site settings. Tap the lock icon in your browser address bar to allow permissions.");
             }
         }
 
@@ -618,12 +620,14 @@
         }
 
         function showSystemNotification(title, body) {
+            triggerToast(title, body);
             if ("Notification" in window && Notification.permission === "granted") {
                 try {
                     new Notification(title, { body: body, icon: DEFAULT_RIGHT_LOGO });
-                } catch (e) {}
+                } catch (e) {
+                    console.log("OS Notification attempt:", e);
+                }
             }
-            triggerToast(title, body);
         }
 
         function triggerToast(title, message) {
@@ -632,7 +636,7 @@
             document.getElementById('toastMessage').innerText = message;
             toast.classList.remove('hidden');
             initLucide();
-            setTimeout(() => dismissToast(), 8000);
+            setTimeout(() => dismissToast(), 9000);
         }
 
         function dismissToast() {
@@ -655,10 +659,16 @@
                 if (res.ok) {
                     const data = await res.json();
                     if (data && Array.isArray(data.results)) {
-                        // Merge local results if local has more recent un-pushed items
-                        if (data.results.length >= itemResults.length) {
-                            itemResults = data.results;
+                        if (previousResultCount > 0 && data.results.length > previousResultCount) {
+                            const latestItem = data.results[0];
+                            showSystemNotification(
+                                `🎉 New Result: ${latestItem.itemName} (${latestItem.category})`,
+                                `🥇 1st Place: ${latestItem.p1?.name || 'Winner'} (${latestItem.p1?.mission || ''})`
+                            );
                         }
+
+                        previousResultCount = data.results.length;
+                        itemResults = data.results;
                         if (data.stages) stageData = data.stages;
                         if (data.schedule) scheduleData = data.schedule;
 
@@ -674,7 +684,6 @@
                 if (spinner) {
                     setTimeout(() => spinner.classList.remove('animate-spin'), 600);
                 }
-                initialDataLoaded = true;
                 if (manualTrigger) alert("Synced latest results successfully!");
             }
         }
@@ -684,7 +693,10 @@
             if (savedResults) {
                 try {
                     const parsed = JSON.parse(savedResults);
-                    if (Array.isArray(parsed)) itemResults = parsed;
+                    if (Array.isArray(parsed)) {
+                        itemResults = parsed;
+                        previousResultCount = parsed.length;
+                    }
                 } catch (e){}
             }
 
@@ -1090,19 +1102,19 @@
                     </div>
                     <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div class="bg-amber-50/60 p-3.5 rounded-xl border border-amber-200">
-                            <span class="text-[11px] font-black text-amber-800 uppercase block mb-1">1st Place (5 Pts)</span>
+                            <span class="text-[11px] font-black text-amber-800 uppercase block mb-1">1st Place</span>
                             <h4 class="text-sm font-black text-slate-900">${p1.name || 'N/A'}</h4>
                             <p class="text-xs font-bold text-slate-600 mt-0.5">${p1.mission || '-'}</p>
                             <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p1.code || '-'}</p>
                         </div>
                         <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                            <span class="text-[11px] font-black text-slate-600 uppercase block mb-1">2nd Place (3 Pts)</span>
+                            <span class="text-[11px] font-black text-slate-600 uppercase block mb-1">2nd Place</span>
                             <h4 class="text-sm font-black text-slate-900">${p2.name || 'N/A'}</h4>
                             <p class="text-xs font-bold text-slate-600 mt-0.5">${p2.mission || '-'}</p>
                             <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p2.code || '-'}</p>
                         </div>
                         <div class="bg-amber-900/5 p-3.5 rounded-xl border border-amber-900/10">
-                            <span class="text-[11px] font-black text-amber-900 uppercase block mb-1">3rd Place (1 Pt)</span>
+                            <span class="text-[11px] font-black text-amber-900 uppercase block mb-1">3rd Place</span>
                             <h4 class="text-sm font-black text-slate-900">${p3.name || 'N/A'}</h4>
                             <p class="text-xs font-bold text-slate-600 mt-0.5">${p3.mission || '-'}</p>
                             <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p3.code || '-'}</p>
@@ -1170,6 +1182,7 @@
         function deleteAllResults() {
             if (confirm("CRITICAL WARNING: Are you sure you want to delete ALL published results? This will reset all mission points to zero.")) {
                 itemResults = [];
+                previousResultCount = 0;
                 saveData();
                 renderResults();
                 alert("All results have been wiped clean.");
@@ -1336,7 +1349,6 @@
                 itemResults.unshift(updatedResult);
             }
 
-            // Reset filters to ensure the new result is immediately visible
             selectedMissionFilter = null;
             const searchEl = document.getElementById('searchItemInput');
             if (searchEl) searchEl.value = '';
@@ -1348,9 +1360,9 @@
             closeAdminModal();
             switchTab('results');
 
-            triggerToast(
+            showSystemNotification(
                 `🎉 Result Published: ${updatedResult.itemName} (${updatedResult.category})`,
-                `🥇 1st: ${updatedResult.p1.name} (${updatedResult.p1.mission})`
+                `🥇 1st Place: ${updatedResult.p1.name} (${updatedResult.p1.mission})`
             );
         }
 

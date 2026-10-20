@@ -57,7 +57,7 @@
                     <span id="syncText" class="inline">Sync</span>
                 </button>
 
-                <!-- Push Notification Permission Toggle (Optimized for Mobile) -->
+                <!-- Push Notification Permission Toggle -->
                 <button id="notifToggleBtn" onclick="toggleNotifications()" title="Enable Result Notifications" class="bg-amber-500 text-slate-950 border border-amber-400 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow hover:bg-amber-400">
                     <i data-lucide="bell" id="notifIcon" class="w-3.5 h-3.5 text-slate-950"></i>
                     <span id="notifText" class="inline">Alerts</span>
@@ -79,17 +79,6 @@
 
     <div class="bg-amber-500 text-slate-950 py-1.5 px-4 text-center text-xs sm:text-sm font-extrabold shadow-inner">
         Theme: "The Lord disciplines those whom he loves..." (Hebrews 12:6) | "താൻ സ്നേഹിക്കുന്നവന് കർത്താവു ശിക്ഷണം നൽകുന്നു..." (ഹെബ്രായർ 12:6)
-    </div>
-
-    <!-- Mobile Live Alert Permission Banner -->
-    <div id="mobileNotifBanner" class="bg-slate-900 border-b border-amber-500 text-white p-3 px-4 flex items-center justify-between gap-3 text-xs sm:hidden">
-        <div class="flex items-center gap-2">
-            <i data-lucide="bell-ring" class="w-4 h-4 text-amber-400 shrink-0"></i>
-            <span class="font-bold text-slate-200">Get live mobile result notifications!</span>
-        </div>
-        <button onclick="toggleNotifications()" class="bg-amber-500 text-slate-950 font-black px-3 py-1 rounded-lg shrink-0 text-[11px]">
-            Enable
-        </button>
     </div>
 
     <!-- Live Floating Toast Notification Banner -->
@@ -177,7 +166,10 @@
 
             <!-- Mission Filter Pills -->
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Filter Item Results by Mission:</p>
+                <div class="flex justify-between items-center">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Filter Item Results by Mission:</p>
+                    <button onclick="filterByMission(null)" id="resetFilterBtn" class="text-xs text-amber-600 hover:underline font-bold hidden">Clear Filter</button>
+                </div>
                 <div id="missionFilters" class="flex flex-wrap gap-2">
                     <!-- Populated dynamically -->
                 </div>
@@ -369,10 +361,20 @@
             <!-- Admin Controls Dashboard (Visible after login) -->
             <div id="adminControlsSection" class="hidden space-y-8">
                 
+                <!-- Export Data JSON Section -->
+                <div class="bg-amber-500/10 p-5 rounded-xl border border-amber-500/30 space-y-3">
+                    <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                        <i data-lucide="download" class="w-4 h-4 text-amber-400"></i> Export & Sync Data File
+                    </h3>
+                    <p class="text-xs text-slate-300">Click below to download updated <code class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300 font-mono">data.json</code> to commit to your GitHub repository so all viewers automatically see live updates.</p>
+                    <button onclick="downloadDataJson()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-2 rounded-lg text-xs uppercase tracking-wider transition flex items-center gap-2">
+                        <i data-lucide="file-json" class="w-4 h-4"></i> Download data.json
+                    </button>
+                </div>
+
                 <!-- Section 1: Logo URLs Configuration -->
                 <div class="bg-slate-800/60 p-5 rounded-xl border border-slate-700/80 space-y-4">
                     <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider">Header Logos Management</h3>
-                    <p class="text-xs text-slate-400">Specify direct image web links for the left and right header logos.</p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label class="text-xs text-slate-300 font-semibold block mb-1">Left Logo Image URL</label>
@@ -468,8 +470,6 @@
                 <!-- Section 3: Add & Edit Programme Schedule -->
                 <div class="bg-slate-800/60 p-5 rounded-xl border border-slate-700/80 space-y-4">
                     <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider">Programme Schedule Management</h3>
-                    <p class="text-xs text-slate-400">Add or edit timetable items displayed on the public schedule tab.</p>
-                    
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
                         <input type="text" id="schedTimeInput" placeholder="Time (e.g. 09:00 AM)" class="bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
                         <input type="text" id="schedItemInput" placeholder="Item Name" class="bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
@@ -482,7 +482,6 @@
                 <!-- Section 4: Live 9-Stage Configuration -->
                 <div class="bg-slate-800/60 p-5 rounded-xl border border-slate-700/80 space-y-3">
                     <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider">Stage Names & Live Allocation (All 9 Stages)</h3>
-                    <p class="text-xs text-slate-400 mb-2">Edit stage titles, ongoing events, and upcoming items.</p>
                     <div id="adminStagesControlList" class="space-y-3 max-h-[400px] overflow-y-auto pr-1">
                         <!-- Populated dynamically -->
                     </div>
@@ -493,22 +492,18 @@
     </div>
 
     <script>
-        // Official 12 Competing Missions
         const REGIONAL_MISSIONS = [
             "Exeter", "Taunton", "Weston Super Mare", "Bristol",
             "Bath", "Newport", "Cardiff", "Barry",
             "Hereford", "Gloucester", "Swansea", "Swindon"
         ];
 
-        // Default GitHub raw image URLs
         const DEFAULT_LEFT_LOGO = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0159.JPG";
         const DEFAULT_RIGHT_LOGO = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0160.JPG";
 
-        // Remote raw URL for data.json with strict cache-busting
         const PRIMARY_DATA_URL = "./data.json";
         const FALLBACK_DATA_URL = "https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/data.json";
 
-        // Program Matrix dataset
         const PROGRAM_MATRIX = [
             { name: "Bible Reading - English", duration: "2 mins", cat: ["Up to 7", "8 to 10", "11 to 13", "14 to 17"] },
             { name: "Bible Reading - Malayalam", duration: "2 mins", cat: ["8 to 10", "11 to 13", "14 to 17"] },
@@ -565,11 +560,11 @@
             renderStages();
             renderSchedule();
 
-            // Auto-fetch remote data every 8 seconds to sync all visitors automatically
+            // Auto-fetch remote data every 10 seconds
             fetchLatestData();
-            setInterval(() => fetchLatestData(), 8000);
+            setInterval(() => fetchLatestData(), 10000);
 
-            // Listen to local storage changes across tabs on the same device
+            // Listen to local storage updates across tabs
             window.addEventListener('storage', (e) => {
                 if (e.key === 'csmegb_results_2026_v3' || e.key === 'csmegb_stages_2026_v3') {
                     loadSavedData();
@@ -578,7 +573,7 @@
                 }
             });
 
-            // Ctrl + Shift + A for Admin Portal
+            // Ctrl + Shift + A shortcut
             window.addEventListener('keydown', (e) => {
                 if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
                     openAdminAuth();
@@ -587,56 +582,9 @@
         });
 
         function checkNotificationStatus() {
-            if ("Notification" in window) {
-                if (Notification.permission === "granted") {
-                    notificationsEnabled = true;
-                    updateNotifButtonUI(true);
-                } else {
-                    updateNotifButtonUI(false);
-                }
-            } else {
-                const btn = document.getElementById('notifToggleBtn');
-                if (btn) btn.classList.add('hidden');
-            }
-        }
-
-        function toggleNotifications() {
-            if (!("Notification" in window)) {
-                alert("Browser notifications are not supported on this browser/device.");
-                return;
-            }
-
-            if (Notification.permission === "granted") {
-                alert("Notifications are enabled! You will get alerts for new results.");
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        notificationsEnabled = true;
-                        updateNotifButtonUI(true);
-                        showSystemNotification("Notifications Enabled!", "You will now receive automatic alerts when new results are declared.");
-                        const mobileBanner = document.getElementById('mobileNotifBanner');
-                        if (mobileBanner) mobileBanner.classList.add('hidden');
-                    } else {
-                        alert("Notification permission was denied. You can enable it in your mobile browser permissions settings.");
-                    }
-                });
-            } else {
-                alert("Notifications are currently blocked by browser settings. Please enable notifications for this site in your phone settings.");
-            }
-        }
-
-        function updateNotifButtonUI(enabled) {
-            const btnText = document.getElementById('notifText');
-            const btn = document.getElementById('notifToggleBtn');
-            const mobileBanner = document.getElementById('mobileNotifBanner');
-
-            if (enabled) {
-                if (btnText) btnText.innerText = "Alerts On";
-                if (btn) btn.className = "bg-emerald-500 text-slate-950 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow";
-                if (mobileBanner) mobileBanner.classList.add('hidden');
-            } else {
-                if (btnText) btnText.innerText = "Alerts";
-                if (btn) btn.className = "bg-amber-500 text-slate-950 border border-amber-400 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow hover:bg-amber-400";
+            if ("Notification" in window && Notification.permission === "granted") {
+                notificationsEnabled = true;
+                updateNotifButtonUI(true);
             }
         }
 
@@ -645,47 +593,35 @@
                 alert("Browser notifications are not supported on this device.");
                 return;
             }
-
             if (Notification.permission === "granted") {
-                alert("Notifications are already enabled for live result updates!");
+                alert("Notifications are enabled!");
             } else if (Notification.permission !== "denied") {
                 Notification.requestPermission().then(permission => {
                     if (permission === "granted") {
                         notificationsEnabled = true;
                         updateNotifButtonUI(true);
-                        showSystemNotification("Notifications Enabled!", "You will now receive automatic alerts when new results are declared.");
-                    } else {
-                        alert("Notification permission denied. You can re-enable it anytime from your browser settings.");
+                        showSystemNotification("Notifications Enabled!", "You will get alerts when new results are declared.");
                     }
                 });
             } else {
-                alert("Notifications are currently blocked by your browser settings. Please unblock notifications for this site to receive updates.");
+                alert("Notifications are currently blocked in your browser settings.");
             }
         }
 
         function updateNotifButtonUI(enabled) {
             const btnText = document.getElementById('notifText');
             const btn = document.getElementById('notifToggleBtn');
-
             if (enabled) {
                 if (btnText) btnText.innerText = "Alerts On";
-                if (btn) btn.className = "bg-amber-500 text-slate-950 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow";
-            } else {
-                if (btnText) btnText.innerText = "Alerts";
-                if (btn) btn.className = "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 transition";
+                if (btn) btn.className = "bg-emerald-500 text-slate-950 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow";
             }
         }
 
         function showSystemNotification(title, body) {
             if ("Notification" in window && Notification.permission === "granted") {
                 try {
-                    new Notification(title, {
-                        body: body,
-                        icon: 'https://raw.githubusercontent.com/stsmccedengrove/Regional-Bible-Kalotsavam-Bristol-Cardiff-region/main/IMG_0160.JPG'
-                    });
-                } catch (e) {
-                    console.log("Notification trigger error:", e);
-                }
+                    new Notification(title, { body: body, icon: DEFAULT_RIGHT_LOGO });
+                } catch (e) {}
             }
             triggerToast(title, body);
         }
@@ -694,13 +630,9 @@
             const toast = document.getElementById('liveToast');
             document.getElementById('toastTitle').innerText = title;
             document.getElementById('toastMessage').innerText = message;
-            
             toast.classList.remove('hidden');
             initLucide();
-
-            setTimeout(() => {
-                dismissToast();
-            }, 8000);
+            setTimeout(() => dismissToast(), 8000);
         }
 
         function dismissToast() {
@@ -712,26 +644,21 @@
             const spinner = document.getElementById('refreshSpinner');
             if (spinner) spinner.classList.add('animate-spin');
 
-            const cacheBuster = `?_cb=${Date.now()}_${Math.random()}`;
+            const cacheBuster = `?_cb=${Date.now()}`;
 
             try {
-                let res = await fetch(PRIMARY_DATA_URL + cacheBuster, { cache: 'reload' });
+                let res = await fetch(PRIMARY_DATA_URL + cacheBuster, { cache: 'no-store' });
                 if (!res.ok) {
-                    res = await fetch(FALLBACK_DATA_URL + cacheBuster, { cache: 'reload' });
+                    res = await fetch(FALLBACK_DATA_URL + cacheBuster, { cache: 'no-store' });
                 }
 
                 if (res.ok) {
                     const data = await res.json();
-                    if (data && data.results && Array.isArray(data.results)) {
-                        if (initialDataLoaded && data.results.length > itemResults.length) {
-                            const newestResult = data.results[0];
-                            showSystemNotification(
-                                `🎉 New Result: ${newestResult.itemName} (${newestResult.category})`,
-                                `🥇 1st: ${newestResult.p1.name || 'Winner'} (${newestResult.p1.mission})`
-                            );
+                    if (data && Array.isArray(data.results)) {
+                        // Merge local results if local has more recent un-pushed items
+                        if (data.results.length >= itemResults.length) {
+                            itemResults = data.results;
                         }
-
-                        itemResults = data.results;
                         if (data.stages) stageData = data.stages;
                         if (data.schedule) scheduleData = data.schedule;
 
@@ -742,7 +669,7 @@
                     }
                 }
             } catch (err) {
-                console.log("Remote sync fetch note:", err);
+                console.log("Remote sync note:", err);
             } finally {
                 if (spinner) {
                     setTimeout(() => spinner.classList.remove('animate-spin'), 600);
@@ -757,14 +684,9 @@
             if (savedResults) {
                 try {
                     const parsed = JSON.parse(savedResults);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        itemResults = parsed;
-                    }
-                } catch (e) {
-                    console.error("Error loading local results", e);
-                }
+                    if (Array.isArray(parsed)) itemResults = parsed;
+                } catch (e){}
             }
-            itemResults.forEach(r => { if (!r.status) r.status = "Final Result"; });
 
             const savedStages = localStorage.getItem('csmegb_stages_2026_v3');
             if (savedStages) {
@@ -781,9 +703,7 @@
                 try {
                     const logos = JSON.parse(savedLogos);
                     applyLogos(logos.left || DEFAULT_LEFT_LOGO, logos.right || DEFAULT_RIGHT_LOGO);
-                } catch(e) {
-                    applyLogos(DEFAULT_LEFT_LOGO, DEFAULT_RIGHT_LOGO);
-                }
+                } catch(e) { applyLogos(DEFAULT_LEFT_LOGO, DEFAULT_RIGHT_LOGO); }
             } else {
                 applyLogos(DEFAULT_LEFT_LOGO, DEFAULT_RIGHT_LOGO);
             }
@@ -990,18 +910,15 @@
             itemResults.forEach(res => {
                 if (res.p1 && res.p1.mission === missionName) {
                     wonPrizes.push({ rank: "1st Place", points: 5, item: res.itemName, cat: res.category, winner: res.p1.name, code: res.p1.code, status: res.status });
-                    totalPts += 5;
-                    firsts++;
+                    totalPts += 5; firsts++;
                 }
                 if (res.p2 && res.p2.mission === missionName) {
                     wonPrizes.push({ rank: "2nd Place", points: 3, item: res.itemName, cat: res.category, winner: res.p2.name, code: res.p2.code, status: res.status });
-                    totalPts += 3;
-                    seconds++;
+                    totalPts += 3; seconds++;
                 }
                 if (res.p3 && res.p3.mission === missionName) {
                     wonPrizes.push({ rank: "3rd Place", points: 1, item: res.itemName, cat: res.category, winner: res.p3.name, code: res.p3.code, status: res.status });
-                    totalPts += 1;
-                    thirds++;
+                    totalPts += 1; thirds++;
                 }
             });
 
@@ -1013,11 +930,7 @@
 
             const listContainer = document.getElementById('modalMissionPrizesList');
             if (wonPrizes.length === 0) {
-                listContainer.innerHTML = `
-                    <div class="text-center py-6 text-slate-400 font-medium text-xs">
-                        No prizes declared for ${missionName} mission yet.
-                    </div>
-                `;
+                listContainer.innerHTML = `<div class="text-center py-6 text-slate-400 font-medium text-xs">No prizes declared for ${missionName} mission yet.</div>`;
             } else {
                 listContainer.innerHTML = wonPrizes.map(p => `
                     <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-3 text-xs">
@@ -1043,6 +956,11 @@
 
         function renderMissionFilters() {
             const container = document.getElementById('missionFilters');
+            const resetBtn = document.getElementById('resetFilterBtn');
+
+            if (selectedMissionFilter) resetBtn.classList.remove('hidden');
+            else resetBtn.classList.add('hidden');
+
             let html = `<button onclick="filterByMission(null)" class="px-3 py-1 rounded-full text-xs font-extrabold transition ${selectedMissionFilter === null ? 'bg-amber-500 text-slate-950' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">All Missions</button>`;
             
             REGIONAL_MISSIONS.forEach(m => {
@@ -1086,7 +1004,7 @@
 
             const container = document.getElementById('publishedResultsContainer');
             const searchInput = document.getElementById('searchItemInput');
-            const searchVal = searchInput ? (searchInput.value || '').toLowerCase() : '';
+            const searchVal = searchInput ? (searchInput.value || '').toLowerCase().trim() : '';
 
             if (!itemResults || itemResults.length === 0) {
                 container.innerHTML = `
@@ -1102,12 +1020,13 @@
 
             let filtered = itemResults.filter(res => {
                 if (!res) return false;
-                const p1Name = res.p1 && res.p1.name ? res.p1.name : '';
-                const p2Name = res.p2 && res.p2.name ? res.p2.name : '';
-                const p3Name = res.p3 && res.p3.name ? res.p3.name : '';
+                const p1Name = (res.p1 && res.p1.name) ? res.p1.name : '';
+                const p2Name = (res.p2 && res.p2.name) ? res.p2.name : '';
+                const p3Name = (res.p3 && res.p3.name) ? res.p3.name : '';
+                const itemName = res.itemName || '';
 
                 const matchesSearch = !searchVal || 
-                    res.itemName.toLowerCase().includes(searchVal) ||
+                    itemName.toLowerCase().includes(searchVal) ||
                     p1Name.toLowerCase().includes(searchVal) ||
                     p2Name.toLowerCase().includes(searchVal) ||
                     p3Name.toLowerCase().includes(searchVal);
@@ -1125,6 +1044,7 @@
                     <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-400 space-y-2">
                         <i data-lucide="inbox" class="w-10 h-10 mx-auto stroke-1"></i>
                         <p class="text-sm font-semibold">No announced results match your current search/filter.</p>
+                        <button onclick="filterByMission(null)" class="text-xs text-amber-600 font-bold hover:underline">Reset Filters</button>
                     </div>
                 `;
                 initLucide();
@@ -1195,7 +1115,24 @@
             initLucide();
         }
 
-        // Share & QR Modal Handlers
+        function downloadDataJson() {
+            const fullData = {
+                results: itemResults,
+                stages: stageData,
+                schedule: scheduleData
+            };
+            const jsonStr = JSON.stringify(fullData, null, 2);
+            const blob = new Blob([jsonStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "data.json";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
         function openShareModal() {
             const modal = document.getElementById('shareModal');
             const qrContainer = document.getElementById('qrcode');
@@ -1395,19 +1332,26 @@
 
             if (editingResultIndex !== null) {
                 itemResults[editingResultIndex] = updatedResult;
-                alert("Result updated successfully!");
             } else {
                 itemResults.unshift(updatedResult);
-                showSystemNotification(
-                    `🎉 New Result Published: ${updatedResult.itemName} (${updatedResult.category})`,
-                    `🥇 1st: ${updatedResult.p1.name} (${updatedResult.p1.mission})`
-                );
-                alert("Result published successfully and updated locally!");
             }
 
+            // Reset filters to ensure the new result is immediately visible
+            selectedMissionFilter = null;
+            const searchEl = document.getElementById('searchItemInput');
+            if (searchEl) searchEl.value = '';
+
             saveData(true);
+            renderMissionFilters();
             renderResults();
             resetResultForm();
+            closeAdminModal();
+            switchTab('results');
+
+            triggerToast(
+                `🎉 Result Published: ${updatedResult.itemName} (${updatedResult.category})`,
+                `🥇 1st: ${updatedResult.p1.name} (${updatedResult.p1.mission})`
+            );
         }
 
         function deleteResult(index) {

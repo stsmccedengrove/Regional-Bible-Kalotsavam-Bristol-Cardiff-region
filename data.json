@@ -1,26 +1,5 @@
 {
-  "results": [
-    {
-      "itemName": "Bible Reading - English",
-      "category": "Up to 7",
-      "status": "Final Result",
-      "p1": {
-        "name": "sen",
-        "code": "34",
-        "mission": "Taunton"
-      },
-      "p2": {
-        "name": "riva",
-        "code": "56",
-        "mission": "Bath"
-      },
-      "p3": {
-        "name": "Ryan",
-        "code": "45",
-        "mission": "Gloucester"
-      }
-    }
-  ],
+  "results": [],
   "stages": [],
   "schedule": []
 }

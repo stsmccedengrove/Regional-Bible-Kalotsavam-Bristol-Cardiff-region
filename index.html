@@ -32,113 +32,108 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
-        /* Projector specific full-fit utilities */
         .projector-fit-h { height: 100vh; max-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased projector-fit-h">
 
-    <header class="bg-brand-900 text-white border-b-4 border-amber-500 shrink-0 shadow-lg px-4 py-2.5 flex items-center justify-between">
+    <header class="bg-brand-900 text-white border-b-4 border-amber-500 shrink-0 shadow-lg px-4 py-2 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <div id="headerLeftLogo" class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
-                <i data-lucide="book-open" class="text-amber-400 w-6 h-6"></i>
+            <div id="headerLeftLogo" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
+                <i data-lucide="book-open" class="text-amber-400 w-5 h-5"></i>
             </div>
             <div>
-                <h1 class="text-lg md:text-xl font-black text-white leading-tight tracking-wide">9TH BRISTOL-CARDIFF REGIONAL BIBLE KALOTSAVAM 2026</h1>
-                <p class="text-xs font-extrabold text-amber-400">SYRO-MALABAR EPARCHY OF GREAT BRITAIN | LIVE PROJECTOR DASHBOARD</p>
+                <h1 class="text-sm md:text-lg font-black text-white leading-tight tracking-wide">9TH BRISTOL-CARDIFF REGIONAL BIBLE KALOTSAVAM 2026</h1>
+                <p class="text-[10px] font-extrabold text-amber-400">SYRO-MALABAR EPARCHY OF GREAT BRITAIN | LIVE PROJECTOR DASHBOARD</p>
             </div>
         </div>
         
-        <div class="flex items-center space-x-3">
-            <!-- Projector Mode Toggle Button -->
-            <button onclick="toggleProjectorMode()" id="projectorModeBtn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition shadow">
-                <i data-lucide="maximize" class="w-4 h-4"></i>
-                <span id="projectorModeText">Projector Fit (No Scroll)</span>
+        <div class="flex items-center space-x-2">
+            <button onclick="toggleProjectorMode()" id="projectorModeBtn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1 rounded-lg text-xs font-black flex items-center gap-1 transition shadow">
+                <i data-lucide="maximize" class="w-3.5 h-3.5"></i>
+                <span id="projectorModeText">Projector Fit</span>
             </button>
 
-            <div id="syncStatusBadge" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-xs font-extrabold flex items-center gap-1.5">
-                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Live Sync Active</span>
+            <div id="syncStatusBadge" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2.5 py-1 rounded-lg text-xs font-extrabold flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Live Sync</span>
             </div>
 
-            <div id="headerRightLogo" class="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
-                <i data-lucide="award" class="text-amber-400 w-6 h-6"></i>
+            <div id="headerRightLogo" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
+                <i data-lucide="award" class="text-amber-400 w-5 h-5"></i>
             </div>
             
-            <button onclick="openShareModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition shadow">
-                <i data-lucide="qr-code" class="w-4 h-4"></i>
+            <button onclick="openShareModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-2.5 py-1 rounded-lg text-xs font-black flex items-center gap-1 transition shadow">
+                <i data-lucide="qr-code" class="w-3.5 h-3.5"></i>
                 <span>Share</span>
             </button>
         </div>
     </header>
 
-    <div class="bg-amber-500 text-slate-950 py-1 px-4 text-center text-xs font-extrabold shrink-0 shadow-inner">
+    <div class="bg-amber-500 text-slate-950 py-0.5 px-4 text-center text-[11px] font-extrabold shrink-0 shadow-inner">
         Theme: "The Lord disciplines those whom he loves..." (Hebrews 12:6) | പ്രധാന വേദി തത്സമയ ഫലപ്രഖ്യാപനം
     </div>
 
     <!-- Live Toast Notification Banner -->
-    <div id="liveToast" class="hidden fixed bottom-5 right-5 z-50 max-w-sm w-full bg-slate-900 border-2 border-amber-400 text-white p-4 rounded-2xl shadow-2xl transition-all duration-300">
+    <div id="liveToast" class="hidden fixed bottom-5 right-5 z-50 max-w-sm w-full bg-slate-900 border-2 border-amber-400 text-white p-3 rounded-2xl shadow-2xl transition-all duration-300">
         <div class="flex items-start justify-between gap-3">
-            <div class="flex items-start gap-3">
+            <div class="flex items-start gap-2.5">
                 <div class="p-2 bg-amber-500 text-slate-950 rounded-xl shrink-0">
-                    <i data-lucide="bell-ring" class="w-5 h-5"></i>
+                    <i data-lucide="bell-ring" class="w-4 h-4"></i>
                 </div>
                 <div>
-                    <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">New Result Published!</span>
+                    <span class="text-[9px] font-black uppercase text-amber-400 tracking-wider">New Result Published!</span>
                     <h4 id="toastTitle" class="text-xs font-black text-white mt-0.5">Programme Name</h4>
-                    <p id="toastMessage" class="text-[11px] text-slate-300 font-medium mt-1">1st Place: Winner Name</p>
+                    <p id="toastMessage" class="text-[10px] text-slate-300 font-medium mt-0.5">1st Place: Winner Name</p>
                 </div>
             </div>
             <button onclick="dismissToast()" class="text-slate-400 hover:text-white p-1">
-                <i data-lucide="x" class="w-4 h-4"></i>
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
             </button>
         </div>
     </div>
 
-    <!-- MAIN APP CONTAINER (FLEX-1, NO SCROLL WHEN PROJECTOR FIT IS ACTIVE) -->
-    <main id="mainAppContainer" class="flex-1 max-w-7xl w-full mx-auto px-4 py-3 flex flex-col gap-4 overflow-hidden">
+    <!-- MAIN APP CONTAINER -->
+    <main id="mainAppContainer" class="flex-1 max-w-7xl w-full mx-auto px-4 py-2 flex flex-col gap-3 overflow-hidden">
 
         <!-- Navigation Tabs -->
-        <div class="flex flex-wrap gap-2 border-b border-slate-800 pb-2 shrink-0">
-            <button onclick="switchTab('results')" id="tab-results" class="px-4 py-1.5 text-xs font-extrabold rounded-lg transition bg-amber-500 text-slate-950 shadow-sm flex items-center gap-2">
-                <i data-lucide="trophy" class="w-4 h-4"></i> Championship Podium & Results
+        <div class="flex flex-wrap gap-1.5 border-b border-slate-800 pb-2 shrink-0">
+            <button onclick="switchTab('results')" id="tab-results" class="px-3.5 py-1 text-xs font-extrabold rounded-lg transition bg-amber-500 text-slate-950 shadow-sm flex items-center gap-1.5">
+                <i data-lucide="trophy" class="w-3.5 h-3.5"></i> Championship Podium & Results
             </button>
-            <button onclick="switchTab('stages')" id="tab-stages" class="px-4 py-1.5 text-xs font-extrabold rounded-lg transition bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-2">
-                <i data-lucide="radio" class="w-4 h-4"></i> Live Stage Tracker (9 Stages)
+            <button onclick="switchTab('itemwise')" id="tab-itemwise" class="px-3.5 py-1 text-xs font-extrabold rounded-lg transition bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5">
+                <i data-lucide="search" class="w-3.5 h-3.5"></i> Item-Wise Results
             </button>
-            <button onclick="switchTab('schedule')" id="tab-schedule" class="px-4 py-1.5 text-xs font-extrabold rounded-lg transition bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-2">
-                <i data-lucide="calendar" class="w-4 h-4"></i> Programme Schedule
+            <button onclick="switchTab('stages')" id="tab-stages" class="px-3.5 py-1 text-xs font-extrabold rounded-lg transition bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5">
+                <i data-lucide="radio" class="w-3.5 h-3.5"></i> Live Stage Tracker (9 Stages)
             </button>
-            <button onclick="switchTab('rules')" id="tab-rules" class="px-4 py-1.5 text-xs font-extrabold rounded-lg transition bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-2">
-                <i data-lucide="grid" class="w-4 h-4"></i> Official Program Matrix
+            <button onclick="switchTab('schedule')" id="tab-schedule" class="px-3.5 py-1 text-xs font-extrabold rounded-lg transition bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5">
+                <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Programme Schedule
+            </button>
+            <button onclick="switchTab('rules')" id="tab-rules" class="px-3.5 py-1 text-xs font-extrabold rounded-lg transition bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5">
+                <i data-lucide="grid" class="w-3.5 h-3.5"></i> Program Matrix
             </button>
         </div>
 
-        <!-- TAB 1: RESULTS VIEW (PROJECTOR OPTIMIZED) -->
-        <section id="view-results" class="flex-1 flex flex-col gap-3 overflow-hidden">
-
-            <!-- TOP 3 MISSIONS PODIUM SECTION -->
-            <div class="shrink-0 space-y-2">
+        <section id="view-results" class="flex-1 flex flex-col gap-2.5 overflow-hidden">
+            <!-- TOP 3 PODIUM -->
+            <div class="shrink-0 space-y-1.5">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-sm font-extrabold text-amber-400 flex items-center gap-2">
-                        <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
+                    <h2 class="text-xs font-extrabold text-amber-400 flex items-center gap-1.5">
+                        <i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400"></i>
                         Championship Standings - Top 3 Missions
                     </h2>
-                    <span class="text-[11px] text-slate-400">Click any mission to view won prizes</span>
+                    <span class="text-[10px] text-slate-400">Click mission for prize breakdown</span>
                 </div>
-
-                <div id="top3PodiumContainer" class="grid grid-cols-3 gap-3">
-                    <!-- Populated Dynamically -->
-                </div>
+                <div id="top3PodiumContainer" class="grid grid-cols-3 gap-2.5"></div>
             </div>
 
-            <!-- LOWER SPLIT FOR TALLY & RECENT RESULTS -->
-            <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 overflow-hidden min-h-0">
-                
-                <!-- Left: Full Missions Tally Table -->
+            <!-- LOWER SPLIT -->
+            <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3 overflow-hidden min-h-0">
+                <!-- Tally Table -->
                 <div class="bg-slate-900 rounded-xl border border-slate-800 flex flex-col overflow-hidden shadow">
-                    <div class="p-3 bg-slate-800 text-white flex justify-between items-center shrink-0 border-b border-slate-700">
-                        <h3 class="font-bold text-xs flex items-center gap-2">
+                    <div class="p-2.5 bg-slate-800 text-white flex justify-between items-center shrink-0 border-b border-slate-700">
+                        <h3 class="font-bold text-xs flex items-center gap-1.5">
                             <i data-lucide="list-ordered" class="w-3.5 h-3.5 text-amber-400"></i>
                             Regional Missions Ranking Tally
                         </h3>
@@ -146,110 +141,108 @@
                     </div>
                     <div class="flex-1 overflow-y-auto">
                         <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-950 text-slate-400 font-extrabold sticky top-0 uppercase border-b border-slate-800">
+                            <thead class="bg-slate-950 text-slate-400 font-extrabold sticky top-0 uppercase border-b border-slate-800 text-[11px]">
                                 <tr>
-                                    <th class="p-2.5">Rank</th>
-                                    <th class="p-2.5">Mission</th>
-                                    <th class="p-2.5 text-center">1st</th>
-                                    <th class="p-2.5 text-center">2nd</th>
-                                    <th class="p-2.5 text-center">3rd</th>
-                                    <th class="p-2.5 text-right">Points</th>
+                                    <th class="p-2">Rank</th>
+                                    <th class="p-2">Mission</th>
+                                    <th class="p-2 text-center">1st</th>
+                                    <th class="p-2 text-center">2nd</th>
+                                    <th class="p-2 text-center">3rd</th>
+                                    <th class="p-2 text-right">Pts</th>
                                 </tr>
                             </thead>
-                            <tbody id="missionTallyBody" class="divide-y divide-slate-800/60 font-semibold text-slate-200">
-                                <!-- Populated dynamically -->
-                            </tbody>
+                            <tbody id="missionTallyBody" class="divide-y divide-slate-800/60 font-semibold text-slate-200"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Right: Latest Published Results Feed -->
+                <!-- Latest Results Feed -->
                 <div class="bg-slate-900 rounded-xl border border-slate-800 flex flex-col overflow-hidden shadow">
-                    <div class="p-3 bg-slate-800 text-white flex justify-between items-center shrink-0 border-b border-slate-700">
-                        <h3 class="font-bold text-xs flex items-center gap-2">
+                    <div class="p-2.5 bg-slate-800 text-white flex justify-between items-center shrink-0 border-b border-slate-700">
+                        <h3 class="font-bold text-xs flex items-center gap-1.5">
                             <i data-lucide="award" class="w-3.5 h-3.5 text-amber-400"></i>
                             Latest Declared Item Results
                         </h3>
-                        <input type="text" id="searchItemInput" oninput="renderResults()" placeholder="Search item..." class="bg-slate-950 border border-slate-700 text-[11px] text-white rounded px-2.5 py-1 focus:outline-none w-36">
+                        <input type="text" id="searchItemInput" oninput="renderResults()" placeholder="Search..." class="bg-slate-950 border border-slate-700 text-[11px] text-white rounded px-2 py-0.5 focus:outline-none w-32">
                     </div>
-                    <div id="publishedResultsContainer" class="flex-1 overflow-y-auto p-3 space-y-3">
-                        <!-- Populated dynamically -->
-                    </div>
+                    <div id="publishedResultsContainer" class="flex-1 overflow-y-auto p-2.5 space-y-2"></div>
                 </div>
-
             </div>
         </section>
 
-        <!-- TAB 2: LIVE STAGE TRACKER -->
-        <section id="view-stages" class="hidden flex-1 flex flex-col gap-3 overflow-hidden">
-            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex items-center justify-between shrink-0">
-                <div class="flex items-center gap-3">
-                    <span class="relative flex h-3 w-3">
+        <section id="view-itemwise" class="hidden flex-1 flex flex-col gap-2.5 overflow-hidden">
+            <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="search" class="w-4 h-4 text-amber-400"></i>
+                    <h3 class="font-bold text-white text-xs">Item-Wise Kalotsavam Results Explorer</h3>
+                </div>
+                <div class="flex items-center gap-2">
+                    <select id="filterItemDropdown" onchange="renderItemWiseView()" class="bg-slate-950 border border-slate-700 rounded p-1 text-xs text-white">
+                        <option value="">All Programme Items</option>
+                    </select>
+                </div>
+            </div>
+            <div id="itemWiseContainer" class="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+        </section>
+
+        <section id="view-stages" class="hidden flex-1 flex flex-col gap-2.5 overflow-hidden">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <span class="relative flex h-2.5 w-2.5">
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                      <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
                     </span>
                     <div>
-                        <h3 class="font-bold text-white text-xs">Live 9-Stage Progress Tracker (Projector Fit)</h3>
-                        <p class="text-[11px] text-slate-400">Real-time ongoing competitions across all stages.</p>
+                        <h3 class="font-bold text-white text-xs">Live 9-Stage Progress Tracker</h3>
+                        <p class="text-[10px] text-slate-400">Real-time ongoing competitions across all stages.</p>
                     </div>
                 </div>
             </div>
-
-            <div id="stagesContainer" class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3 overflow-y-auto">
-                <!-- Populated dynamically -->
-            </div>
+            <div id="stagesContainer" class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2.5 overflow-y-auto"></div>
         </section>
 
-        <!-- TAB 3: PROGRAMME SCHEDULE -->
-        <section id="view-schedule" class="hidden flex-1 flex flex-col gap-3 overflow-hidden">
-            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex-1 flex flex-col overflow-hidden">
-                <div class="flex justify-between items-center mb-3 shrink-0">
-                    <h2 class="font-extrabold text-white text-sm flex items-center gap-2">
-                        <i data-lucide="clock" class="w-4 h-4 text-amber-400"></i> Official Programme Schedule
-                    </h2>
-                </div>
+        <section id="view-schedule" class="hidden flex-1 flex flex-col gap-2.5 overflow-hidden">
+            <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 flex-1 flex flex-col overflow-hidden">
+                <h2 class="font-extrabold text-white text-xs mb-2 flex items-center gap-1.5 shrink-0">
+                    <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400"></i> Official Programme Schedule
+                </h2>
                 <div class="flex-1 overflow-y-auto">
                     <table class="w-full text-left text-xs">
                         <thead class="bg-slate-950 text-slate-400 font-bold sticky top-0 border-b border-slate-800">
                             <tr>
-                                <th class="p-2.5">Time</th>
-                                <th class="p-2.5">Programme Item</th>
-                                <th class="p-2.5">Category</th>
-                                <th class="p-2.5">Stage / Hall</th>
+                                <th class="p-2">Time</th>
+                                <th class="p-2">Programme Item</th>
+                                <th class="p-2">Category</th>
+                                <th class="p-2">Stage / Hall</th>
                             </tr>
                         </thead>
-                        <tbody id="scheduleTableBody" class="divide-y divide-slate-800 text-slate-200">
-                            <!-- Populated dynamically -->
-                        </tbody>
+                        <tbody id="scheduleTableBody" class="divide-y divide-slate-800 text-slate-200"></tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- TAB 4: OFFICIAL PROGRAM MATRIX -->
-        <section id="view-rules" class="hidden flex-1 flex flex-col gap-3 overflow-hidden">
-            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 flex-1 flex flex-col overflow-hidden">
-                <h2 class="text-sm font-black text-white mb-2 shrink-0">Official Program Matrix & Age Groups</h2>
+        <section id="view-rules" class="hidden flex-1 flex flex-col gap-2.5 overflow-hidden">
+            <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 flex-1 flex flex-col overflow-hidden">
+                <h2 class="text-xs font-black text-white mb-2 shrink-0">Official Program Matrix & Age Groups</h2>
                 <div class="flex-1 overflow-y-auto">
-                    <table class="w-full text-[11px] text-left border border-slate-800 rounded-lg overflow-hidden">
+                    <table class="w-full text-[10px] text-left border border-slate-800 rounded-lg overflow-hidden">
                         <thead class="bg-brand-900 text-white font-bold sticky top-0">
                             <tr>
-                                <th class="p-2">Programme</th>
-                                <th class="p-2">Duration</th>
-                                <th class="p-2 text-center">Up to 7</th>
-                                <th class="p-2 text-center">8-10</th>
-                                <th class="p-2 text-center">11-13</th>
-                                <th class="p-2 text-center">14-17</th>
-                                <th class="p-2 text-center">18-24</th>
-                                <th class="p-2 text-center">Adults</th>
-                                <th class="p-2 text-center">All</th>
-                                <th class="p-2 text-center">&lt;30</th>
-                                <th class="p-2 text-center">30+</th>
+                                <th class="p-1.5">Programme</th>
+                                <th class="p-1.5">Duration</th>
+                                <th class="p-1.5 text-center">&lt;7</th>
+                                <th class="p-1.5 text-center">8-10</th>
+                                <th class="p-1.5 text-center">11-13</th>
+                                <th class="p-1.5 text-center">14-17</th>
+                                <th class="p-1.5 text-center">18-24</th>
+                                <th class="p-1.5 text-center">Adults</th>
+                                <th class="p-1.5 text-center">All</th>
+                                <th class="p-1.5 text-center">&lt;30</th>
+                                <th class="p-1.5 text-center">30+</th>
                             </tr>
                         </thead>
-                        <tbody id="matrixTableBody" class="divide-y divide-slate-800 text-slate-300 font-semibold">
-                            <!-- Populated dynamically -->
-                        </tbody>
+                        <tbody id="matrixTableBody" class="divide-y divide-slate-800 text-slate-300 font-semibold"></tbody>
                     </table>
                 </div>
             </div>
@@ -257,98 +250,88 @@
 
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-[11px] py-2 px-6 shrink-0 border-t border-slate-800 flex justify-between items-center">
+    <footer class="bg-slate-900 text-slate-400 text-[10px] py-1.5 px-6 shrink-0 border-t border-slate-800 flex justify-between items-center">
         <p>© 2026 CSMEGB Bible Kalotsavam - Bristol-Cardiff Region | Projector Display Mode</p>
-        <button onclick="openAdminAuth()" class="text-slate-500 hover:text-slate-300 transition">
+        <button onclick="openAdminAuth()" class="text-slate-400 hover:text-white transition font-bold">
             Official Admin Login
         </button>
     </footer>
 
-    <!-- SHARE & QR CODE MODAL -->
+    <!-- SHARE MODAL -->
     <div id="shareModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4 flex items-center justify-center">
-        <div class="max-w-md w-full bg-slate-900 text-white rounded-2xl shadow-2xl p-6 space-y-5 border border-slate-700">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="font-extrabold text-white text-base flex items-center gap-2">
-                    <i data-lucide="qr-code" class="w-5 h-5 text-amber-400"></i>
-                    Scan or Share Results
+        <div class="max-w-md w-full bg-slate-900 text-white rounded-2xl shadow-2xl p-5 space-y-4 border border-slate-700">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
+                <h3 class="font-extrabold text-white text-sm flex items-center gap-1.5">
+                    <i data-lucide="qr-code" class="w-4 h-4 text-amber-400"></i>
+                    Scan or Share Live Results
                 </h3>
                 <button onclick="closeShareModal()" class="text-slate-400 hover:text-white p-1">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+                    <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
-            
-            <div class="flex flex-col items-center justify-center space-y-3 py-2">
-                <div id="qrcode" class="p-3 bg-white border border-slate-700 rounded-xl shadow-inner"></div>
-                <p class="text-xs text-slate-400 font-semibold text-center">Scan this QR code with any mobile camera to view live results instantly.</p>
+            <div class="flex flex-col items-center justify-center space-y-2 py-1">
+                <div id="qrcode" class="p-2.5 bg-white border border-slate-700 rounded-xl shadow-inner"></div>
+                <p class="text-[11px] text-slate-400 font-semibold text-center">Scan with any smartphone camera to open live results.</p>
             </div>
-
-            <div class="space-y-2 pt-2 border-t border-slate-800">
-                <button onclick="copyPageUrl()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition">
-                    <i data-lucide="copy" class="w-4 h-4"></i> Copy Page Link
-                </button>
-            </div>
+            <button onclick="copyPageUrl()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Page Link
+            </button>
         </div>
     </div>
 
     <!-- MISSION PRIZE BREAKDOWN MODAL -->
     <div id="missionPrizeModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4 flex items-center justify-center">
-        <div class="max-w-lg w-full bg-slate-900 text-white rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
-            <div class="bg-brand-900 text-white p-4 px-6 flex justify-between items-center border-b border-amber-500">
+        <div class="max-w-md w-full bg-slate-900 text-white rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
+            <div class="bg-brand-900 text-white p-3.5 px-5 flex justify-between items-center border-b border-amber-500">
                 <div class="flex items-center gap-2">
-                    <i data-lucide="award" class="text-amber-400 w-5 h-5"></i>
-                    <h3 id="modalMissionTitle" class="font-black text-base">Mission Winners Breakdown</h3>
+                    <i data-lucide="award" class="text-amber-400 w-4 h-4"></i>
+                    <h3 id="modalMissionTitle" class="font-black text-sm">Mission Winners</h3>
                 </div>
                 <button onclick="closeMissionPrizeModal()" class="text-slate-300 hover:text-white p-1">
-                    <i data-lucide="x" class="w-6 h-6"></i>
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <div class="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
-                <div id="modalMissionSummary" class="grid grid-cols-3 gap-3 text-center p-3 bg-slate-800 rounded-xl border border-slate-700 text-xs font-bold">
-                    <!-- Dynamic Summary Points -->
-                </div>
-                <div id="modalMissionPrizesList" class="space-y-3">
-                    <!-- Dynamic List of Prizes Won -->
-                </div>
+            <div class="p-5 space-y-3 max-h-[55vh] overflow-y-auto">
+                <div id="modalMissionSummary" class="grid grid-cols-3 gap-2.5 text-center p-2.5 bg-slate-800 rounded-xl border border-slate-700 text-xs font-bold"></div>
+                <div id="modalMissionPrizesList" class="space-y-2.5"></div>
             </div>
         </div>
     </div>
 
-    <!-- ADMIN AUTHENTICATION & MODAL CONTROLS -->
-    <div id="adminModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4 sm:p-6">
-        <div class="max-w-3xl mx-auto bg-slate-900 text-white rounded-2xl border border-slate-700 shadow-2xl p-6 space-y-6 my-8">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="shield-check" class="text-amber-400 w-6 h-6"></i>
-                    <h2 class="text-base font-black">Official Admin Portal & Results Management</h2>
+    <!-- ADMIN MODAL -->
+    <div id="adminModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 overflow-y-auto p-4">
+        <div class="max-w-2xl mx-auto bg-slate-900 text-white rounded-2xl border border-slate-700 shadow-2xl p-5 space-y-5 my-6">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-1.5">
+                    <i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i>
+                    <h2 class="text-sm font-black">Official Admin Portal & Results Management</h2>
                 </div>
                 <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white p-1">
-                    <i data-lucide="x" class="w-6 h-6"></i>
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
-            <!-- Admin Passcode Verification Form -->
-            <div id="adminAuthSection" class="space-y-4 max-w-sm mx-auto text-center py-6">
-                <i data-lucide="lock" class="w-12 h-12 text-amber-400 mx-auto"></i>
-                <h3 class="text-base font-bold">Restricted Admin Access</h3>
-                <input type="password" id="adminPassInput" placeholder="Passcode" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-center text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
-                <button onclick="verifyAdminPasscode()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-2.5 rounded-lg text-sm transition">
+            <!-- Auth Section -->
+            <div id="adminAuthSection" class="space-y-3 max-w-xs mx-auto text-center py-4">
+                <i data-lucide="lock" class="w-10 h-10 text-amber-400 mx-auto"></i>
+                <h3 class="text-xs font-bold">Restricted Admin Access</h3>
+                <input type="password" id="adminPassInput" placeholder="Passcode" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-center text-xs text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+                <button onclick="verifyAdminPasscode()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-2 rounded-lg text-xs transition">
                     Unlock Admin Panel
                 </button>
-                <p id="adminAuthErr" class="text-xs text-red-400 hidden font-bold">Incorrect passcode.</p>
+                <p id="adminAuthErr" class="text-[11px] text-red-400 hidden font-bold">Incorrect passcode.</p>
             </div>
 
-            <!-- Admin Controls Dashboard -->
-            <div id="adminControlsSection" class="hidden space-y-6 max-h-[70vh] overflow-y-auto pr-2">
-                <div class="bg-emerald-500/15 p-3 rounded-xl border border-emerald-500/40 text-xs text-emerald-400 font-bold flex items-center justify-between">
-                    <span>Cloud Sync Active</span>
-                    <button onclick="deleteAllResults()" class="bg-red-600 text-white px-2 py-1 rounded text-[10px]">Wipe All Results</button>
+            <!-- Controls Section -->
+            <div id="adminControlsSection" class="hidden space-y-4 max-h-[65vh] overflow-y-auto pr-1">
+                <div class="bg-emerald-500/15 p-2.5 rounded-xl border border-emerald-500/40 text-xs text-emerald-400 font-bold flex items-center justify-between">
+                    <span>Cloud Sync Active (Instant Auto-Sync)</span>
+                    <button onclick="deleteAllResults()" class="bg-red-600 text-white px-2 py-1 rounded text-[10px]">Wipe All</button>
                 </div>
 
-                <!-- Publish Result Form -->
-                <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3">
+                <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
                     <div class="flex justify-between items-center">
-                        <h3 id="adminResultFormTitle" class="font-bold text-xs text-amber-400 uppercase">Publish New Event Result</h3>
-                        <button id="cancelEditResultBtn" onclick="resetResultForm()" class="hidden text-[10px] bg-slate-700 text-white px-2 py-0.5 rounded">Cancel Edit</button>
+                        <h3 class="font-bold text-xs text-amber-400 uppercase">Publish New Event Result</h3>
                     </div>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -360,20 +343,20 @@
                         </select>
                     </div>
 
-                    <div class="space-y-2 pt-1">
-                        <div class="p-2.5 bg-slate-900 rounded border border-amber-500/40 grid grid-cols-3 gap-2">
+                    <div class="space-y-2">
+                        <div class="p-2 bg-slate-900 rounded border border-amber-500/40 grid grid-cols-3 gap-1.5">
                             <span class="text-amber-400 font-bold text-xs col-span-3">🥇 1st Place</span>
                             <input type="text" id="p1_name" placeholder="Name" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
                             <input type="text" id="p1_code" placeholder="Chest No" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
                             <select id="p1_mission" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white"></select>
                         </div>
-                        <div class="p-2.5 bg-slate-900 rounded border border-slate-700 grid grid-cols-3 gap-2">
+                        <div class="p-2 bg-slate-900 rounded border border-slate-700 grid grid-cols-3 gap-1.5">
                             <span class="text-slate-300 font-bold text-xs col-span-3">🥈 2nd Place</span>
                             <input type="text" id="p2_name" placeholder="Name" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
                             <input type="text" id="p2_code" placeholder="Chest No" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
                             <select id="p2_mission" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white"></select>
                         </div>
-                        <div class="p-2.5 bg-slate-900 rounded border border-slate-700 grid grid-cols-3 gap-2">
+                        <div class="p-2 bg-slate-900 rounded border border-slate-700 grid grid-cols-3 gap-1.5">
                             <span class="text-amber-700 font-bold text-xs col-span-3">🥉 3rd Place</span>
                             <input type="text" id="p3_name" placeholder="Name" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
                             <input type="text" id="p3_code" placeholder="Chest No" class="bg-slate-800 border border-slate-700 rounded p-1 text-xs text-white">
@@ -382,14 +365,8 @@
                     </div>
 
                     <button onclick="publishResult()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-2 rounded text-xs uppercase tracking-wider transition">
-                        Publish Result & Update Standings
+                        Publish Result & Sync Instantly
                     </button>
-                </div>
-
-                <!-- Schedule & Stage Controls -->
-                <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-3">
-                    <h3 class="font-bold text-xs text-amber-400 uppercase">Stage Names & Live Allocation (All 9 Stages)</h3>
-                    <div id="adminStagesControlList" class="space-y-2 max-h-48 overflow-y-auto"></div>
                 </div>
             </div>
         </div>
@@ -446,12 +423,9 @@
             { name: "Bible Skit (Max 8 + 4 Support)", duration: "10 mins", cat: ["All Ages"] }
         ];
 
-        const TOTAL_EVENT_SLOTS = PROGRAM_MATRIX.reduce((acc, curr) => acc + curr.cat.length, 0);
-
         let itemResults = [];
         let previousResultCount = 0;
         let adminAuthenticated = false;
-        let editingResultIndex = null;
         let projectorFitActive = true;
 
         let stageData = Array.from({ length: 9 }, (_, i) => ({
@@ -496,12 +470,15 @@
                             if (data.schedule) scheduleData = data.schedule;
 
                             renderResults();
+                            renderItemWiseView();
                             renderStages();
                             renderSchedule();
                         }
                     } else {
                         saveToCloud();
                     }
+                }, (err) => {
+                    console.log("Firestore sync listener error:", err);
                 });
             } catch (e) {
                 console.log("Auth/Sync note:", e);
@@ -510,9 +487,6 @@
 
         async function saveToCloud() {
             if (!db) return;
-            const user = auth.currentUser;
-            if (!user) return;
-
             try {
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'festival_state');
                 await setDoc(docRef, {
@@ -534,11 +508,11 @@
 
             if (projectorFitActive) {
                 body.classList.add('projector-fit-h');
-                if (btnText) btnText.textContent = "Projector Fit (No Scroll)";
+                if (btnText) btnText.textContent = "Projector Fit";
                 if (btn) btn.classList.add('bg-amber-500', 'text-slate-950');
             } else {
                 body.classList.remove('projector-fit-h');
-                if (btnText) btnText.textContent = "Scroll Mode Enabled";
+                if (btnText) btnText.textContent = "Scroll Mode";
                 if (btn) btn.classList.remove('bg-amber-500', 'text-slate-950');
             }
         }
@@ -579,7 +553,7 @@
         }
 
         window.switchTab = function(tabKey) {
-            ['results', 'stages', 'schedule', 'rules'].forEach(k => {
+            ['results', 'itemwise', 'stages', 'schedule', 'rules'].forEach(k => {
                 const view = document.getElementById(`view-${k}`);
                 const btn = document.getElementById(`tab-${k}`);
                 if (view) view.classList.add('hidden');
@@ -605,15 +579,8 @@
                 previousResultCount = 0;
                 saveToCloud();
                 renderResults();
+                renderItemWiseView();
                 closeAdminModal();
-            }
-        }
-
-        window.deleteResult = function(index) {
-            if (confirm("Delete this result?")) {
-                itemResults.splice(index, 1);
-                saveToCloud();
-                renderResults();
             }
         }
 
@@ -637,27 +604,12 @@
                 return;
             }
 
-            if (editingResultIndex !== null && editingResultIndex >= 0) {
-                itemResults[editingResultIndex] = updatedResult;
-            } else {
-                itemResults.unshift(updatedResult);
-            }
-
+            itemResults.unshift(updatedResult);
             saveToCloud();
             renderResults();
-            resetResultForm();
+            renderItemWiseView();
             closeAdminModal();
             switchTab('results');
-        }
-
-        window.resetResultForm = function() {
-            editingResultIndex = null;
-            document.getElementById('cancelEditResultBtn')?.classList.add('hidden');
-            document.getElementById('adminResultFormTitle').textContent = "Publish New Event Result";
-            ['p1_name', 'p1_code', 'p2_name', 'p2_code', 'p3_name', 'p3_code'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = '';
-            });
         }
 
         function calculateMissionStandings() {
@@ -704,7 +656,7 @@
             if (!container) return;
 
             if (top3.length === 0 || top3.every(m => m.points === 0)) {
-                container.innerHTML = `<div class="col-span-3 text-center py-4 bg-slate-900 rounded-xl border border-slate-800 text-slate-400 text-xs font-bold">Awaiting published results for top missions...</div>`;
+                container.innerHTML = `<div class="col-span-3 text-center py-3 bg-slate-900 rounded-xl border border-slate-800 text-slate-400 text-xs font-bold">Awaiting published results for top missions...</div>`;
                 return;
             }
 
@@ -712,10 +664,10 @@
             const colors = ["border-amber-400 bg-amber-500/10", "border-slate-500 bg-slate-800/60", "border-amber-700 bg-amber-900/10"];
 
             container.innerHTML = top3.map((m, idx) => `
-                <div onclick="openMissionPrizeModal('${m.mission}')" class="cursor-pointer ${colors[idx]} border rounded-xl p-3 shadow text-center hover:scale-[1.01] transition">
-                    <span class="text-[10px] font-black uppercase text-amber-400">${badges[idx]}</span>
-                    <h3 class="text-sm md:text-base font-black text-white truncate mt-0.5">${m.mission}</h3>
-                    <div class="flex justify-center items-center gap-2 mt-1 text-xs">
+                <div onclick="openMissionPrizeModal('${m.mission}')" class="cursor-pointer ${colors[idx]} border rounded-xl p-2.5 shadow text-center hover:scale-[1.01] transition">
+                    <span class="text-[9px] font-black uppercase text-amber-400">${badges[idx]}</span>
+                    <h3 class="text-xs md:text-sm font-black text-white truncate mt-0.5">${m.mission}</h3>
+                    <div class="flex justify-center items-center gap-1.5 mt-0.5 text-xs">
                         <span class="font-black text-amber-400">${m.points} Pts</span>
                         <span class="text-slate-400 text-[10px]">(${m.first}🥇 ${m.second}🥈 ${m.third}🥉)</span>
                     </div>
@@ -747,46 +699,88 @@
             let filtered = itemResults.filter(r => !searchQuery || r.itemName.toLowerCase().includes(searchQuery) || r.category.toLowerCase().includes(searchQuery));
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-6 text-slate-500 text-xs font-bold">No results declared yet.</div>`;
+                container.innerHTML = `<div class="text-center py-4 text-slate-500 text-xs font-bold">No results declared yet.</div>`;
                 return;
             }
 
-            container.innerHTML = filtered.map((r, idx) => `
-                <div class="bg-slate-950 rounded-lg border border-slate-800 p-2.5 space-y-1.5">
+            container.innerHTML = filtered.map((r) => `
+                <div class="bg-slate-950 rounded-lg border border-slate-800 p-2 space-y-1">
                     <div class="flex justify-between items-center">
-                        <span class="text-[10px] font-black uppercase text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">${r.category}</span>
+                        <span class="text-[9px] font-black uppercase text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">${r.category}</span>
                         <h4 class="text-xs font-black text-white">${r.itemName}</h4>
                     </div>
-                    <div class="grid grid-cols-3 gap-1.5 text-[11px]">
-                        <div class="bg-amber-500/10 p-1.5 rounded border border-amber-500/30 truncate">
+                    <div class="grid grid-cols-3 gap-1 text-[10px]">
+                        <div class="bg-amber-500/10 p-1 rounded border border-amber-500/30 truncate">
                             <span class="text-amber-400 font-bold">1st:</span> ${r.p1?.name || 'N/A'} (${r.p1?.mission || ''})
                         </div>
-                        <div class="bg-slate-900 p-1.5 rounded border border-slate-700 truncate">
+                        <div class="bg-slate-900 p-1 rounded border border-slate-700 truncate">
                             <span class="text-slate-300 font-bold">2nd:</span> ${r.p2?.name || 'N/A'} (${r.p2?.mission || ''})
                         </div>
-                        <div class="bg-amber-900/10 p-1.5 rounded border border-amber-800/30 truncate">
+                        <div class="bg-amber-900/10 p-1 rounded border border-amber-800/30 truncate">
                             <span class="text-amber-700 font-bold">3rd:</span> ${r.p3?.name || 'N/A'} (${r.p3?.mission || ''})
                         </div>
                     </div>
                 </div>
             `).join('');
+            initLucide();
+        }
 
+        function renderItemWiseView() {
+            const dropdown = document.getElementById('filterItemDropdown');
+            const container = document.getElementById('itemWiseContainer');
+            if (!dropdown || !container) return;
+
+            // Populate dropdown with unique items if empty
+            if (dropdown.options.length <= 1) {
+                dropdown.innerHTML = `<option value="">All Programme Items</option>` + 
+                    PROGRAM_MATRIX.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+            }
+
+            const selectedItem = dropdown.value;
+            const filtered = selectedItem ? itemResults.filter(r => r.itemName === selectedItem) : itemResults;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-2 text-center py-10 text-slate-500 text-xs font-bold bg-slate-900 rounded-xl border border-slate-800">No results found for this item yet.</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(r => `
+                <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800 space-y-2">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                        <h4 class="font-black text-white text-xs">${r.itemName}</h4>
+                        <span class="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded font-bold">${r.category}</span>
+                    </div>
+                    <div class="space-y-1.5 text-xs">
+                        <div class="flex justify-between items-center bg-amber-500/10 p-2 rounded border border-amber-500/30">
+                            <span class="font-bold text-amber-400">🥇 1st Place</span>
+                            <span class="text-white font-black">${r.p1?.name || 'N/A'} <span class="text-slate-400 font-normal">(${r.p1?.mission || ''})</span></span>
+                        </div>
+                        <div class="flex justify-between items-center bg-slate-800 p-2 rounded border border-slate-700">
+                            <span class="font-bold text-slate-300">🥈 2nd Place</span>
+                            <span class="text-white font-black">${r.p2?.name || 'N/A'} <span class="text-slate-400 font-normal">(${r.p2?.mission || ''})</span></span>
+                        </div>
+                        <div class="flex justify-between items-center bg-amber-900/10 p-2 rounded border border-amber-800/30">
+                            <span class="font-bold text-amber-700">🥉 3rd Place</span>
+                            <span class="text-white font-black">${r.p3?.name || 'N/A'} <span class="text-slate-400 font-normal">(${r.p3?.mission || ''})</span></span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
             initLucide();
         }
 
         function renderStages() {
             const container = document.getElementById('stagesContainer');
             if (!container) return;
-
             container.innerHTML = stageData.map((s) => `
-                <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-2">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">
+                <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800 space-y-1.5">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-1">
                         <h3 class="font-black text-white text-xs">${s.stage}</h3>
-                        <span class="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded">${s.time}</span>
+                        <span class="text-[9px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded">${s.time}</span>
                     </div>
-                    <div class="text-[11px] space-y-1">
+                    <div class="text-[11px] space-y-0.5">
                         <p><strong class="text-slate-400">Ongoing:</strong> <span class="text-amber-300 font-bold">${s.ongoing}</span></p>
-                        <p><strong class="text-slate-400">Next Up:</strong> <span class="text-slate-300">${s.next}</span></p>
+                        <p><strong class="text-slate-400">Next:</strong> <span class="text-slate-300">${s.next}</span></p>
                     </div>
                 </div>
             `).join('');
@@ -796,7 +790,6 @@
         function renderSchedule() {
             const body = document.getElementById('scheduleTableBody');
             if (!body) return;
-
             body.innerHTML = scheduleData.map((item) => `
                 <tr class="hover:bg-slate-800/40">
                     <td class="p-2 font-bold text-amber-400">${item.time}</td>
@@ -810,22 +803,21 @@
         function renderProgramMatrix() {
             const body = document.getElementById('matrixTableBody');
             if (!body) return;
-
             body.innerHTML = PROGRAM_MATRIX.map(p => {
                 const check = (cat) => p.cat.includes(cat) ? `<span class="text-amber-400 font-black">✓</span>` : `<span class="text-slate-700">-</span>`;
                 return `
                     <tr class="hover:bg-slate-800/40">
-                        <td class="p-1.5 font-bold text-white">${p.name}</td>
-                        <td class="p-1.5 text-slate-400 text-[10px]">${p.duration}</td>
-                        <td class="p-1.5 text-center">${check("Up to 7")}</td>
-                        <td class="p-1.5 text-center">${check("8 to 10")}</td>
-                        <td class="p-1.5 text-center">${check("11 to 13")}</td>
-                        <td class="p-1.5 text-center">${check("14 to 17")}</td>
-                        <td class="p-1.5 text-center">${check("18 to 24")}</td>
-                        <td class="p-1.5 text-center">${check("Adults (25+)")}</td>
-                        <td class="p-1.5 text-center">${check("All Ages")}</td>
-                        <td class="p-1.5 text-center">${check("Under 30 Years")}</td>
-                        <td class="p-1.5 text-center">${check("30 Years & Above")}</td>
+                        <td class="p-1 font-bold text-white">${p.name}</td>
+                        <td class="p-1 text-slate-400 text-[9px]">${p.duration}</td>
+                        <td class="p-1 text-center">${check("Up to 7")}</td>
+                        <td class="p-1 text-center">${check("8 to 10")}</td>
+                        <td class="p-1 text-center">${check("11 to 13")}</td>
+                        <td class="p-1 text-center">${check("14 to 17")}</td>
+                        <td class="p-1 text-center">${check("18 to 24")}</td>
+                        <td class="p-1 text-center">${check("Adults (25+)")}</td>
+                        <td class="p-1 text-center">${check("All Ages")}</td>
+                        <td class="p-1 text-center">${check("Under 30 Years")}</td>
+                        <td class="p-1 text-center">${check("30 Years & Above")}</td>
                     </tr>
                 `;
             }).join('');
@@ -837,23 +829,10 @@
                 itemSelect.innerHTML = PROGRAM_MATRIX.map((p, idx) => `<option value="${idx}">${p.name}</option>`).join('');
                 updateCategoryDropdown();
             }
-
             ['p1_mission', 'p2_mission', 'p3_mission'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.innerHTML = REGIONAL_MISSIONS.map(m => `<option value="${m}">${m}</option>`).join('');
             });
-
-            const stContainer = document.getElementById('adminStagesControlList');
-            if (stContainer) {
-                stContainer.innerHTML = stageData.map((s, idx) => `
-                    <div class="p-2 bg-slate-900 rounded border border-slate-700 grid grid-cols-4 gap-1">
-                        <input type="text" value="${s.stage}" onchange="stageData[${idx}].stage = this.value; saveToCloud();" class="bg-slate-800 text-[11px] text-white p-1 rounded">
-                        <input type="text" value="${s.ongoing}" onchange="stageData[${idx}].ongoing = this.value; saveToCloud();" placeholder="Ongoing" class="bg-slate-800 text-[11px] text-white p-1 rounded">
-                        <input type="text" value="${s.next}" onchange="stageData[${idx}].next = this.value; saveToCloud();" placeholder="Next" class="bg-slate-800 text-[11px] text-white p-1 rounded">
-                        <input type="text" value="${s.time}" onchange="stageData[${idx}].time = this.value; saveToCloud();" placeholder="Time" class="bg-slate-800 text-[11px] text-white p-1 rounded">
-                    </div>
-                `).join('');
-            }
         }
 
         window.updateCategoryDropdown = function() {
@@ -879,10 +858,10 @@
 
             const prizesList = document.getElementById('modalMissionPrizesList');
             prizesList.innerHTML = missionData.prizes.length === 0 ? `<p class="text-xs text-slate-500 text-center">No prizes declared yet.</p>` : missionData.prizes.map(p => `
-                <div class="p-2.5 bg-slate-950 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
+                <div class="p-2 bg-slate-950 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
                     <div>
                         <span class="font-bold text-white block">${p.item}</span>
-                        <span class="text-slate-400 text-[11px]">${p.winner}</span>
+                        <span class="text-slate-400 text-[10px]">${p.winner}</span>
                     </div>
                     <span class="font-black px-2 py-0.5 rounded bg-amber-500 text-slate-950">${p.place}</span>
                 </div>
@@ -900,7 +879,7 @@
             const qrContainer = document.getElementById('qrcode');
             if (qrContainer) {
                 qrContainer.innerHTML = '';
-                new QRCode(qrContainer, { text: window.location.href, width: 140, height: 140 });
+                new QRCode(qrContainer, { text: window.location.href, width: 130, height: 130 });
             }
         }
 
@@ -940,6 +919,7 @@
         window.onload = function() {
             loadLogos();
             renderResults();
+            renderItemWiseView();
             renderStages();
             renderSchedule();
             renderProgramMatrix();

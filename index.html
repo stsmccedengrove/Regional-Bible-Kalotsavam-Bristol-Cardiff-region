@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSMEGB Bible Kalotsavam 2026 - Bristol-Cardiff Region (Projector View)</title>
+    <title>CSMEGB Bible Kalotsavam 2026 - Bristol-Cardiff Region</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -56,7 +56,7 @@
 
             <div id="syncStatusBadge" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2.5 py-1 rounded-lg text-xs font-extrabold flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Live Sync</span>
+                <span>Live Persistent</span>
             </div>
 
             <div id="headerRightLogo" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
@@ -82,9 +82,9 @@
                     <i data-lucide="bell-ring" class="w-4 h-4"></i>
                 </div>
                 <div>
-                    <span class="text-[9px] font-black uppercase text-amber-400 tracking-wider">New Result Published!</span>
-                    <h4 id="toastTitle" class="text-xs font-black text-white mt-0.5">Programme Name</h4>
-                    <p id="toastMessage" class="text-[10px] text-slate-300 font-medium mt-0.5">1st Place: Winner Name</p>
+                    <span class="text-[9px] font-black uppercase text-amber-400 tracking-wider">Notification</span>
+                    <h4 id="toastTitle" class="text-xs font-black text-white mt-0.5">Title</h4>
+                    <p id="toastMessage" class="text-[10px] text-slate-300 font-medium mt-0.5">Message</p>
                 </div>
             </div>
             <button onclick="dismissToast()" class="text-slate-400 hover:text-white p-1">
@@ -96,7 +96,6 @@
     <!-- MAIN APP CONTAINER -->
     <main id="mainAppContainer" class="flex-1 max-w-7xl w-full mx-auto px-4 py-2 flex flex-col gap-3 overflow-hidden">
 
-        <!-- Navigation Tabs -->
         <div class="flex flex-wrap gap-1.5 border-b border-slate-800 pb-2 shrink-0">
             <button onclick="switchTab('results')" id="tab-results" class="px-3.5 py-1 text-xs font-extrabold rounded-lg transition bg-amber-500 text-slate-950 shadow-sm flex items-center gap-1.5">
                 <i data-lucide="trophy" class="w-3.5 h-3.5"></i> Championship Podium & Results
@@ -324,14 +323,33 @@
 
             <!-- Controls Section -->
             <div id="adminControlsSection" class="hidden space-y-4 max-h-[65vh] overflow-y-auto pr-1">
-                <div class="bg-emerald-500/15 p-2.5 rounded-xl border border-emerald-500/40 text-xs text-emerald-400 font-bold flex items-center justify-between">
-                    <span>Cloud Sync Active (Instant Auto-Sync)</span>
-                    <button onclick="deleteAllResults()" class="bg-red-600 text-white px-2 py-1 rounded text-[10px]">Wipe All</button>
+                <div class="bg-brand-900/40 p-3 rounded-xl border border-brand-700 flex flex-col gap-2">
+                    <h3 class="text-xs font-black text-amber-400 uppercase">Export & Backup Data File</h3>
+                    <p class="text-[11px] text-slate-300">Download your updated data to keep backups or commit to GitHub.</p>
+                    <button onclick="downloadDataJson()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-2 px-3 rounded text-xs flex items-center justify-center gap-1.5 transition">
+                        <i data-lucide="download" class="w-4 h-4"></i> Download data.json Backup
+                    </button>
                 </div>
 
+                <!-- Stage Live Editor -->
+                <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
+                    <h3 class="font-bold text-xs text-amber-400 uppercase">Manage Live 9 Stages</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <select id="adminStageSelect" onchange="populateStageForm()" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"></select>
+                        <input type="text" id="adminStageTimeInput" placeholder="Time / Status (e.g. 10:30 AM)" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
+                    </div>
+                    <input type="text" id="adminStageOngoingInput" placeholder="Ongoing Programme Item" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
+                    <input type="text" id="adminStageNextInput" placeholder="Next Programme Item" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
+                    <button onclick="saveStageUpdate()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 rounded text-xs transition">
+                        Update Stage Status
+                    </button>
+                </div>
+
+                <!-- Publish / Edit Result Form -->
                 <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
                     <div class="flex justify-between items-center">
-                        <h3 class="font-bold text-xs text-amber-400 uppercase">Publish New Event Result</h3>
+                        <h3 id="adminFormHeaderTitle" class="font-bold text-xs text-amber-400 uppercase">Publish New Event Result</h3>
+                        <button id="cancelEditBtn" onclick="resetAdminForm()" class="hidden text-[10px] text-slate-400 underline">Cancel Edit</button>
                     </div>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -364,31 +382,30 @@
                         </div>
                     </div>
 
-                    <button onclick="publishResult()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-2 rounded text-xs uppercase tracking-wider transition">
-                        Publish Result & Sync Instantly
+                    <button id="publishResultBtn" onclick="publishResult()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-2 rounded text-xs uppercase tracking-wider transition">
+                        Publish Result
+                    </button>
+                </div>
+
+                <!-- Existing Results Manager -->
+                <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2">
+                    <h3 class="font-bold text-xs text-amber-400 uppercase">Manage Published Results (Edit / Delete)</h3>
+                    <div id="adminResultsListContainer" class="space-y-1.5 max-h-48 overflow-y-auto"></div>
+                </div>
+
+                <div class="pt-2 border-t border-slate-700 flex justify-between items-center">
+                    <button onclick="deleteAllResults()" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold transition">
+                        Wipe All Results Data
+                    </button>
+                    <button onclick="closeAdminModal()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-1.5 rounded text-xs font-bold transition">
+                        Done / Close
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'csmegb-kalotsavam-2026';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "mock", projectId: "mock" };
-
-        let app, db, auth;
-        try {
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-        } catch (e) {
-            console.log("Firebase init note:", e);
-        }
-
+    <script>
         const REGIONAL_MISSIONS = [
             "Exeter", "Taunton", "Weston Super Mare", "Bristol",
             "Bath", "Newport", "Cardiff", "Barry",
@@ -423,12 +440,8 @@
             { name: "Bible Skit (Max 8 + 4 Support)", duration: "10 mins", cat: ["All Ages"] }
         ];
 
-        let itemResults = [];
-        let previousResultCount = 0;
-        let adminAuthenticated = false;
-        let projectorFitActive = true;
-
-        let stageData = Array.from({ length: 9 }, (_, i) => ({
+        let itemResults = JSON.parse(localStorage.getItem('csmegb_results')) || [];
+        let stageData = JSON.parse(localStorage.getItem('csmegb_stages')) || Array.from({ length: 9 }, (_, i) => ({
             stage: `Stage ${i + 1}`,
             ongoing: "To be allocated",
             time: "Awaiting Schedule",
@@ -440,64 +453,13 @@
             { time: "09:00 AM", item: "Bible Reading - English", category: "Up to 7, 8-10", stage: "Stage 1" }
         ];
 
-        async function initAuthAndSync() {
-            if (!auth || !db) return;
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
+        let projectorFitActive = true;
+        let editingResultIndex = null;
+        let adminAuthenticated = false;
 
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'festival_state');
-                
-                onSnapshot(docRef, (docSnap) => {
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        if (data) {
-                            if (data.results && Array.isArray(data.results)) {
-                                if (previousResultCount > 0 && data.results.length > previousResultCount) {
-                                    const latestItem = data.results[0];
-                                    showSystemNotification(
-                                        `🎉 New Result: ${latestItem.itemName} (${latestItem.category})`,
-                                        `🥇 1st Place: ${latestItem.p1?.name || 'Winner'} (${latestItem.p1?.mission || ''})`
-                                    );
-                                }
-                                previousResultCount = data.results.length;
-                                itemResults = data.results;
-                            }
-                            if (data.stages) stageData = data.stages;
-                            if (data.schedule) scheduleData = data.schedule;
-
-                            renderResults();
-                            renderItemWiseView();
-                            renderStages();
-                            renderSchedule();
-                        }
-                    } else {
-                        saveToCloud();
-                    }
-                }, (err) => {
-                    console.log("Firestore sync listener error:", err);
-                });
-            } catch (e) {
-                console.log("Auth/Sync note:", e);
-            }
-        }
-
-        async function saveToCloud() {
-            if (!db) return;
-            try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'festival_state');
-                await setDoc(docRef, {
-                    results: itemResults,
-                    stages: stageData,
-                    schedule: scheduleData,
-                    updatedAt: new Date().toISOString()
-                }, { merge: true });
-            } catch (e) {
-                console.error("Save to cloud error:", e);
-            }
+        function persistData() {
+            localStorage.setItem('csmegb_results', JSON.stringify(itemResults));
+            localStorage.setItem('csmegb_stages', JSON.stringify(stageData));
         }
 
         window.toggleProjectorMode = function() {
@@ -537,6 +499,7 @@
 
         window.closeAdminModal = function() {
             document.getElementById('adminModal')?.classList.add('hidden');
+            resetAdminForm();
         }
 
         window.verifyAdminPasscode = function() {
@@ -576,11 +539,11 @@
         window.deleteAllResults = function() {
             if (confirm("Are you sure you want to delete ALL published results?")) {
                 itemResults = [];
-                previousResultCount = 0;
-                saveToCloud();
+                persistData();
                 renderResults();
                 renderItemWiseView();
-                closeAdminModal();
+                populateAdminResultsList();
+                showSystemNotification("Cleared", "All results wiped.");
             }
         }
 
@@ -604,12 +567,90 @@
                 return;
             }
 
-            itemResults.unshift(updatedResult);
-            saveToCloud();
+            if (editingResultIndex !== null) {
+                itemResults[editingResultIndex] = updatedResult;
+                showSystemNotification("Updated", `Result updated for ${updatedResult.itemName}`);
+            } else {
+                itemResults.unshift(updatedResult);
+                showSystemNotification("Published", `Result published for ${updatedResult.itemName}`);
+            }
+
+            persistData();
             renderResults();
             renderItemWiseView();
-            closeAdminModal();
+            populateAdminResultsList();
+            resetAdminForm();
             switchTab('results');
+        }
+
+        window.editResult = function(index) {
+            const r = itemResults[index];
+            if (!r) return;
+
+            editingResultIndex = index;
+            document.getElementById('adminFormHeaderTitle').textContent = `Edit Result (#${index + 1})`;
+            document.getElementById('publishResultBtn').textContent = "Save Changes";
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+
+            const itemSelect = document.getElementById('adminItemSelect');
+            const matchIdx = PROGRAM_MATRIX.findIndex(p => p.name === r.itemName);
+            if (matchIdx !== -1) {
+                itemSelect.value = matchIdx;
+                updateCategoryDropdown();
+            }
+
+            document.getElementById('adminCategorySelect').value = r.category;
+            document.getElementById('adminResultStatusSelect').value = r.status || "Final Result";
+
+            document.getElementById('p1_name').value = r.p1?.name || '';
+            document.getElementById('p1_code').value = r.p1?.code || '';
+            document.getElementById('p1_mission').value = r.p1?.mission || REGIONAL_MISSIONS[0];
+
+            document.getElementById('p2_name').value = r.p2?.name || '';
+            document.getElementById('p2_code').value = r.p2?.code || '';
+            document.getElementById('p2_mission').value = r.p2?.mission || REGIONAL_MISSIONS[0];
+
+            document.getElementById('p3_name').value = r.p3?.name || '';
+            document.getElementById('p3_code').value = r.p3?.code || '';
+            document.getElementById('p3_mission').value = r.p3?.mission || REGIONAL_MISSIONS[0];
+        }
+
+        window.deleteResult = function(index) {
+            if (confirm("Delete this result?")) {
+                itemResults.splice(index, 1);
+                persistData();
+                renderResults();
+                renderItemWiseView();
+                populateAdminResultsList();
+                showSystemNotification("Deleted", "Result removed successfully.");
+            }
+        }
+
+        window.resetAdminForm = function() {
+            editingResultIndex = null;
+            document.getElementById('adminFormHeaderTitle').textContent = "Publish New Event Result";
+            document.getElementById('publishResultBtn').textContent = "Publish Result";
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+            ['p1_name', 'p1_code', 'p2_name', 'p2_code', 'p3_name', 'p3_code'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+        }
+
+        window.saveStageUpdate = function() {
+            const stageIdx = document.getElementById('adminStageSelect').value;
+            if (stageIdx === "") return;
+
+            stageData[stageIdx] = {
+                stage: `Stage ${parseInt(stageIdx) + 1}`,
+                time: document.getElementById('adminStageTimeInput').value.trim() || "Live Now",
+                ongoing: document.getElementById('adminStageOngoingInput').value.trim() || "To be allocated",
+                next: document.getElementById('adminStageNextInput').value.trim() || "To be updated"
+            };
+
+            persistData();
+            renderStages();
+            showSystemNotification("Stage Updated", `Stage ${parseInt(stageIdx) + 1} updated successfully.`);
         }
 
         function calculateMissionStandings() {
@@ -730,7 +771,6 @@
             const container = document.getElementById('itemWiseContainer');
             if (!dropdown || !container) return;
 
-            // Populate dropdown with unique items if empty
             if (dropdown.options.length <= 1) {
                 dropdown.innerHTML = `<option value="">All Programme Items</option>` + 
                     PROGRAM_MATRIX.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
@@ -833,6 +873,47 @@
                 const el = document.getElementById(id);
                 if (el) el.innerHTML = REGIONAL_MISSIONS.map(m => `<option value="${m}">${m}</option>`).join('');
             });
+
+            const stageSelect = document.getElementById('adminStageSelect');
+            if (stageSelect) {
+                stageSelect.innerHTML = stageData.map((s, idx) => `<option value="${idx}">${s.stage}</option>`).join('');
+                populateStageForm();
+            }
+
+            populateAdminResultsList();
+        }
+
+        window.populateStageForm = function() {
+            const idx = document.getElementById('adminStageSelect')?.value || 0;
+            const s = stageData[idx];
+            if (s) {
+                document.getElementById('adminStageTimeInput').value = s.time || '';
+                document.getElementById('adminStageOngoingInput').value = s.ongoing || '';
+                document.getElementById('adminStageNextInput').value = s.next || '';
+            }
+        }
+
+        function populateAdminResultsList() {
+            const container = document.getElementById('adminResultsListContainer');
+            if (!container) return;
+
+            if (itemResults.length === 0) {
+                container.innerHTML = `<p class="text-[11px] text-slate-500">No results published yet.</p>`;
+                return;
+            }
+
+            container.innerHTML = itemResults.map((r, idx) => `
+                <div class="p-2 bg-slate-900 rounded border border-slate-700 flex justify-between items-center text-xs">
+                    <div class="truncate pr-2">
+                        <strong class="text-white">${r.itemName}</strong> <span class="text-amber-400">(${r.category})</span>
+                        <span class="block text-[10px] text-slate-400">1st: ${r.p1?.name || 'N/A'} (${r.p1?.mission || ''})</span>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0">
+                        <button onclick="editResult(${idx})" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded text-[10px]">Edit</button>
+                        <button onclick="deleteResult(${idx})" class="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-[10px]">Delete</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
         window.updateCategoryDropdown = function() {
@@ -893,12 +974,24 @@
             showSystemNotification("Copied", "Link copied to clipboard!");
         }
 
+        window.downloadDataJson = function() {
+            const dataObj = { results: itemResults, stages: stageData, schedule: scheduleData };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", "data.json");
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+            showSystemNotification("Downloaded", "data.json ready for upload.");
+        }
+
         function showSystemNotification(title, msg) {
             const toast = document.getElementById('liveToast');
             document.getElementById('toastTitle').textContent = title;
             document.getElementById('toastMessage').textContent = msg;
             toast?.classList.remove('hidden');
-            setTimeout(() => toast?.classList.add('hidden'), 5000);
+            setTimeout(() => toast?.classList.add('hidden'), 4000);
         }
 
         window.dismissToast = function() {
@@ -923,7 +1016,6 @@
             renderStages();
             renderSchedule();
             renderProgramMatrix();
-            initAuthAndSync();
             initLucide();
         };
     </script>

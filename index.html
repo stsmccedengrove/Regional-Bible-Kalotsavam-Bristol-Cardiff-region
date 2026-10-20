@@ -81,7 +81,7 @@
         Theme: "The Lord disciplines those whom he loves..." (Hebrews 12:6) | "താൻ സ്നേഹിക്കുന്നവന് കർത്താവു ശിക്ഷണം നൽകുന്നു..." (ഹെബ്രായർ 12:6)
     </div>
 
-    <!-- Live Floating Toast Notification Banner -->
+    <!-- Live Toast Notification Banner -->
     <div id="liveToast" class="hidden fixed bottom-5 right-5 z-50 max-w-sm w-full bg-slate-900 border-2 border-amber-400 text-white p-4 rounded-2xl shadow-2xl transition-all duration-300 transform translate-y-0">
         <div class="flex items-start justify-between gap-3">
             <div class="flex items-start gap-3">
@@ -121,7 +121,7 @@
         <!-- TAB 1: RESULTS VIEW -->
         <section id="view-results" class="space-y-6">
 
-            <!-- Summary Stats Banner: Declared vs Remaining -->
+            <!-- Summary Stats Banner -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="bg-slate-900 text-white p-4 rounded-2xl border border-slate-800 shadow-sm flex items-center justify-between">
                     <div class="flex items-center gap-3">
@@ -558,7 +558,6 @@
             { name: "Bible Skit (Max 8 + 4 Support)", duration: "10 mins", cat: ["All Ages"] }
         ];
 
-        // Total calculated event slots across all matrix programs & age groups
         const TOTAL_EVENT_SLOTS = PROGRAM_MATRIX.reduce((acc, curr) => acc + curr.cat.length, 0);
 
         let itemResults = [];
@@ -568,6 +567,7 @@
         let editingResultIndex = null;
         let qrcodeObj = null;
         let notificationsEnabled = false;
+        let localAdminModified = false;
 
         let stageData = Array.from({ length: 9 }, (_, i) => ({
             stage: `Stage ${i + 1}`,
@@ -581,99 +581,68 @@
             { time: "09:00 AM", item: "Bible Reading - English", category: "Up to 7, 8-10", stage: "Stage 1" }
         ];
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadSavedData();
-            initLucide();
-            checkNotificationStatus();
-            renderProgramMatrixTable();
-            renderMissionFilters();
-            renderDropdowns();
-            renderResults();
-            renderStages();
-            renderSchedule();
+        function openAdminAuth() {
+            const modal = document.getElementById('adminModal');
+            if (modal) modal.classList.remove('hidden');
 
-            fetchLatestData();
-            setInterval(() => fetchLatestData(), 8000);
+            const authSec = document.getElementById('adminAuthSection');
+            const ctrlSec = document.getElementById('adminControlsSection');
 
-            window.addEventListener('storage', (e) => {
-                if (e.key === 'csmegb_results_2026_v3' || e.key === 'csmegb_stages_2026_v3') {
-                    loadSavedData();
-                    renderResults();
-                    renderStages();
-                }
-            });
-
-            window.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
-                    openAdminAuth();
-                }
-            });
-        });
-
-        function checkNotificationStatus() {
-            if ("Notification" in window && Notification.permission === "granted") {
-                notificationsEnabled = true;
-                updateNotifButtonUI(true);
-            }
-        }
-
-        function toggleNotifications() {
-            if (!("Notification" in window)) {
-                alert("Browser notifications are not supported on this mobile device.");
-                return;
-            }
-            if (Notification.permission === "granted") {
-                notificationsEnabled = true;
-                updateNotifButtonUI(true);
-                showSystemNotification("Notifications active!", "You will see alerts as soon as results are published.");
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        notificationsEnabled = true;
-                        updateNotifButtonUI(true);
-                        showSystemNotification("Notifications Enabled!", "You will receive alerts when new results are declared.");
-                    }
-                });
+            if (adminAuthenticated) {
+                if (authSec) authSec.classList.add('hidden');
+                if (ctrlSec) ctrlSec.classList.remove('hidden');
+                populateAdminControls();
             } else {
-                alert("Notifications are currently blocked in your mobile browser site settings.");
+                if (authSec) authSec.classList.remove('hidden');
+                if (ctrlSec) ctrlSec.classList.add('hidden');
             }
-        }
-
-        function updateNotifButtonUI(enabled) {
-            const btnText = document.getElementById('notifText');
-            const btn = document.getElementById('notifToggleBtn');
-            if (enabled) {
-                if (btnText) btnText.innerText = "Alerts On";
-                if (btn) btn.className = "bg-emerald-500 text-slate-950 px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center gap-1 transition shadow";
-            }
-        }
-
-        function showSystemNotification(title, body) {
-            triggerToast(title, body);
-            if ("Notification" in window && Notification.permission === "granted") {
-                try {
-                    new Notification(title, { body: body, icon: DEFAULT_RIGHT_LOGO });
-                } catch (e) {
-                    console.log("OS Notification attempt:", e);
-                }
-            }
-        }
-
-        function triggerToast(title, message) {
-            const toast = document.getElementById('liveToast');
-            document.getElementById('toastTitle').innerText = title;
-            document.getElementById('toastMessage').innerText = message;
-            toast.classList.remove('hidden');
             initLucide();
-            setTimeout(() => dismissToast(), 9000);
         }
 
-        function dismissToast() {
-            const toast = document.getElementById('liveToast');
-            if (toast) toast.classList.add('hidden');
+        function closeAdminModal() {
+            const modal = document.getElementById('adminModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function verifyAdminPasscode() {
+            const passInput = document.getElementById('adminPassInput');
+            const errEl = document.getElementById('adminAuthErr');
+            
+            if (passInput && passInput.value === 'kalotsavam2026') {
+                adminAuthenticated = true;
+                if (errEl) errEl.classList.add('hidden');
+                openAdminAuth();
+            } else {
+                if (errEl) errEl.classList.remove('hidden');
+            }
+        }
+
+        function switchTab(tabKey) {
+            ['results', 'stages', 'schedule', 'rules'].forEach(k => {
+                const view = document.getElementById(`view-${k}`);
+                const btn = document.getElementById(`tab-${k}`);
+                if (view) view.classList.add('hidden');
+                if (btn) {
+                    btn.classList.remove('bg-brand-700', 'text-white', 'shadow-sm');
+                    btn.classList.add('bg-slate-200', 'text-slate-700');
+                }
+            });
+
+            const activeView = document.getElementById(`view-${tabKey}`);
+            const activeBtn = document.getElementById(`tab-${tabKey}`);
+            if (activeView) activeView.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-200', 'text-slate-700');
+                activeBtn.classList.add('bg-brand-700', 'text-white', 'shadow-sm');
+            }
+            initLucide();
         }
 
         async function fetchLatestData(manualTrigger = false) {
+            if (localAdminModified && !manualTrigger) {
+                return;
+            }
+
             const spinner = document.getElementById('refreshSpinner');
             if (spinner) spinner.classList.add('animate-spin');
 
@@ -701,6 +670,7 @@
                         if (data.stages) stageData = data.stages;
                         if (data.schedule) scheduleData = data.schedule;
 
+                        localAdminModified = false;
                         saveData(false);
                         renderResults();
                         renderStages();
@@ -713,40 +683,10 @@
                 if (spinner) {
                     setTimeout(() => spinner.classList.remove('animate-spin'), 600);
                 }
-                if (manualTrigger) alert("Synced latest results successfully!");
-            }
-        }
-
-        function loadSavedData() {
-            const savedResults = localStorage.getItem('csmegb_results_2026_v3');
-            if (savedResults) {
-                try {
-                    const parsed = JSON.parse(savedResults);
-                    if (Array.isArray(parsed)) {
-                        itemResults = parsed;
-                        previousResultCount = parsed.length;
-                    }
-                } catch (e){}
-            }
-
-            const savedStages = localStorage.getItem('csmegb_stages_2026_v3');
-            if (savedStages) {
-                try { stageData = JSON.parse(savedStages); } catch(e){}
-            }
-
-            const savedSchedule = localStorage.getItem('csmegb_schedule_2026_v3');
-            if (savedSchedule) {
-                try { scheduleData = JSON.parse(savedSchedule); } catch(e){}
-            }
-
-            const savedLogos = localStorage.getItem('csmegb_logos_2026_v3');
-            if (savedLogos) {
-                try {
-                    const logos = JSON.parse(savedLogos);
-                    applyLogos(logos.left || DEFAULT_LEFT_LOGO, logos.right || DEFAULT_RIGHT_LOGO);
-                } catch(e) { applyLogos(DEFAULT_LEFT_LOGO, DEFAULT_RIGHT_LOGO); }
-            } else {
-                applyLogos(DEFAULT_LEFT_LOGO, DEFAULT_RIGHT_LOGO);
+                if (manualTrigger) {
+                    localAdminModified = false;
+                    alert("Synced latest results successfully!");
+                }
             }
         }
 
@@ -758,601 +698,34 @@
             }
         }
 
-        function applyLogos(leftUrl, rightUrl) {
-            const lUrl = leftUrl || DEFAULT_LEFT_LOGO;
-            const rUrl = rightUrl || DEFAULT_RIGHT_LOGO;
-            
-            if (lUrl) {
-                document.getElementById('headerLeftLogo').innerHTML = `<img src="${lUrl}" class="w-full h-full object-cover" alt="Left Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'book-open\\' class=\\'text-amber-400 w-5 h-5 sm:w-8 sm:h-8\\'></i>'; initLucide();">`;
-            }
-            if (rUrl) {
-                document.getElementById('headerRightLogo').innerHTML = `<img src="${rUrl}" class="w-full h-full object-cover" alt="Right Logo" onerror="this.onerror=null; this.parentElement.innerHTML='<i data-lucide=\\'award\\' class=\\'text-amber-400 w-5 h-5 sm:w-8 sm:h-8\\'></i>'; initLucide();">`;
-            }
-        }
+        function loadLocalData() {
+            const savedResults = localStorage.getItem('csmegb_results_2026_v3');
+            const savedStages = localStorage.getItem('csmegb_stages_2026_v3');
+            const savedSchedule = localStorage.getItem('csmegb_schedule_2026_v3');
 
-        function switchTab(tabId) {
-            ['results', 'stages', 'schedule', 'rules'].forEach(t => {
-                const view = document.getElementById(`view-${t}`);
-                const btn = document.getElementById(`tab-${t}`);
-                if (t === tabId) {
-                    view.classList.remove('hidden');
-                    btn.className = "px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-brand-700 text-white shadow-sm flex items-center gap-2";
-                } else {
-                    view.classList.add('hidden');
-                    btn.className = "px-4 py-2 text-xs sm:text-sm font-extrabold rounded-lg transition bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-2";
-                }
-            });
-        }
-
-        function renderProgramMatrixTable() {
-            const cols = ["Up to 7", "8 to 10", "11 to 13", "14 to 17", "18 to 24", "Adults (25+)", "All Ages", "Under 30 Years", "30 Years & Above"];
-            const tbody = document.getElementById('matrixTableBody');
-            
-            tbody.innerHTML = PROGRAM_MATRIX.map(p => `
-                <tr class="hover:bg-slate-50 transition">
-                    <td class="p-2.5 font-bold text-slate-900">${p.name}</td>
-                    <td class="p-2.5 text-slate-500 whitespace-nowrap">${p.duration}</td>
-                    ${cols.map(c => `
-                        <td class="p-2.5 text-center">
-                            ${p.cat.includes(c) ? '<span class="inline-block w-4 h-4 bg-emerald-500 text-white rounded-full text-[10px] leading-4 text-center font-black">✓</span>' : '-'}
-                        </td>
-                    `).join('')}
-                </tr>
-            `).join('');
-        }
-
-        function calculateAndRenderStandings() {
-            const tally = {};
-            REGIONAL_MISSIONS.forEach(m => tally[m] = { first: 0, second: 0, third: 0, points: 0 });
-
-            itemResults.forEach(res => {
-                if (res.p1 && tally[res.p1.mission]) { tally[res.p1.mission].first += 1; tally[res.p1.mission].points += 5; }
-                if (res.p2 && tally[res.p2.mission]) { tally[res.p2.mission].second += 1; tally[res.p2.mission].points += 3; }
-                if (res.p3 && tally[res.p3.mission]) { tally[res.p3.mission].third += 1; tally[res.p3.mission].points += 1; }
-            });
-
-            const sortedMissions = Object.keys(tally).sort((a, b) => {
-                if (tally[b].points !== tally[a].points) {
-                    return tally[b].points - tally[a].points;
-                }
-                return a.localeCompare(b);
-            });
-
-            const top3Container = document.getElementById('top3PodiumContainer');
-            const top3 = sortedMissions.slice(0, 3);
-
-            top3Container.innerHTML = [0, 1, 2].map(idx => {
-                const missionName = top3[idx];
-                const pts = tally[missionName]?.points || 0;
-                const posLabel = idx === 0 ? "1st Champion" : idx === 1 ? "2nd Runner Up" : "3rd Runner Up";
-                const badgeColor = idx === 0 ? "bg-amber-500 text-slate-950" : idx === 1 ? "bg-slate-300 text-slate-900" : "bg-amber-700 text-white";
-                
-                if (itemResults.length === 0 || pts === 0) {
-                    return `
-                        <div class="bg-white p-5 rounded-2xl border border-dashed border-slate-300 shadow-sm relative overflow-hidden flex flex-col justify-between opacity-80">
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${badgeColor}">${posLabel}</span>
-                                    <span class="text-xs font-bold text-slate-400">0 Pts</span>
-                                </div>
-                                <h3 class="text-base font-extrabold text-slate-400 mt-1">${missionName || 'Mission'}</h3>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400 italic">
-                                Results Coming Soon
-                            </div>
-                        </div>
-                    `;
-                }
-
-                return `
-                    <div onclick="showMissionPrizes('${missionName}')" class="bg-white p-5 rounded-2xl border ${idx === 0 ? 'border-amber-400 ring-2 ring-amber-400/30' : 'border-slate-200'} shadow-sm relative overflow-hidden flex flex-col justify-between cursor-pointer hover:border-amber-500 hover:shadow-md transition">
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${badgeColor}">${posLabel}</span>
-                                <span class="text-xs font-black text-brand-700">${pts} Pts</span>
-                            </div>
-                            <h3 class="text-base font-black text-slate-900 mt-1 flex items-center justify-between">
-                                ${missionName}
-                                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
-                            </h3>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold">
-                            <span>1st: ${tally[missionName]?.first || 0}</span>
-                            <span>2nd: ${tally[missionName]?.second || 0}</span>
-                            <span>3rd: ${tally[missionName]?.third || 0}</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            const tallyBody = document.getElementById('missionTallyBody');
-            tallyBody.innerHTML = sortedMissions.map((m, idx) => {
-                const pts = tally[m].points;
-                return `
-                    <tr onclick="showMissionPrizes('${m}')" class="hover:bg-amber-50/50 transition cursor-pointer ${idx < 3 && pts > 0 ? 'bg-amber-50/20' : ''}">
-                        <td class="p-3.5 font-black text-slate-900">
-                            ${idx === 0 ? '🥇 1' : idx === 1 ? '🥈 2' : idx === 2 ? '🥉 3' : idx + 1}
-                        </td>
-                        <td class="p-3.5 font-black text-brand-700 hover:underline flex items-center gap-1.5">
-                            ${m}
-                            ${pts > 0 ? '<i data-lucide="award" class="w-3.5 h-3.5 text-amber-500"></i>' : ''}
-                        </td>
-                        <td class="p-3.5 text-center text-amber-600 font-bold">${tally[m].first}</td>
-                        <td class="p-3.5 text-center text-slate-600 font-bold">${tally[m].second}</td>
-                        <td class="p-3.5 text-center text-amber-800 font-bold">${tally[m].third}</td>
-                        <td class="p-3.5 text-right font-black ${pts > 0 ? 'text-brand-700' : 'text-slate-400'} text-base">${pts}</td>
-                    </tr>
-                `;
-            }).join('');
-
-            // Update Header Counter Stats
-            const declaredCount = itemResults.length;
-            const remainingCount = Math.max(0, TOTAL_EVENT_SLOTS - declaredCount);
-
-            document.getElementById('statPublishedCount').innerText = `${declaredCount} Items`;
-            document.getElementById('statRemainingCount').innerText = `${remainingCount} Items`;
-            document.getElementById('totalDeclaredBadge').innerText = `${declaredCount} Items Declared`;
-
-            initLucide();
-        }
-
-        function renderStages() {
-            const container = document.getElementById('stagesContainer');
-            const adminContainer = document.getElementById('adminStagesControlList');
-
-            if (container) {
-                container.innerHTML = stageData.map((stg, i) => `
-                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3 relative overflow-hidden">
-                        <div class="flex justify-between items-center border-b border-slate-100 pb-2">
-                            <h3 class="font-black text-slate-900 text-sm flex items-center gap-2">
-                                <i data-lucide="map-pin" class="w-4 h-4 text-amber-500"></i>
-                                ${stg.stage || `Stage ${i + 1}`}
-                            </h3>
-                            <span class="text-[10px] font-extrabold bg-slate-100 text-slate-600 px-2 py-0.5 rounded">${stg.time || 'Awaiting'}</span>
-                        </div>
-                        <div>
-                            <span class="text-[10px] font-bold text-amber-600 uppercase tracking-wider block mb-0.5">Ongoing Event</span>
-                            <p class="text-xs font-black text-slate-800">${stg.ongoing || 'To be allocated'}</p>
-                        </div>
-                        <div class="pt-2 border-t border-slate-50">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Upcoming Next</span>
-                            <p class="text-xs font-bold text-slate-600">${stg.next || 'To be updated'}</p>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            if (adminContainer) {
-                adminContainer.innerHTML = stageData.map((stg, i) => `
-                    <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-700 space-y-2">
-                        <span class="text-amber-400 font-bold text-xs">Stage #${i + 1} Configuration</span>
-                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
-                            <input type="text" value="${stg.stage || ''}" onchange="updateStageField(${i}, 'stage', this.value)" placeholder="Stage Name" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <input type="text" value="${stg.ongoing || ''}" onchange="updateStageField(${i}, 'ongoing', this.value)" placeholder="Ongoing Event" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <input type="text" value="${stg.time || ''}" onchange="updateStageField(${i}, 'time', this.value)" placeholder="Time Range" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <input type="text" value="${stg.next || ''}" onchange="updateStageField(${i}, 'next', this.value)" placeholder="Upcoming Next" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            initLucide();
-        }
-
-        function updateStageField(index, field, value) {
-            stageData[index][field] = value;
-            saveData();
-            renderStages();
-        }
-
-        function showMissionPrizes(missionName) {
-            if (!missionName || missionName === "Awaiting Result") return;
-
-            const modal = document.getElementById('missionPrizeModal');
-            document.getElementById('modalMissionTitle').innerText = `${missionName} Mission - Prize Breakdown`;
-
-            const wonPrizes = [];
-            let totalPts = 0;
-            let firsts = 0, seconds = 0, thirds = 0;
-
-            itemResults.forEach(res => {
-                if (res.p1 && res.p1.mission === missionName) {
-                    wonPrizes.push({ rank: "1st Place", points: 5, item: res.itemName, cat: res.category, winner: res.p1.name, code: res.p1.code, status: res.status });
-                    totalPts += 5; firsts++;
-                }
-                if (res.p2 && res.p2.mission === missionName) {
-                    wonPrizes.push({ rank: "2nd Place", points: 3, item: res.itemName, cat: res.category, winner: res.p2.name, code: res.p2.code, status: res.status });
-                    totalPts += 3; seconds++;
-                }
-                if (res.p3 && res.p3.mission === missionName) {
-                    wonPrizes.push({ rank: "3rd Place", points: 1, item: res.itemName, cat: res.category, winner: res.p3.name, code: res.p3.code, status: res.status });
-                    totalPts += 1; thirds++;
-                }
-            });
-
-            document.getElementById('modalMissionSummary').innerHTML = `
-                <div><span class="block text-amber-600 text-sm font-black">${firsts}</span> 1st</div>
-                <div><span class="block text-slate-600 text-sm font-black">${seconds}</span> 2nd</div>
-                <div><span class="block text-amber-800 text-sm font-black">${thirds}</span> 3rd</div>
-            `;
-
-            const listContainer = document.getElementById('modalMissionPrizesList');
-            if (wonPrizes.length === 0) {
-                listContainer.innerHTML = `<div class="text-center py-6 text-slate-400 font-medium text-xs">No prizes declared for ${missionName} mission yet.</div>`;
-            } else {
-                listContainer.innerHTML = wonPrizes.map(p => `
-                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-3 text-xs">
-                        <div>
-                            <span class="font-extrabold text-slate-900 block">${p.item} (${p.cat})</span>
-                            <span class="text-slate-500 font-semibold">${p.winner || 'Participant'} ${p.code ? `[#${p.code}]` : ''}</span>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <span class="font-black text-amber-600 block">${p.rank}</span>
-                            <span class="text-[10px] text-slate-400 font-bold">+${p.points} Pts</span>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            modal.classList.remove('hidden');
-            initLucide();
-        }
-
-        function closeMissionPrizeModal() {
-            document.getElementById('missionPrizeModal').classList.add('hidden');
-        }
-
-        function renderMissionFilters() {
-            const container = document.getElementById('missionFilters');
-            const resetBtn = document.getElementById('resetFilterBtn');
-
-            if (selectedMissionFilter) resetBtn.classList.remove('hidden');
-            else resetBtn.classList.add('hidden');
-
-            let html = `<button onclick="filterByMission(null)" class="px-3 py-1 rounded-full text-xs font-extrabold transition ${selectedMissionFilter === null ? 'bg-amber-500 text-slate-950' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">All Missions</button>`;
-            
-            REGIONAL_MISSIONS.forEach(m => {
-                const isSelected = selectedMissionFilter === m;
-                html += `<button onclick="filterByMission('${m}')" class="px-3 py-1 rounded-full text-xs font-extrabold transition ${isSelected ? 'bg-amber-500 text-slate-950' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">${m}</button>`;
-            });
-            container.innerHTML = html;
-        }
-
-        function filterByMission(mission) {
-            selectedMissionFilter = mission;
-            renderMissionFilters();
-            renderResults();
-        }
-
-        function renderDropdowns() {
-            const itemSel = document.getElementById('adminItemSelect');
-            if (itemSel) {
-                itemSel.innerHTML = PROGRAM_MATRIX.map((i, idx) => `<option value="${idx}">${i.name}</option>`).join('');
-                updateCategoryDropdown();
-            }
-
-            ['p1_mission', 'p2_mission', 'p3_mission'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.innerHTML = REGIONAL_MISSIONS.map(m => `<option value="${m}">${m}</option>`).join('');
-                }
-            });
-        }
-
-        function updateCategoryDropdown() {
-            const itemIdx = document.getElementById('adminItemSelect').value;
-            const catSel = document.getElementById('adminCategorySelect');
-            if (PROGRAM_MATRIX[itemIdx] && catSel) {
-                catSel.innerHTML = PROGRAM_MATRIX[itemIdx].cat.map(c => `<option value="${c}">${c}</option>`).join('');
-            }
-        }
-
-        function renderResults() {
-            calculateAndRenderStandings();
-
-            const container = document.getElementById('publishedResultsContainer');
-            const searchInput = document.getElementById('searchItemInput');
-            const searchVal = searchInput ? (searchInput.value || '').toLowerCase().trim() : '';
-
-            if (!itemResults || itemResults.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-500 space-y-2">
-                        <i data-lucide="clock" class="w-10 h-10 mx-auto text-amber-500 stroke-1"></i>
-                        <h3 class="text-base font-extrabold text-slate-800">Results Coming Soon</h3>
-                        <p class="text-xs font-semibold text-slate-500">Official results will appear here as soon as judging and verification are completed.</p>
-                    </div>
-                `;
-                initLucide();
-                return;
-            }
-
-            let filtered = itemResults.filter(res => {
-                if (!res) return false;
-                const p1Name = (res.p1 && res.p1.name) ? res.p1.name : '';
-                const p2Name = (res.p2 && res.p2.name) ? res.p2.name : '';
-                const p3Name = (res.p3 && res.p3.name) ? res.p3.name : '';
-                const itemName = res.itemName || '';
-
-                const matchesSearch = !searchVal || 
-                    itemName.toLowerCase().includes(searchVal) ||
-                    p1Name.toLowerCase().includes(searchVal) ||
-                    p2Name.toLowerCase().includes(searchVal) ||
-                    p3Name.toLowerCase().includes(searchVal);
-
-                const matchesMission = !selectedMissionFilter ||
-                    (res.p1 && res.p1.mission === selectedMissionFilter) ||
-                    (res.p2 && res.p2.mission === selectedMissionFilter) ||
-                    (res.p3 && res.p3.mission === selectedMissionFilter);
-
-                return matchesSearch && matchesMission;
-            });
-
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-white p-8 rounded-2xl border border-slate-200 text-center text-slate-400 space-y-2">
-                        <i data-lucide="inbox" class="w-10 h-10 mx-auto stroke-1"></i>
-                        <p class="text-sm font-semibold">No announced results match your current search/filter.</p>
-                        <button onclick="filterByMission(null)" class="text-xs text-amber-600 font-bold hover:underline">Reset Filters</button>
-                    </div>
-                `;
-                initLucide();
-                return;
-            }
-
-            container.innerHTML = filtered.map((res, index) => {
-                const status = res.status || "Final Result";
-                let statusBadgeStyle = "bg-emerald-500/20 text-emerald-400 border-emerald-500/40";
-                let statusIcon = "check-circle-2";
-
-                if (status === "Provisional Result") {
-                    statusBadgeStyle = "bg-amber-500/20 text-amber-400 border-amber-500/40";
-                    statusIcon = "clock";
-                } else if (status === "Under Appeal") {
-                    statusBadgeStyle = "bg-rose-500/20 text-rose-400 border-rose-500/40";
-                    statusIcon = "alert-circle";
-                }
-
-                const p1 = res.p1 || { name: 'N/A', mission: '-', code: '' };
-                const p2 = res.p2 || { name: 'N/A', mission: '-', code: '' };
-                const p3 = res.p3 || { name: 'N/A', mission: '-', code: '' };
-
-                return `
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="bg-slate-900 text-white p-3.5 px-5 flex flex-wrap justify-between items-center gap-2">
-                        <div>
-                            <span class="font-extrabold text-sm sm:text-base">${res.itemName}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-1 rounded-md border ${statusBadgeStyle}">
-                                <i data-lucide="${statusIcon}" class="w-3 h-3"></i>
-                                ${status}
-                            </span>
-                            <span class="text-xs text-amber-400 font-semibold bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">${res.category}</span>
-                            ${adminAuthenticated ? `
-                                <div class="flex items-center gap-1.5 ml-2">
-                                    <button onclick="editResult(${index})" class="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-2 py-0.5 rounded">Edit</button>
-                                    <button onclick="deleteResult(${index})" class="text-xs text-red-400 hover:text-red-300 font-bold px-1">Delete</button>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                    <div class="p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div class="bg-amber-50/60 p-3.5 rounded-xl border border-amber-200">
-                            <span class="text-[11px] font-black text-amber-800 uppercase block mb-1">1st Place</span>
-                            <h4 class="text-sm font-black text-slate-900">${p1.name || 'N/A'}</h4>
-                            <p class="text-xs font-bold text-slate-600 mt-0.5">${p1.mission || '-'}</p>
-                            <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p1.code || '-'}</p>
-                        </div>
-                        <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                            <span class="text-[11px] font-black text-slate-600 uppercase block mb-1">2nd Place</span>
-                            <h4 class="text-sm font-black text-slate-900">${p2.name || 'N/A'}</h4>
-                            <p class="text-xs font-bold text-slate-600 mt-0.5">${p2.mission || '-'}</p>
-                            <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p2.code || '-'}</p>
-                        </div>
-                        <div class="bg-amber-900/5 p-3.5 rounded-xl border border-amber-900/10">
-                            <span class="text-[11px] font-black text-amber-900 uppercase block mb-1">3rd Place</span>
-                            <h4 class="text-sm font-black text-slate-900">${p3.name || 'N/A'}</h4>
-                            <p class="text-xs font-bold text-slate-600 mt-0.5">${p3.mission || '-'}</p>
-                            <p class="text-[11px] font-semibold text-slate-400">Chest/Reg: ${p3.code || '-'}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-            }).join('');
-
-            initLucide();
-        }
-
-        function downloadDataJson() {
-            const fullData = {
-                results: itemResults,
-                stages: stageData,
-                schedule: scheduleData
-            };
-            const jsonStr = JSON.stringify(fullData, null, 2);
-            const blob = new Blob([jsonStr], { type: "application/json" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "data.json";
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        function openShareModal() {
-            const modal = document.getElementById('shareModal');
-            const qrContainer = document.getElementById('qrcode');
-            qrContainer.innerHTML = '';
-
-            if (window.QRCode) {
-                qrcodeObj = new QRCode(qrContainer, {
-                    text: window.location.href,
-                    width: 160,
-                    height: 160,
-                    colorDark : "#061224",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.H
-                });
-            }
-
-            modal.classList.remove('hidden');
-            initLucide();
-        }
-
-        function closeShareModal() {
-            document.getElementById('shareModal').classList.add('hidden');
-        }
-
-        function copyPageUrl() {
-            const dummy = document.createElement('input');
-            document.body.appendChild(dummy);
-            dummy.value = window.location.href;
-            dummy.select();
-            document.execCommand('copy');
-            document.body.removeChild(dummy);
-            alert("Website link copied to clipboard!");
+            if (savedResults) itemResults = JSON.parse(savedResults);
+            if (savedStages) stageData = JSON.parse(savedStages);
+            if (savedSchedule) scheduleData = JSON.parse(savedSchedule);
         }
 
         function deleteAllResults() {
             if (confirm("CRITICAL WARNING: Are you sure you want to delete ALL published results? This will reset all mission points to zero.")) {
                 itemResults = [];
                 previousResultCount = 0;
+                localAdminModified = true;
                 saveData();
                 renderResults();
-                alert("All results have been wiped clean.");
+                alert("All results have been wiped clean. Make sure to download data.json in the Admin Portal and update GitHub so other devices see the wipe!");
             }
         }
 
-        function renderSchedule() {
-            const tbody = document.getElementById('scheduleTableBody');
-            tbody.innerHTML = scheduleData.map((s, idx) => `
-                <tr class="hover:bg-slate-50 transition">
-                    <td class="p-3 font-bold text-slate-900 whitespace-nowrap">${s.time}</td>
-                    <td class="p-3 font-bold text-brand-700">${s.item}</td>
-                    <td class="p-3 font-semibold text-slate-600">${s.category}</td>
-                    <td class="p-3 font-extrabold text-amber-600">${s.stage}</td>
-                    ${adminAuthenticated ? `<td class="p-3 text-right"><button onclick="deleteScheduleItem(${idx})" class="text-xs text-red-500 font-bold hover:underline">Remove</button></td>` : ''}
-                </tr>
-            `).join('');
-
-            const header = document.getElementById('schedAdminHeader');
-            if (header) {
-                if (adminAuthenticated) header.classList.remove('hidden');
-                else header.classList.add('hidden');
-            }
-        }
-
-        function addScheduleItem() {
-            const time = document.getElementById('schedTimeInput').value.trim();
-            const item = document.getElementById('schedItemInput').value.trim();
-            const category = document.getElementById('schedCatInput').value.trim();
-            const stage = document.getElementById('schedStageInput').value.trim();
-
-            if (!time || !item) {
-                alert("Please enter at least Time and Item Name.");
-                return;
-            }
-
-            scheduleData.push({ time, item, category: category || 'All', stage: stage || 'TBA' });
-            saveData();
-            renderSchedule();
-
-            document.getElementById('schedTimeInput').value = '';
-            document.getElementById('schedItemInput').value = '';
-            document.getElementById('schedCatInput').value = '';
-            document.getElementById('schedStageInput').value = '';
-        }
-
-        function deleteScheduleItem(idx) {
-            scheduleData.splice(idx, 1);
-            saveData();
-            renderSchedule();
-        }
-
-        function openAdminAuth() {
-            document.getElementById('adminModal').classList.remove('hidden');
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.add('hidden');
-        }
-
-        function verifyAdminPasscode() {
-            const input = document.getElementById('adminPassInput').value;
-            if (input === 'kalotsavam2026') {
-                adminAuthenticated = true;
-                document.getElementById('adminAuthSection').classList.add('hidden');
-                document.getElementById('adminControlsSection').classList.remove('hidden');
+        function deleteResult(index) {
+            if (confirm("Are you sure you want to delete this result?")) {
+                itemResults.splice(index, 1);
+                localAdminModified = true;
+                saveData();
                 renderResults();
-                renderStages();
-                renderSchedule();
-            } else {
-                document.getElementById('adminAuthErr').classList.remove('hidden');
             }
-        }
-
-        function saveLogos() {
-            const left = document.getElementById('leftLogoUrlInput').value.trim();
-            const right = document.getElementById('rightLogoUrlInput').value.trim();
-
-            localStorage.setItem('csmegb_logos_2026_v3', JSON.stringify({ left, right }));
-            applyLogos(left, right);
-            alert("Logos updated successfully!");
-        }
-
-        function editResult(index) {
-            editingResultIndex = index;
-            const res = itemResults[index];
-            if (!res) return;
-
-            openAdminAuth();
-
-            document.getElementById('adminResultFormTitle').innerText = "Edit Declared Result";
-            document.getElementById('cancelEditResultBtn').classList.remove('hidden');
-            document.getElementById('publishResultBtn').innerText = "Update Result & Save Changes";
-
-            const matrixIndex = PROGRAM_MATRIX.findIndex(p => p.name === res.itemName);
-            if (matrixIndex !== -1) {
-                document.getElementById('adminItemSelect').value = matrixIndex;
-                updateCategoryDropdown();
-            }
-            
-            document.getElementById('adminCategorySelect').value = res.category;
-            document.getElementById('adminResultStatusSelect').value = res.status || "Final Result";
-
-            document.getElementById('p1_name').value = res.p1 && res.p1.name ? res.p1.name : '';
-            document.getElementById('p1_code').value = res.p1 && res.p1.code ? res.p1.code : '';
-            document.getElementById('p1_mission').value = res.p1 && res.p1.mission ? res.p1.mission : REGIONAL_MISSIONS[0];
-
-            document.getElementById('p2_name').value = res.p2 && res.p2.name ? res.p2.name : '';
-            document.getElementById('p2_code').value = res.p2 && res.p2.code ? res.p2.code : '';
-            document.getElementById('p2_mission').value = res.p2 && res.p2.mission ? res.p2.mission : REGIONAL_MISSIONS[0];
-
-            document.getElementById('p3_name').value = res.p3 && res.p3.name ? res.p3.name : '';
-            document.getElementById('p3_code').value = res.p3 && res.p3.code ? res.p3.code : '';
-            document.getElementById('p3_mission').value = res.p3 && res.p3.mission ? res.p3.mission : REGIONAL_MISSIONS[0];
-        }
-
-        function resetResultForm() {
-            editingResultIndex = null;
-            document.getElementById('adminResultFormTitle').innerText = "Publish New Event Result";
-            document.getElementById('cancelEditResultBtn').classList.add('hidden');
-            document.getElementById('publishResultBtn').innerText = "Publish Result & Update Standings";
-
-            ['p1_name', 'p1_code', 'p2_name', 'p2_code', 'p3_name', 'p3_code'].forEach(id => {
-                document.getElementById(id).value = '';
-            });
-
-            // Reset Item and Category selection to default top item
-            const itemSelect = document.getElementById('adminItemSelect');
-            if (itemSelect) {
-                itemSelect.selectedIndex = 0;
-                updateCategoryDropdown();
-            }
-
-            document.getElementById('adminResultStatusSelect').value = "Final Result";
         }
 
         function publishResult() {
@@ -1387,6 +760,8 @@
                 return;
             }
 
+            localAdminModified = true;
+
             if (editingResultIndex !== null && editingResultIndex >= 0 && editingResultIndex < itemResults.length) {
                 itemResults[editingResultIndex] = updatedResult;
             } else {
@@ -1410,12 +785,491 @@
             );
         }
 
-        function deleteResult(index) {
-            if (confirm("Are you sure you want to delete this result?")) {
-                itemResults.splice(index, 1);
-                saveData();
-                renderResults();
+        function editResult(index) {
+            editingResultIndex = index;
+            const r = itemResults[index];
+            openAdminAuth();
+
+            const cancelBtn = document.getElementById('cancelEditResultBtn');
+            const titleEl = document.getElementById('adminResultFormTitle');
+            if (cancelBtn) cancelBtn.classList.remove('hidden');
+            if (titleEl) titleEl.textContent = "Editing Published Result";
+
+            const itemSelect = document.getElementById('adminItemSelect');
+            const foundIdx = PROGRAM_MATRIX.findIndex(m => m.name === r.itemName);
+            if (foundIdx >= 0) {
+                itemSelect.value = foundIdx;
+                updateCategoryDropdown();
+                document.getElementById('adminCategorySelect').value = r.category;
             }
+
+            document.getElementById('adminResultStatusSelect').value = r.status || "Final Result";
+
+            document.getElementById('p1_name').value = r.p1?.name || '';
+            document.getElementById('p1_code').value = r.p1?.code || '';
+            document.getElementById('p1_mission').value = r.p1?.mission || REGIONAL_MISSIONS[0];
+
+            document.getElementById('p2_name').value = r.p2?.name || '';
+            document.getElementById('p2_code').value = r.p2?.code || '';
+            document.getElementById('p2_mission').value = r.p2?.mission || REGIONAL_MISSIONS[0];
+
+            document.getElementById('p3_name').value = r.p3?.name || '';
+            document.getElementById('p3_code').value = r.p3?.code || '';
+            document.getElementById('p3_mission').value = r.p3?.mission || REGIONAL_MISSIONS[0];
+        }
+
+        function resetResultForm() {
+            editingResultIndex = null;
+            const cancelBtn = document.getElementById('cancelEditResultBtn');
+            const titleEl = document.getElementById('adminResultFormTitle');
+            if (cancelBtn) cancelBtn.classList.add('hidden');
+            if (titleEl) titleEl.textContent = "Publish New Event Result";
+
+            ['p1_name', 'p1_code', 'p2_name', 'p2_code', 'p3_name', 'p3_code'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+        }
+
+        function downloadDataJson() {
+            const exportData = {
+                results: itemResults,
+                stages: stageData,
+                schedule: scheduleData
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "data.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function calculateMissionStandings() {
+            const tally = {};
+            REGIONAL_MISSIONS.forEach(m => {
+                tally[m] = { mission: m, first: 0, second: 0, third: 0, points: 0, prizes: [] };
+            });
+
+            itemResults.forEach(res => {
+                if (res.p1 && res.p1.mission && tally[res.p1.mission]) {
+                    tally[res.p1.mission].first += 1;
+                    tally[res.p1.mission].points += 5;
+                    tally[res.p1.mission].prizes.push({ place: "1st Place", item: `${res.itemName} (${res.category})`, winner: res.p1.name });
+                }
+                if (res.p2 && res.p2.mission && tally[res.p2.mission]) {
+                    tally[res.p2.mission].second += 1;
+                    tally[res.p2.mission].points += 3;
+                    tally[res.p2.mission].prizes.push({ place: "2nd Place", item: `${res.itemName} (${res.category})`, winner: res.p2.name });
+                }
+                if (res.p3 && res.p3.mission && tally[res.p3.mission]) {
+                    tally[res.p3.mission].third += 1;
+                    tally[res.p3.mission].points += 1;
+                    tally[res.p3.mission].prizes.push({ place: "3rd Place", item: `${res.itemName} (${res.category})`, winner: res.p3.name });
+                }
+            });
+
+            return Object.values(tally).sort((a, b) => b.points - a.points || b.first - a.first || b.second - a.second);
+        }
+
+        function renderResults() {
+            const standings = calculateMissionStandings();
+            renderPodium(standings.slice(0, 3));
+            renderTallyTable(standings);
+            renderItemResultsList();
+
+            const pubCountEl = document.getElementById('statPublishedCount');
+            const remCountEl = document.getElementById('statRemainingCount');
+            const badgeEl = document.getElementById('totalDeclaredBadge');
+
+            const publishedLen = itemResults.length;
+            const remainingLen = Math.max(0, TOTAL_EVENT_SLOTS - publishedLen);
+
+            if (pubCountEl) pubCountEl.textContent = `${publishedLen} Items`;
+            if (remCountEl) remCountEl.textContent = `${remainingLen} Items`;
+            if (badgeEl) badgeEl.textContent = `${publishedLen} Items Declared`;
+
+            initLucide();
+        }
+
+        function renderPodium(top3) {
+            const container = document.getElementById('top3PodiumContainer');
+            if (!container) return;
+
+            if (top3.length === 0 || top3.every(m => m.points === 0)) {
+                container.innerHTML = `<div class="col-span-3 text-center py-6 bg-white rounded-2xl border border-slate-200 text-slate-400 text-xs font-bold">Results are being compiled. Standings will appear as items are published.</div>`;
+                return;
+            }
+
+            const badges = ["🥇 1st Rank", "🥈 2nd Rank", "🥉 3rd Rank"];
+            const bgColors = ["bg-amber-500/10 border-amber-500", "bg-slate-100 border-slate-300", "bg-amber-800/10 border-amber-700/50"];
+
+            container.innerHTML = top3.map((m, idx) => `
+                <div onclick="openMissionPrizeModal('${m.mission}')" class="cursor-pointer ${bgColors[idx] || 'bg-white'} border-2 rounded-2xl p-4 shadow-sm hover:shadow-md transition">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-black uppercase text-slate-700">${badges[idx]}</span>
+                        <span class="text-xs font-black bg-slate-900 text-amber-400 px-2.5 py-1 rounded-full">${m.points} Pts</span>
+                    </div>
+                    <h3 class="text-lg font-black text-slate-900 mt-2">${m.mission}</h3>
+                    <p class="text-xs text-slate-600 font-semibold mt-1">🥇 ${m.first} First | 🥈 ${m.second} Second | 🥉 ${m.third} Third</p>
+                </div>
+            `).join('');
+        }
+
+        function renderTallyTable(standings) {
+            const body = document.getElementById('missionTallyBody');
+            if (!body) return;
+
+            body.innerHTML = standings.map((m, idx) => `
+                <tr class="hover:bg-slate-50 transition cursor-pointer" onclick="openMissionPrizeModal('${m.mission}')">
+                    <td class="p-3.5 font-black text-slate-900">#${idx + 1}</td>
+                    <td class="p-3.5 font-extrabold text-brand-900">${m.mission}</td>
+                    <td class="p-3.5 text-center font-bold text-amber-600">${m.first}</td>
+                    <td class="p-3.5 text-center font-bold text-slate-500">${m.second}</td>
+                    <td class="p-3.5 text-center font-bold text-amber-800">${m.third}</td>
+                    <td class="p-3.5 text-right font-black text-base text-slate-900">${m.points}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderMissionFilters() {
+            const container = document.getElementById('missionFilters');
+            if (!container) return;
+
+            container.innerHTML = REGIONAL_MISSIONS.map(m => `
+                <button onclick="filterByMission('${m}')" class="px-3 py-1 rounded-full text-xs font-bold transition ${selectedMissionFilter === m ? 'bg-amber-500 text-slate-950 font-black shadow' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}">
+                    ${m}
+                </button>
+            `).join('');
+        }
+
+        function filterByMission(mission) {
+            selectedMissionFilter = mission;
+            const resetBtn = document.getElementById('resetFilterBtn');
+            if (resetBtn) {
+                if (mission) resetBtn.classList.remove('hidden');
+                else resetBtn.classList.add('hidden');
+            }
+            renderMissionFilters();
+            renderItemResultsList();
+        }
+
+        function renderItemResultsList() {
+            const container = document.getElementById('publishedResultsContainer');
+            if (!container) return;
+
+            const searchQuery = (document.getElementById('searchItemInput')?.value || '').toLowerCase();
+
+            let filtered = itemResults.filter(r => {
+                const matchesMission = !selectedMissionFilter ||
+                    (r.p1?.mission === selectedMissionFilter || r.p2?.mission === selectedMissionFilter || r.p3?.mission === selectedMissionFilter);
+
+                const matchesSearch = !searchQuery ||
+                    r.itemName.toLowerCase().includes(searchQuery) ||
+                    r.category.toLowerCase().includes(searchQuery) ||
+                    (r.p1?.name && r.p1.name.toLowerCase().includes(searchQuery)) ||
+                    (r.p2?.name && r.p2.name.toLowerCase().includes(searchQuery)) ||
+                    (r.p3?.name && r.p3.name.toLowerCase().includes(searchQuery));
+
+                return matchesMission && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 bg-white rounded-2xl border border-slate-200 text-slate-400 font-bold text-xs">No declared results matching your criteria.</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map((r, idx) => `
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 space-y-3">
+                    <div class="flex flex-wrap justify-between items-start gap-2 border-b border-slate-100 pb-3">
+                        <div>
+                            <span class="text-[10px] font-black uppercase text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">${r.category}</span>
+                            <h3 class="text-base sm:text-lg font-black text-slate-900 mt-1">${r.itemName}</h3>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-extrabold px-2.5 py-1 rounded-full ${r.status === 'Final Result' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${r.status || 'Final Result'}</span>
+                            ${adminAuthenticated ? `
+                                <button onclick="editResult(${idx})" class="p-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-700 text-xs font-bold transition"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                                <button onclick="deleteResult(${idx})" class="p-1.5 bg-red-100 hover:bg-red-200 rounded-lg text-red-700 text-xs font-bold transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+                        <!-- 1st -->
+                        <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl space-y-1">
+                            <span class="text-xs font-black text-amber-700 flex items-center gap-1">🥇 1st Place (5 Pts)</span>
+                            <h4 class="font-black text-slate-900 text-sm">${r.p1?.name || 'N/A'}</h4>
+                            <p class="text-xs text-slate-600 font-semibold">${r.p1?.mission || ''} ${r.p1?.code ? `(Chest: ${r.p1.code})` : ''}</p>
+                        </div>
+                        <!-- 2nd -->
+                        <div class="p-3 bg-slate-100 border border-slate-200 rounded-xl space-y-1">
+                            <span class="text-xs font-black text-slate-600 flex items-center gap-1">🥈 2nd Place (3 Pts)</span>
+                            <h4 class="font-black text-slate-900 text-sm">${r.p2?.name || 'N/A'}</h4>
+                            <p class="text-xs text-slate-600 font-semibold">${r.p2?.mission || ''} ${r.p2?.code ? `(Chest: ${r.p2.code})` : ''}</p>
+                        </div>
+                        <!-- 3rd -->
+                        <div class="p-3 bg-amber-800/5 border border-amber-800/20 rounded-xl space-y-1">
+                            <span class="text-xs font-black text-amber-900 flex items-center gap-1">🥉 3rd Place (1 Pt)</span>
+                            <h4 class="font-black text-slate-900 text-sm">${r.p3?.name || 'N/A'}</h4>
+                            <p class="text-xs text-slate-600 font-semibold">${r.p3?.mission || ''} ${r.p3?.code ? `(Chest: ${r.p3.code})` : ''}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            initLucide();
+        }
+
+        function renderStages() {
+            const container = document.getElementById('stagesContainer');
+            if (!container) return;
+
+            container.innerHTML = stageData.map((s, idx) => `
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                        <h3 class="font-black text-slate-900 text-sm flex items-center gap-2">
+                            <i data-lucide="map-pin" class="w-4 h-4 text-amber-500"></i> ${s.stage}
+                        </h3>
+                        <span class="text-[10px] font-extrabold bg-amber-100 text-amber-800 px-2 py-0.5 rounded">${s.time}</span>
+                    </div>
+                    <div class="space-y-1.5 text-xs">
+                        <div>
+                            <span class="text-[10px] uppercase font-extrabold text-slate-400 block">Ongoing Item</span>
+                            <p class="font-extrabold text-brand-900">${s.ongoing}</p>
+                        </div>
+                        <div>
+                            <span class="text-[10px] uppercase font-extrabold text-slate-400 block">Next Up</span>
+                            <p class="font-semibold text-slate-600">${s.next}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            initLucide();
+        }
+
+        function renderSchedule() {
+            const body = document.getElementById('scheduleTableBody');
+            if (!body) return;
+
+            body.innerHTML = scheduleData.map((item, idx) => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-3 font-bold text-slate-900">${item.time}</td>
+                    <td class="p-3 font-black text-brand-900">${item.item}</td>
+                    <td class="p-3 font-semibold text-slate-600">${item.category}</td>
+                    <td class="p-3 font-extrabold text-amber-600">${item.stage}</td>
+                </tr>
+            `).join('');
+            initLucide();
+        }
+
+        function renderProgramMatrix() {
+            const body = document.getElementById('matrixTableBody');
+            if (!body) return;
+
+            body.innerHTML = PROGRAM_MATRIX.map(p => {
+                const check = (cat) => p.cat.includes(cat) ? `<span class="text-emerald-600 font-black">✓</span>` : `<span class="text-slate-300">-</span>`;
+                return `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-2.5 font-extrabold text-slate-900">${p.name}</td>
+                        <td class="p-2.5 text-slate-500 font-bold text-[11px]">${p.duration}</td>
+                        <td class="p-2.5 text-center">${check("Up to 7")}</td>
+                        <td class="p-2.5 text-center">${check("8 to 10")}</td>
+                        <td class="p-2.5 text-center">${check("11 to 13")}</td>
+                        <td class="p-2.5 text-center">${check("14 to 17")}</td>
+                        <td class="p-2.5 text-center">${check("18 to 24")}</td>
+                        <td class="p-2.5 text-center">${check("Adults (25+)")}</td>
+                        <td class="p-2.5 text-center">${check("All Ages")}</td>
+                        <td class="p-2.5 text-center">${check("Under 30 Years")}</td>
+                        <td class="p-2.5 text-center">${check("30 Years & Above")}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function populateAdminControls() {
+            const itemSelect = document.getElementById('adminItemSelect');
+            if (itemSelect) {
+                itemSelect.innerHTML = PROGRAM_MATRIX.map((p, idx) => `<option value="${idx}">${p.name}</option>`).join('');
+                updateCategoryDropdown();
+            }
+
+            ['p1_mission', 'p2_mission', 'p3_mission'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.innerHTML = REGIONAL_MISSIONS.map(m => `<option value="${m}">${m}</option>`).join('');
+                }
+            });
+
+            renderAdminStagesControl();
+        }
+
+        function updateCategoryDropdown() {
+            const itemIdx = document.getElementById('adminItemSelect')?.value || 0;
+            const itemObj = PROGRAM_MATRIX[itemIdx];
+            const catSelect = document.getElementById('adminCategorySelect');
+            if (catSelect && itemObj) {
+                catSelect.innerHTML = itemObj.cat.map(c => `<option value="${c}">${c}</option>`).join('');
+            }
+        }
+
+        function renderAdminStagesControl() {
+            const container = document.getElementById('adminStagesControlList');
+            if (!container) return;
+
+            container.innerHTML = stageData.map((s, idx) => `
+                <div class="p-3 bg-slate-900 rounded-lg border border-slate-700 grid grid-cols-1 sm:grid-cols-4 gap-2">
+                    <input type="text" value="${s.stage}" onchange="stageData[${idx}].stage = this.value; saveData();" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white font-bold">
+                    <input type="text" value="${s.ongoing}" onchange="stageData[${idx}].ongoing = this.value; saveData();" placeholder="Ongoing" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                    <input type="text" value="${s.next}" onchange="stageData[${idx}].next = this.value; saveData();" placeholder="Next Up" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                    <input type="text" value="${s.time}" onchange="stageData[${idx}].time = this.value; saveData();" placeholder="Time" class="bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white">
+                </div>
+            `).join('');
+        }
+
+        function addScheduleItem() {
+            const time = document.getElementById('schedTimeInput').value.trim();
+            const item = document.getElementById('schedItemInput').value.trim();
+            const category = document.getElementById('schedCatInput').value.trim();
+            const stage = document.getElementById('schedStageInput').value.trim();
+
+            if (!time || !item) {
+                alert("Please enter at least Time and Item name.");
+                return;
+            }
+
+            scheduleData.push({ time, item, category: category || "All", stage: stage || "Main Stage" });
+            localAdminModified = true;
+            saveData();
+            renderSchedule();
+
+            document.getElementById('schedTimeInput').value = '';
+            document.getElementById('schedItemInput').value = '';
+            document.getElementById('schedCatInput').value = '';
+            document.getElementById('schedStageInput').value = '';
+        }
+
+        function openMissionPrizeModal(missionName) {
+            const standings = calculateMissionStandings();
+            const missionData = standings.find(m => m.mission === missionName);
+            if (!missionData) return;
+
+            document.getElementById('modalMissionTitle').textContent = `${missionName} Mission - Wins`;
+            document.getElementById('modalMissionSummary').innerHTML = `
+                <div><span class="block text-amber-600">🥇 1st Place</span>${missionData.first} Wins</div>
+                <div><span class="block text-slate-500">🥈 2nd Place</span>${missionData.second} Wins</div>
+                <div><span class="block text-amber-800">🥉 3rd Place</span>${missionData.third} Wins</div>
+            `;
+
+            const prizesList = document.getElementById('modalMissionPrizesList');
+            if (missionData.prizes.length === 0) {
+                prizesList.innerHTML = `<p class="text-xs text-slate-400 font-bold text-center py-4">No prizes declared yet for this mission.</p>`;
+            } else {
+                prizesList.innerHTML = missionData.prizes.map(p => `
+                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center text-xs">
+                        <div>
+                            <span class="font-extrabold text-brand-900 block">${p.item}</span>
+                            <span class="text-slate-500 font-medium">${p.winner}</span>
+                        </div>
+                        <span class="font-black px-2.5 py-1 rounded bg-amber-500 text-slate-950">${p.place}</span>
+                    </div>
+                `).join('');
+            }
+
+            const modal = document.getElementById('missionPrizeModal');
+            if (modal) modal.classList.remove('hidden');
+            initLucide();
+        }
+
+        function closeMissionPrizeModal() {
+            const modal = document.getElementById('missionPrizeModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function openShareModal() {
+            const modal = document.getElementById('shareModal');
+            if (modal) modal.classList.remove('hidden');
+
+            const qrContainer = document.getElementById('qrcode');
+            if (qrContainer) {
+                qrContainer.innerHTML = '';
+                new QRCode(qrContainer, {
+                    text: window.location.href,
+                    width: 160,
+                    height: 160
+                });
+            }
+            initLucide();
+        }
+
+        function closeShareModal() {
+            const modal = document.getElementById('shareModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function copyPageUrl() {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Page link copied to clipboard!");
+        }
+
+        function toggleNotifications() {
+            if (!("Notification" in window)) {
+                alert("Notifications are not supported by this web browser.");
+                return;
+            }
+
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    notificationsEnabled = true;
+                    alert("Notifications enabled successfully!");
+                } else {
+                    alert("Permission denied or dismissed. Please allow notifications in browser settings.");
+                }
+            });
+        }
+
+        function showSystemNotification(title, msg) {
+            const toast = document.getElementById('liveToast');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMsg = document.getElementById('toastMessage');
+
+            if (toastTitle) toastTitle.textContent = title;
+            if (toastMsg) toastMsg.textContent = msg;
+
+            if (toast) {
+                toast.classList.remove('hidden');
+                setTimeout(() => dismissToast(), 6000);
+            }
+
+            if (notificationsEnabled && Notification.permission === "granted") {
+                new Notification(title, { body: msg });
+            }
+        }
+
+        function dismissToast() {
+            const toast = document.getElementById('liveToast');
+            if (toast) toast.classList.add('hidden');
+        }
+
+        function saveLogos() {
+            const left = document.getElementById('leftLogoUrlInput').value.trim();
+            const right = document.getElementById('rightLogoUrlInput').value.trim();
+            if (left) localStorage.setItem('csmegb_left_logo', left);
+            if (right) localStorage.setItem('csmegb_right_logo', right);
+            loadLogos();
+            alert("Logos updated successfully!");
+        }
+
+        function loadLogos() {
+            const left = localStorage.getItem('csmegb_left_logo') || DEFAULT_LEFT_LOGO;
+            const right = localStorage.getItem('csmegb_right_logo') || DEFAULT_RIGHT_LOGO;
+
+            const leftContainer = document.getElementById('headerLeftLogo');
+            const rightContainer = document.getElementById('headerRightLogo');
+
+            if (leftContainer) leftContainer.innerHTML = `<img src="${left}" alt="Left Logo" class="w-full h-full object-cover">`;
+            if (rightContainer) rightContainer.innerHTML = `<img src="${right}" alt="Right Logo" class="w-full h-full object-cover">`;
         }
 
         function initLucide() {
@@ -1423,6 +1277,21 @@
                 lucide.createIcons();
             }
         }
+
+        window.onload = function() {
+            loadLocalData();
+            loadLogos();
+            renderMissionFilters();
+            renderResults();
+            renderStages();
+            renderSchedule();
+            renderProgramMatrix();
+
+            fetchLatestData();
+            setInterval(() => fetchLatestData(), 10000);
+
+            initLucide();
+        };
     </script>
 </body>
 </html>

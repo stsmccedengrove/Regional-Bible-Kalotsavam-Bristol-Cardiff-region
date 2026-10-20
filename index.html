@@ -44,7 +44,7 @@
             </div>
             <div>
                 <h1 class="text-sm md:text-lg font-black text-white leading-tight tracking-wide">9TH BRISTOL-CARDIFF REGIONAL BIBLE KALOTSAVAM 2026</h1>
-                <p class="text-[10px] font-extrabold text-amber-400">SYRO-MALABAR EPARCHY OF GREAT BRITAIN | LIVE PROJECTOR DASHBOARD</p>
+                <p class="text-[10px] font-extrabold text-amber-400">SYRO-MALABAR EPARCHY OF GREAT BRITAIN | LIVE FIREBASE CLOUD SYNC</p>
             </div>
         </div>
         
@@ -54,14 +54,9 @@
                 <span id="projectorModeText">Projector Fit</span>
             </button>
 
-            <button onclick="manualCloudSync()" id="syncButton" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition shadow">
-                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                <span>Sync Cloud</span>
-            </button>
-
             <div id="syncStatusBadge" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2.5 py-1 rounded-lg text-xs font-extrabold flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span id="syncStatusText">Cloud Synced</span>
+                <span id="syncStatusText">Firebase Live Cloud Sync Active</span>
             </div>
 
             <div id="headerRightLogo" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
@@ -307,7 +302,7 @@
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                 <div class="flex items-center gap-1.5">
                     <i data-lucide="shield-check" class="text-amber-400 w-5 h-5"></i>
-                    <h2 class="text-sm font-black">Official Admin Portal & Cloud Sync Setup</h2>
+                    <h2 class="text-sm font-black">Official Admin Portal & Direct File Export</h2>
                 </div>
                 <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white p-1">
                     <i data-lucide="x" class="w-5 h-5"></i>
@@ -327,18 +322,12 @@
 
             <!-- Controls Section -->
             <div id="adminControlsSection" class="hidden space-y-4 max-h-[65vh] overflow-y-auto pr-1">
-                <!-- Cloud API Configuration -->
-                <div class="bg-brand-900/40 p-3.5 rounded-xl border border-brand-700 space-y-2.5">
-                    <h3 class="text-xs font-black text-amber-400 uppercase flex items-center gap-1.5">
-                        <i data-lucide="cloud" class="w-4 h-4"></i> Cloud JSON Sync Endpoint (Npoint / JSONBin)
+                <!-- Cloud Sync Status Notification -->
+                <div class="bg-emerald-950/40 p-3.5 rounded-xl border border-emerald-700/60 space-y-1.5">
+                    <h3 class="text-xs font-black text-emerald-400 uppercase flex items-center gap-1.5">
+                        <i data-lucide="cloud" class="w-4 h-4"></i> Firebase Real-Time Database Connected
                     </h3>
-                    <p class="text-[11px] text-slate-300">Paste your free cloud JSON Bin URL here. When you publish results, it will automatically save to this URL so all phones and projector screens update instantly.</p>
-                    <div class="flex gap-2">
-                        <input type="text" id="cloudEndpointInput" placeholder="https://api.npoint.io/your-unique-bin-id" class="flex-1 bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white font-mono">
-                        <button onclick="saveCloudEndpoint()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-3 py-1.5 rounded text-xs transition">
-                            Save URL
-                        </button>
-                    </div>
+                    <p class="text-[11px] text-slate-300">All results published here are instantly synchronized across all connected visitor phones and projector screens worldwide via Firebase Firestore.</p>
                 </div>
 
                 <!-- Stage Live Editor -->
@@ -393,7 +382,7 @@
                     </div>
 
                     <button id="publishResultBtn" onclick="publishResult()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-2 rounded text-xs uppercase tracking-wider transition">
-                        Publish Result & Push to Cloud
+                        Publish Result Live to Cloud
                     </button>
                 </div>
 
@@ -414,6 +403,97 @@
             </div>
         </div>
     </div>
+
+    <!-- Firebase SDK Imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC6I7jKKy3vLYCPOQWNNgG4JMbYQMDslLA",
+            authDomain: "kalotsavam20261.firebaseapp.com",
+            projectId: "kalotsavam20261",
+            storageBucket: "kalotsavam20261.firebasestorage.app",
+            messagingSenderId: "230770793766",
+            appId: "1:230770793766:web:507590e23a5531c3dc75e7",
+            measurementId: "G-7SCP6QZ9X5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'bristol-cardiff-kalotsavam-2026';
+
+        async function initFirebase() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                console.log("Firebase Auth Successful. UID:", auth.currentUser?.uid);
+                startFirestoreListeners();
+            } catch (err) {
+                console.error("Firebase auth error:", err);
+            }
+        }
+
+        function startFirestoreListeners() {
+            // Listen for results
+            const resultsRef = collection(db, 'artifacts', appId, 'public', 'data', 'results');
+            onSnapshot(resultsRef, (snapshot) => {
+                window.itemResults = [];
+                snapshot.forEach(docSnap => {
+                    window.itemResults.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                // Sort by publication timestamp descending if available
+                window.itemResults.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                window.renderResults();
+                window.renderItemWiseView();
+                if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
+            }, (error) => {
+                console.error("Firestore results listener error:", error);
+            });
+
+            // Listen for stages
+            const stagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stages');
+            onSnapshot(stagesRef, (snapshot) => {
+                if (!snapshot.empty) {
+                    snapshot.forEach(docSnap => {
+                        if (docSnap.id === 'main_stages' && docSnap.data().list) {
+                            window.stageData = docSnap.data().list;
+                            window.renderStages();
+                        }
+                    });
+                }
+            }, (err) => console.log("Stages listener notice:", err));
+        }
+
+        window.firebaseCloudSaveResult = async function(resultObj, docId) {
+            const user = auth.currentUser;
+            if (!user) return;
+            const finalId = docId || 'res_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'results', finalId);
+            await setDoc(docRef, { ...resultObj, timestamp: Date.now() });
+        }
+
+        window.firebaseCloudDeleteResult = async function(docId) {
+            const user = auth.currentUser;
+            if (!user) return;
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'results', docId);
+            await deleteDoc(docRef);
+        }
+
+        window.firebaseCloudSaveStages = async function(stagesArray) {
+            const user = auth.currentUser;
+            if (!user) return;
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'stages', 'main_stages');
+            await setDoc(docRef, { list: stagesArray, timestamp: Date.now() });
+        }
+
+        initFirebase();
+    </script>
 
     <script>
         const REGIONAL_MISSIONS = [
@@ -450,8 +530,8 @@
             { name: "Bible Skit (Max 8 + 4 Support)", duration: "10 mins", cat: ["All Ages"] }
         ];
 
-        let itemResults = JSON.parse(localStorage.getItem('csmegb_results')) || [];
-        let stageData = JSON.parse(localStorage.getItem('csmegb_stages')) || Array.from({ length: 9 }, (_, i) => ({
+        window.itemResults = [];
+        window.stageData = Array.from({ length: 9 }, (_, i) => ({
             stage: `Stage ${i + 1}`,
             ongoing: "To be allocated",
             time: "Awaiting Schedule",
@@ -463,87 +543,9 @@
             { time: "09:00 AM", item: "Bible Reading - English", category: "Up to 7, 8-10", stage: "Stage 1" }
         ];
 
-        let cloudEndpoint = localStorage.getItem('csmegb_cloud_endpoint') || '';
         let projectorFitActive = true;
-        let editingResultIndex = null;
+        let editingResultDocId = null;
         let adminAuthenticated = false;
-
-        function persistData() {
-            localStorage.setItem('csmegb_results', JSON.stringify(itemResults));
-            localStorage.setItem('csmegb_stages', JSON.stringify(stageData));
-            pushToCloud();
-        }
-
-        async function pushToCloud() {
-            if (!cloudEndpoint) return;
-            try {
-                const payload = { results: itemResults, stages: stageData, schedule: scheduleData, updatedAt: new Date().toISOString() };
-                await fetch(cloudEndpoint, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                updateSyncBadge(true, "Cloud Synced");
-            } catch (err) {
-                console.error("Cloud push failed:", err);
-                updateSyncBadge(false, "Sync Offline");
-            }
-        }
-
-        async function manualCloudSync() {
-            if (!cloudEndpoint) {
-                updateSyncBadge(false, "No Cloud URL");
-                return;
-            }
-            try {
-                const res = await fetch(cloudEndpoint + "?t=" + new Date().getTime());
-                const data = await res.json();
-                if (data && Array.isArray(data.results)) {
-                    // Safety check: Only update local state if cloud has results OR local is empty
-                    if (data.results.length > 0 || itemResults.length === 0) {
-                        itemResults = data.results;
-                        if (data.stages && Array.isArray(data.stages)) stageData = data.stages;
-                        if (data.schedule && Array.isArray(data.schedule)) scheduleData = data.schedule;
-                        
-                        localStorage.setItem('csmegb_results', JSON.stringify(itemResults));
-                        localStorage.setItem('csmegb_stages', JSON.stringify(stageData));
-                        
-                        renderResults();
-                        renderItemWiseView();
-                        renderStages();
-                        renderSchedule();
-                    } else if (itemResults.length > 0 && data.results.length === 0) {
-                        // Cloud bin is empty, push local data to cloud immediately
-                        pushToCloud();
-                    }
-                }
-                updateSyncBadge(true, "Cloud Synced");
-            } catch (err) {
-                console.error("Sync fetch failed:", err);
-                updateSyncBadge(false, "Sync Offline");
-            }
-        }
-
-        function updateSyncBadge(isSuccess, text) {
-            const badge = document.getElementById('syncStatusBadge');
-            const txt = document.getElementById('syncStatusText');
-            if (txt) txt.textContent = text;
-            if (badge) {
-                if (isSuccess) {
-                    badge.className = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2.5 py-1 rounded-lg text-xs font-extrabold flex items-center gap-1.5";
-                } else {
-                    badge.className = "bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2.5 py-1 rounded-lg text-xs font-extrabold flex items-center gap-1.5";
-                }
-            }
-        }
-
-        window.saveCloudEndpoint = function() {
-            const val = document.getElementById('cloudEndpointInput')?.value.trim() || '';
-            cloudEndpoint = val;
-            localStorage.setItem('csmegb_cloud_endpoint', cloudEndpoint);
-            showSystemNotification("Endpoint Saved", "Cloud URL successfully linked.");
-            pushToCloud();
-        }
 
         window.toggleProjectorMode = function() {
             projectorFitActive = !projectorFitActive;
@@ -620,17 +622,17 @@
         }
 
         window.deleteAllResults = function() {
-            if (confirm("Are you sure you want to delete ALL published results?")) {
-                itemResults = [];
-                persistData();
-                renderResults();
-                renderItemWiseView();
-                populateAdminResultsList();
-                showSystemNotification("Cleared", "All results wiped.");
+            if (confirm("Are you sure you want to delete ALL published results from cloud?")) {
+                window.itemResults.forEach(r => {
+                    if (r.id && typeof window.firebaseCloudDeleteResult === 'function') {
+                        window.firebaseCloudDeleteResult(r.id);
+                    }
+                });
+                showSystemNotification("Cleared", "All results wiped from cloud.");
             }
         }
 
-        window.publishResult = function() {
+        window.publishResult = async function() {
             const itemIdx = document.getElementById('adminItemSelect').value;
             const itemObj = PROGRAM_MATRIX[itemIdx];
             const category = document.getElementById('adminCategorySelect').value;
@@ -650,29 +652,27 @@
                 return;
             }
 
-            if (editingResultIndex !== null) {
-                itemResults[editingResultIndex] = updatedResult;
-                showSystemNotification("Updated & Cloud Synced", `Result updated for ${updatedResult.itemName}`);
-            } else {
-                itemResults.unshift(updatedResult);
-                showSystemNotification("Published & Cloud Synced", `Result published for ${updatedResult.itemName}`);
+            if (typeof window.firebaseCloudSaveResult === 'function') {
+                await window.firebaseCloudSaveResult(updatedResult, editingResultDocId);
             }
 
-            persistData();
-            renderResults();
-            renderItemWiseView();
-            populateAdminResultsList();
+            if (editingResultDocId) {
+                showSystemNotification("Updated", `Result updated for ${updatedResult.itemName}`);
+            } else {
+                showSystemNotification("Published", `Result published live for ${updatedResult.itemName}`);
+            }
+
             resetAdminForm();
             switchTab('results');
         }
 
-        window.editResult = function(index) {
-            const r = itemResults[index];
+        window.editResult = function(docId) {
+            const r = window.itemResults.find(x => x.id === docId);
             if (!r) return;
 
-            editingResultIndex = index;
-            document.getElementById('adminFormHeaderTitle').textContent = `Edit Result (#${index + 1})`;
-            document.getElementById('publishResultBtn').textContent = "Save Changes & Push to Cloud";
+            editingResultDocId = docId;
+            document.getElementById('adminFormHeaderTitle').textContent = `Edit Result`;
+            document.getElementById('publishResultBtn').textContent = "Update Result Live in Cloud";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
 
             const itemSelect = document.getElementById('adminItemSelect');
@@ -698,21 +698,19 @@
             document.getElementById('p3_mission').value = r.p3?.mission || REGIONAL_MISSIONS[0];
         }
 
-        window.deleteResult = function(index) {
-            if (confirm("Delete this result?")) {
-                itemResults.splice(index, 1);
-                persistData();
-                renderResults();
-                renderItemWiseView();
-                populateAdminResultsList();
-                showSystemNotification("Deleted", "Result removed successfully.");
+        window.deleteResult = function(docId) {
+            if (confirm("Delete this result from cloud?")) {
+                if (typeof window.firebaseCloudDeleteResult === 'function') {
+                    window.firebaseCloudDeleteResult(docId);
+                }
+                showSystemNotification("Deleted", "Result removed from cloud.");
             }
         }
 
         window.resetAdminForm = function() {
-            editingResultIndex = null;
+            editingResultDocId = null;
             document.getElementById('adminFormHeaderTitle').textContent = "Publish New Event Result";
-            document.getElementById('publishResultBtn').textContent = "Publish Result & Push to Cloud";
+            document.getElementById('publishResultBtn').textContent = "Publish Result Live to Cloud";
             document.getElementById('cancelEditBtn').classList.add('hidden');
             ['p1_name', 'p1_code', 'p2_name', 'p2_code', 'p3_name', 'p3_code'].forEach(id => {
                 const el = document.getElementById(id);
@@ -721,19 +719,19 @@
         }
 
         window.saveStageUpdate = function() {
-            const stageIdx = document.getElementById('adminStageSelect').value;
-            if (stageIdx === "") return;
-
-            stageData[stageIdx] = {
+            const stageIdx = document.getElementById('adminStageSelect')?.value || 0;
+            window.stageData[stageIdx] = {
                 stage: `Stage ${parseInt(stageIdx) + 1}`,
                 time: document.getElementById('adminStageTimeInput').value.trim() || "Live Now",
                 ongoing: document.getElementById('adminStageOngoingInput').value.trim() || "To be allocated",
                 next: document.getElementById('adminStageNextInput').value.trim() || "To be updated"
             };
 
-            persistData();
-            renderStages();
-            showSystemNotification("Stage Updated", `Stage ${parseInt(stageIdx) + 1} updated successfully.`);
+            if (typeof window.firebaseCloudSaveStages === 'function') {
+                window.firebaseCloudSaveStages(window.stageData);
+            }
+            window.renderStages();
+            showSystemNotification("Stage Updated", `Stage ${parseInt(stageIdx) + 1} updated live.`);
         }
 
         function calculateMissionStandings() {
@@ -742,7 +740,7 @@
                 tally[m] = { mission: m, first: 0, second: 0, third: 0, points: 0, prizes: [] };
             });
 
-            itemResults.forEach(res => {
+            window.itemResults.forEach(res => {
                 if (res.p1?.mission && tally[res.p1.mission]) {
                     tally[res.p1.mission].first++;
                     tally[res.p1.mission].points += 5;
@@ -763,14 +761,14 @@
             return Object.values(tally).sort((a, b) => b.points - a.points || b.first - a.first);
         }
 
-        function renderResults() {
+        window.renderResults = function() {
             const standings = calculateMissionStandings();
             renderPodium(standings.slice(0, 3));
             renderTallyTable(standings);
             renderItemResultsList();
 
             const badgeEl = document.getElementById('totalDeclaredBadge');
-            if (badgeEl) badgeEl.textContent = `${itemResults.length} Declared`;
+            if (badgeEl) badgeEl.textContent = `${window.itemResults.length} Declared`;
 
             initLucide();
         }
@@ -820,7 +818,7 @@
             if (!container) return;
 
             const searchQuery = (document.getElementById('searchItemInput')?.value || '').toLowerCase();
-            let filtered = itemResults.filter(r => !searchQuery || r.itemName.toLowerCase().includes(searchQuery) || r.category.toLowerCase().includes(searchQuery));
+            let filtered = window.itemResults.filter(r => !searchQuery || r.itemName.toLowerCase().includes(searchQuery) || r.category.toLowerCase().includes(searchQuery));
 
             if (filtered.length === 0) {
                 container.innerHTML = `<div class="text-center py-4 text-slate-500 text-xs font-bold">No results declared yet.</div>`;
@@ -849,7 +847,7 @@
             initLucide();
         }
 
-        function renderItemWiseView() {
+        window.renderItemWiseView = function() {
             const dropdown = document.getElementById('filterItemDropdown');
             const container = document.getElementById('itemWiseContainer');
             if (!dropdown || !container) return;
@@ -860,7 +858,7 @@
             }
 
             const selectedItem = dropdown.value;
-            const filtered = selectedItem ? itemResults.filter(r => r.itemName === selectedItem) : itemResults;
+            const filtered = selectedItem ? window.itemResults.filter(r => r.itemName === selectedItem) : window.itemResults;
 
             if (filtered.length === 0) {
                 container.innerHTML = `<div class="col-span-2 text-center py-10 text-slate-500 text-xs font-bold bg-slate-900 rounded-xl border border-slate-800">No results found for this item yet.</div>`;
@@ -892,10 +890,10 @@
             initLucide();
         }
 
-        function renderStages() {
+        window.renderStages = function() {
             const container = document.getElementById('stagesContainer');
             if (!container) return;
-            container.innerHTML = stageData.map((s) => `
+            container.innerHTML = window.stageData.map((s) => `
                 <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800 space-y-1.5">
                     <div class="flex justify-between items-center border-b border-slate-800 pb-1">
                         <h3 class="font-black text-white text-xs">${s.stage}</h3>
@@ -947,9 +945,6 @@
         }
 
         function populateAdminControls() {
-            const endpointInput = document.getElementById('cloudEndpointInput');
-            if (endpointInput) endpointInput.value = cloudEndpoint;
-
             const itemSelect = document.getElementById('adminItemSelect');
             if (itemSelect) {
                 itemSelect.innerHTML = PROGRAM_MATRIX.map((p, idx) => `<option value="${idx}">${p.name}</option>`).join('');
@@ -962,16 +957,16 @@
 
             const stageSelect = document.getElementById('adminStageSelect');
             if (stageSelect) {
-                stageSelect.innerHTML = stageData.map((s, idx) => `<option value="${idx}">${s.stage}</option>`).join('');
+                stageSelect.innerHTML = window.stageData.map((s, idx) => `<option value="${idx}">${s.stage}</option>`).join('');
                 populateStageForm();
             }
 
-            populateAdminResultsList();
+            window.populateAdminResultsList();
         }
 
         window.populateStageForm = function() {
             const idx = document.getElementById('adminStageSelect')?.value || 0;
-            const s = stageData[idx];
+            const s = window.stageData[idx];
             if (s) {
                 document.getElementById('adminStageTimeInput').value = s.time || '';
                 document.getElementById('adminStageOngoingInput').value = s.ongoing || '';
@@ -979,24 +974,24 @@
             }
         }
 
-        function populateAdminResultsList() {
+        window.populateAdminResultsList = function() {
             const container = document.getElementById('adminResultsListContainer');
             if (!container) return;
 
-            if (itemResults.length === 0) {
-                container.innerHTML = `<p class="text-[11px] text-slate-500">No results published yet.</p>`;
+            if (window.itemResults.length === 0) {
+                container.innerHTML = `<p class="text-[11px] text-slate-500">No results published in cloud yet.</p>`;
                 return;
             }
 
-            container.innerHTML = itemResults.map((r, idx) => `
+            container.innerHTML = window.itemResults.map((r) => `
                 <div class="p-2 bg-slate-900 rounded border border-slate-700 flex justify-between items-center text-xs">
                     <div class="truncate pr-2">
                         <strong class="text-white">${r.itemName}</strong> <span class="text-amber-400">(${r.category})</span>
                         <span class="block text-[10px] text-slate-400">1st: ${r.p1?.name || 'N/A'} (${r.p1?.mission || ''})</span>
                     </div>
                     <div class="flex items-center gap-1 shrink-0">
-                        <button onclick="editResult(${idx})" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded text-[10px]">Edit</button>
-                        <button onclick="deleteResult(${idx})" class="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-[10px]">Delete</button>
+                        <button onclick="editResult('${r.id}')" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded text-[10px]">Edit</button>
+                        <button onclick="deleteResult('${r.id}')" class="bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded text-[10px]">Delete</button>
                     </div>
                 </div>
             `).join('');
@@ -1084,18 +1079,9 @@
 
         window.onload = function() {
             loadLogos();
-            renderResults();
-            renderItemWiseView();
-            renderStages();
             renderSchedule();
             renderProgramMatrix();
             initLucide();
-            
-            // If cloud endpoint is configured, fetch immediately on load and poll every 8 seconds
-            if (cloudEndpoint) {
-                manualCloudSync();
-                setInterval(manualCloudSync, 8000);
-            }
         };
     </script>
 </body>

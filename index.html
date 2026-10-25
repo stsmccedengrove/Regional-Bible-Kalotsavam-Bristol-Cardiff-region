@@ -252,8 +252,17 @@
 
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-[10px] py-1.5 px-6 shrink-0 border-t border-slate-800 flex justify-between items-center">
+    <footer class="bg-slate-900 text-slate-400 text-[10px] py-2 px-6 shrink-0 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-2">
         <p>© 2026 CSMEGB Bible Kalotsavam - Bristol-Cardiff Region | Projector Display Mode</p>
+        
+        <!-- TITLE SPONSOR FOOTER SECTION -->
+        <div id="footerSponsorBox" class="flex items-center gap-2 bg-slate-950 px-3 py-1 rounded-lg border border-slate-800 shadow-inner">
+            <span class="text-[9px] font-black uppercase text-amber-400 tracking-wider">Title Sponsor:</span>
+            <div id="sponsorLogoContainer" class="flex items-center h-6 min-w-[60px]">
+                <span id="sponsorNameFallback" class="font-bold text-white text-[11px]">Official Partner</span>
+            </div>
+        </div>
+
         <button onclick="openAdminAuth()" class="text-slate-400 hover:text-white transition font-bold">
             Official Admin Login
         </button>
@@ -336,6 +345,9 @@
                     </button>
                     <button onclick="switchAdminSubTab('program')" id="adminSubTab-program" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">
                         Program & Schedule Editor
+                    </button>
+                    <button onclick="switchAdminSubTab('sponsor')" id="adminSubTab-sponsor" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">
+                        Title Sponsor Manager
                     </button>
                 </div>
 
@@ -430,6 +442,28 @@
                     <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2">
                         <h3 class="font-bold text-xs text-amber-400 uppercase">Current Schedule Entries</h3>
                         <div id="adminScheduleListContainer" class="space-y-1.5 max-h-40 overflow-y-auto text-xs"></div>
+                    </div>
+                </div>
+
+                <!-- SUB TAB 4: TITLE SPONSOR MANAGER -->
+                <div id="adminSubView-sponsor" class="hidden space-y-4">
+                    <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-3">
+                        <h3 class="font-bold text-xs text-amber-400 uppercase">Configure Title Sponsor Logo</h3>
+                        <p class="text-[10px] text-slate-400">Enter a title sponsor name and an image URL (e.g., GitHub raw image link or web link) to display in the website footer.</p>
+                        
+                        <div class="space-y-2">
+                            <input type="text" id="sponsorNameInput" placeholder="Sponsor Name (e.g. XYZ Motors)" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+                            <input type="text" id="sponsorLogoUrlInput" placeholder="Sponsor Logo Image URL (e.g. https://.../logo.png)" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
+                        </div>
+
+                        <div class="flex gap-2">
+                            <button onclick="saveSponsorInfo()" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-2 rounded text-xs transition">
+                                Save Title Sponsor Info
+                            </button>
+                            <button onclick="clearSponsorInfo()" class="bg-red-600 hover:bg-red-500 text-white font-bold px-3 py-2 rounded text-xs transition">
+                                Clear / Reset
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -675,7 +709,7 @@
         }
 
         window.switchAdminSubTab = function(subKey) {
-            ['results', 'stages', 'program'].forEach(k => {
+            ['results', 'stages', 'program', 'sponsor'].forEach(k => {
                 const view = document.getElementById(`adminSubView-${k}`);
                 const btn = document.getElementById(`adminSubTab-${k}`);
                 if (view) view.classList.add('hidden');
@@ -973,6 +1007,48 @@
             `).join('');
         }
 
+        window.saveSponsorInfo = function() {
+            const name = document.getElementById('sponsorNameInput')?.value.trim();
+            const url = document.getElementById('sponsorLogoUrlInput')?.value.trim();
+
+            if (name) localStorage.setItem('kalotsavam_sponsor_name', name);
+            else localStorage.removeItem('kalotsavam_sponsor_name');
+
+            if (url) localStorage.setItem('kalotsavam_sponsor_logo_url', url);
+            else localStorage.removeItem('kalotsavam_sponsor_logo_url');
+
+            renderSponsorLogo();
+            showSystemNotification("Sponsor Saved", "Title sponsor updated in footer.");
+        }
+
+        window.clearSponsorInfo = function() {
+            localStorage.removeItem('kalotsavam_sponsor_name');
+            localStorage.removeItem('kalotsavam_sponsor_logo_url');
+            if (document.getElementById('sponsorNameInput')) document.getElementById('sponsorNameInput').value = '';
+            if (document.getElementById('sponsorLogoUrlInput')) document.getElementById('sponsorLogoUrlInput').value = '';
+            renderSponsorLogo();
+            showSystemNotification("Sponsor Reset", "Sponsor info cleared.");
+        }
+
+        function renderSponsorLogo() {
+            const name = localStorage.getItem('kalotsavam_sponsor_name') || "Official Partner";
+            const url = localStorage.getItem('kalotsavam_sponsor_logo_url');
+            const container = document.getElementById('sponsorLogoContainer');
+
+            if (!container) return;
+
+            if (url) {
+                container.innerHTML = `<img src="${url}" alt="${name}" title="${name}" class="h-5 max-h-6 max-w-[120px] object-contain rounded bg-white/10 p-0.5">`;
+            } else {
+                container.innerHTML = `<span class="font-bold text-white text-[11px]">${name}</span>`;
+            }
+
+            const nameInput = document.getElementById('sponsorNameInput');
+            const urlInput = document.getElementById('sponsorLogoUrlInput');
+            if (nameInput && !nameInput.value) nameInput.value = localStorage.getItem('kalotsavam_sponsor_name') || '';
+            if (urlInput && !urlInput.value) urlInput.value = url || '';
+        }
+
         function calculateMissionStandings() {
             const tally = {};
             REGIONAL_MISSIONS.forEach(m => {
@@ -1237,6 +1313,7 @@
 
             window.populateAdminResultsList();
             window.populateAdminScheduleList();
+            renderSponsorLogo();
         }
 
         window.populateStageForm = function() {
@@ -1358,6 +1435,7 @@
 
         window.onload = function() {
             loadLogos();
+            renderSponsorLogo();
             renderSchedule();
             renderProgramMatrix();
             renderResults();

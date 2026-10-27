@@ -584,10 +584,19 @@
 
             const stagesRef = collection(db, 'artifacts', appId, 'public', 'data', 'stages');
             onSnapshot(stagesRef, (snapshot) => {
-                if (!snapshot.empty) {
+                if (snapshot.empty) {
+                    window.firebaseCloudSaveStages(window.stageData);
+                } else {
                     snapshot.forEach(docSnap => {
                         if (docSnap.id === 'main_stages' && docSnap.data().list) {
-                            window.stageData = docSnap.data().list;
+                            const cloudStages = docSnap.data().list;
+                            // Check if cloud stages have old numeric names (e.g., Stage 1)
+                            const hasNumeric = cloudStages.some(s => s.stage && s.stage.includes('Stage 1') || s.stage && s.stage.includes('Stage 2'));
+                            if (hasNumeric) {
+                                window.firebaseCloudSaveStages(window.stageData);
+                            } else {
+                                window.stageData = cloudStages;
+                            }
                             window.renderStages();
                         }
                     });

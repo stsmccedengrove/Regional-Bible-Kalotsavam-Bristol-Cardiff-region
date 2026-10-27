@@ -596,10 +596,19 @@
 
             const scheduleRef = collection(db, 'artifacts', appId, 'public', 'data', 'schedule');
             onSnapshot(scheduleRef, (snapshot) => {
-                if (!snapshot.empty) {
+                if (snapshot.empty) {
+                    // Push default new PDF schedule to cloud if not present
+                    window.firebaseCloudSaveSchedule(window.scheduleData);
+                } else {
                     snapshot.forEach(docSnap => {
                         if (docSnap.id === 'main_schedule' && docSnap.data().list) {
-                            window.scheduleData = docSnap.data().list;
+                            // If cloud list is only the old 3 items, overwrite with our complete PDF schedule!
+                            const cloudList = docSnap.data().list;
+                            if (cloudList.length <= 5) {
+                                window.firebaseCloudSaveSchedule(window.scheduleData);
+                            } else {
+                                window.scheduleData = cloudList;
+                            }
                             window.renderSchedule();
                             if (typeof window.populateAdminScheduleList === 'function') window.populateAdminScheduleList();
                         }

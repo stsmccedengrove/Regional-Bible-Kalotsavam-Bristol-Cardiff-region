@@ -37,28 +37,26 @@
 </head>
 <body class="bg-slate-950 text-slate-100 antialiased projector-fit-h">
 
-    <header class="bg-brand-900 text-white border-b-4 border-amber-500 shrink-0 shadow-lg px-3 py-2 flex flex-col md:flex-row items-center justify-between gap-2">
-        <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
-            <div class="flex items-center space-x-3">
-                <div id="headerLeftLogo" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
-                    <i data-lucide="book-open" class="text-amber-400 w-5 h-5"></i>
-                </div>
-                <div>
-                    <h1 class="text-xs md:text-base font-black text-white leading-tight tracking-wide">9TH BRISTOL-CARDIFF REGIONAL BIBLE KALOTSAVAM 2026</h1>
-                    <p class="text-[9px] font-extrabold text-amber-400">SYRO-MALABAR EPARCHY OF GREAT BRITAIN | LIVE FIREBASE CLOUD SYNC</p>
-                </div>
+    <header class="bg-brand-900 text-white border-b-4 border-amber-500 shrink-0 shadow-lg px-4 py-2 flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center space-x-3">
+            <div id="headerLeftLogo" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center border border-slate-700 overflow-hidden shrink-0 shadow">
+                <i data-lucide="book-open" class="text-amber-400 w-5 h-5"></i>
             </div>
-        </div>
-        
-        <!-- TITLE SPONSOR HEADER SECTION (Large & Clear) -->
-        <div id="headerSponsorBox" class="flex items-center gap-2.5 bg-slate-950/80 px-3 py-1.5 rounded-xl border border-amber-500/40 shadow-inner shrink-0">
-            <span class="text-[9px] font-black uppercase text-amber-400 tracking-wider">Title Sponsor:</span>
-            <div id="sponsorLogoContainer" class="flex items-center h-8 min-w-[70px]">
-                <span id="sponsorNameFallback" class="font-extrabold text-white text-xs">Official Partner</span>
+            <div>
+                <h1 class="text-sm md:text-lg font-black text-white leading-tight tracking-wide">9TH BRISTOL-CARDIFF REGIONAL BIBLE KALOTSAVAM 2026</h1>
+                <p class="text-[10px] font-extrabold text-amber-400">SYRO-MALABAR EPARCHY OF GREAT BRITAIN | REAL-TIME FIREBASE CLOUD SYNC</p>
             </div>
         </div>
 
-        <div class="flex items-center space-x-2 flex-wrap justify-end">
+        <!-- TITLE SPONSOR HEADER SECTION -->
+        <div id="headerSponsorBox" class="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-xl border border-amber-500/50 shadow-md">
+            <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">Title Sponsor:</span>
+            <div id="sponsorLogoContainer" class="flex items-center h-8 min-w-[70px]">
+                <span id="sponsorNameFallback" class="font-bold text-white text-xs">Official Partner</span>
+            </div>
+        </div>
+        
+        <div class="flex items-center space-x-2">
             <button onclick="forceSyncData()" title="Force Sync Data" class="bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/40 px-2.5 py-1 rounded-lg text-xs font-black flex items-center gap-1 transition shadow">
                 <i data-lucide="refresh-cw" class="w-3.5 h-3.5 animate-spin-slow"></i>
                 <span>Force Sync</span>
@@ -69,7 +67,7 @@
                 <span id="projectorModeText">Projector Fit</span>
             </button>
 
-            <div id="syncStatusBadge" class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2.5 py-1 rounded-lg text-xs font-extrabold flex items-center gap-1.5">
+            <div id="syncStatusBadge" class="hidden sm:flex bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-2.5 py-1 rounded-lg text-xs font-extrabold items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span id="syncStatusText">Firebase Live Cloud Sync Active</span>
             </div>
@@ -205,8 +203,8 @@
                       <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
                     </span>
                     <div>
-                        <h3 class="font-bold text-white text-xs">Live 9-Stage Progress Tracker</h3>
-                        <p class="text-[10px] text-slate-400">Real-time ongoing competitions across all stages.</p>
+                        <h3 class="font-bold text-white text-xs">Live 9-Stage Progress Tracker (Stages A to I)</h3>
+                        <p class="text-[10px] text-slate-400">Real-time ongoing competitions across all alphabetic stages.</p>
                     </div>
                 </div>
             </div>
@@ -216,7 +214,7 @@
         <section id="view-schedule" class="hidden flex-1 flex flex-col gap-2.5 overflow-hidden">
             <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 flex-1 flex flex-col overflow-hidden">
                 <h2 class="font-extrabold text-white text-xs mb-2 flex items-center gap-1.5 shrink-0">
-                    <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400"></i> Official Programme Schedule
+                    <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400"></i> Official Programme Schedule (As per Official Kalotsavam Plan)
                 </h2>
                 <div class="flex-1 overflow-y-auto">
                     <table class="w-full text-left text-xs">
@@ -338,12 +336,12 @@
             <div id="adminControlsSection" class="hidden space-y-4 max-h-[70vh] overflow-y-auto pr-1">
                 
                 <!-- Admin Menu Tabs -->
-                <div class="flex gap-2 border-b border-slate-800 pb-2">
+                <div class="flex flex-wrap gap-2 border-b border-slate-800 pb-2">
                     <button onclick="switchAdminSubTab('results')" id="adminSubTab-results" class="px-3 py-1 text-xs font-bold rounded-lg bg-amber-500 text-slate-950">
                         Results Publisher
                     </button>
                     <button onclick="switchAdminSubTab('stages')" id="adminSubTab-stages" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">
-                        Live 9 Stages
+                        Live Stages (A-I)
                     </button>
                     <button onclick="switchAdminSubTab('program')" id="adminSubTab-program" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700">
                         Program & Schedule Editor
@@ -411,7 +409,7 @@
                 <!-- SUB TAB 2: LIVE STAGES -->
                 <div id="adminSubView-stages" class="hidden space-y-4">
                     <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2.5">
-                        <h3 class="font-bold text-xs text-amber-400 uppercase">Manage Live 9 Stages</h3>
+                        <h3 class="font-bold text-xs text-amber-400 uppercase">Manage Live Stages (A to I)</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <select id="adminStageSelect" onchange="populateStageForm()" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white"></select>
                             <input type="text" id="adminStageTimeInput" placeholder="Time / Status (e.g. 10:30 AM)" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
@@ -433,7 +431,7 @@
                             <input type="text" id="sch_time" placeholder="Time (e.g. 09:30 AM)" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
                             <input type="text" id="sch_item" placeholder="Programme Name" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
                             <input type="text" id="sch_cat" placeholder="Category (e.g. 8 to 10)" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
-                            <input type="text" id="sch_stage" placeholder="Stage / Location (e.g. Stage 2)" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
+                            <input type="text" id="sch_stage" placeholder="Stage / Location (e.g. Stage A)" class="bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-white">
                         </div>
                         <button onclick="addScheduleEntry()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black py-1.5 rounded text-xs transition">
                             Add to Schedule
@@ -447,30 +445,30 @@
                     </div>
                 </div>
 
-                <!-- SUB TAB 4: TITLE SPONSOR MANAGER -->
+                <!-- SUB TAB 4: TITLE SPONSOR MANAGER (WITH IMAGE UPLOAD & URL SUPPORT) -->
                 <div id="adminSubView-sponsor" class="hidden space-y-4">
                     <div class="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-3">
-                        <h3 class="font-bold text-xs text-amber-400 uppercase">Configure Title Sponsor Logo</h3>
-                        <p class="text-[10px] text-slate-400">Enter a title sponsor name and image URL, or upload an image file directly from your device (automatically synced to all devices).</p>
+                        <h3 class="font-bold text-xs text-amber-400 uppercase">Configure Title Sponsor (Header Display)</h3>
+                        <p class="text-[10px] text-slate-400">Provide a sponsor name and either enter an image URL or upload a logo image directly from your device. This will be displayed prominently in the header and synchronized across all connected devices.</p>
                         
                         <div class="space-y-2.5">
                             <div>
-                                <label class="block text-[11px] font-bold text-slate-300 mb-1">Sponsor Name</label>
+                                <label class="block text-[10px] font-bold text-slate-300 mb-1">Sponsor Name:</label>
                                 <input type="text" id="sponsorNameInput" placeholder="Sponsor Name (e.g. XYZ Motors)" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-bold text-slate-300 mb-1">Sponsor Logo Image URL</label>
+                                <label class="block text-[10px] font-bold text-slate-300 mb-1">Sponsor Logo Image URL:</label>
                                 <input type="text" id="sponsorLogoUrlInput" placeholder="https://.../logo.png" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs text-white">
                             </div>
                             <div>
-                                <label class="block text-[11px] font-bold text-amber-400 mb-1">Or Upload Sponsor Logo Image File</label>
-                                <input type="file" id="sponsorFileUp" accept="image/*" onchange="handleSponsorFileUpload(event)" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-slate-300 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400">
+                                <label class="block text-[10px] font-bold text-slate-300 mb-1">Or Upload Sponsor Logo Image File:</label>
+                                <input type="file" id="sponsorImageFileInput" accept="image/*" onchange="handleSponsorImageUpload(event)" class="w-full bg-slate-900 border border-slate-700 rounded p-1.5 text-xs text-slate-300 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400">
                             </div>
                         </div>
 
                         <div class="flex gap-2 pt-2">
                             <button onclick="saveSponsorInfo()" class="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-2 rounded text-xs transition">
-                                Save & Sync Title Sponsor Info
+                                Save & Sync Title Sponsor
                             </button>
                             <button onclick="clearSponsorInfo()" class="bg-red-600 hover:bg-red-500 text-white font-bold px-3 py-2 rounded text-xs transition">
                                 Clear / Reset
@@ -518,11 +516,11 @@
                     window.renderItemWiseView();
                     if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
                 }
-                const spName = localStorage.getItem('kalotsavam_sponsor_name');
-                const spUrl = localStorage.getItem('kalotsavam_sponsor_logo_url');
-                if (spName) window.sponsorInfo.name = spName;
-                if (spUrl) window.sponsorInfo.url = spUrl;
-                window.renderSponsorLogo();
+                const localSponsorName = localStorage.getItem('kalotsavam_sponsor_name');
+                const localSponsorUrl = localStorage.getItem('kalotsavam_sponsor_logo_url');
+                if (localSponsorName || localSponsorUrl) {
+                    if (typeof window.renderSponsorLogo === 'function') window.renderSponsorLogo();
+                }
             } catch(e) {}
         }
 
@@ -551,6 +549,19 @@
                 }
             });
 
+            // Sponsor Config Listener for instant cross-device sync
+            const sponsorRef = collection(db, 'artifacts', appId, 'public', 'data', 'sponsor');
+            onSnapshot(sponsorRef, (snapshot) => {
+                snapshot.forEach(docSnap => {
+                    if (docSnap.id === 'main_sponsor') {
+                        const data = docSnap.data();
+                        if (data.name !== undefined) localStorage.setItem('kalotsavam_sponsor_name', data.name);
+                        if (data.url !== undefined) localStorage.setItem('kalotsavam_sponsor_logo_url', data.url);
+                        if (typeof window.renderSponsorLogo === 'function') window.renderSponsorLogo();
+                    }
+                });
+            }, (err) => console.log("Sponsor listener notice:", err));
+
             window.forceSyncData = async function() {
                 try {
                     const querySnapshot = await getDocs(resultsRef);
@@ -564,21 +575,6 @@
                     window.renderItemWiseView();
                     if (typeof window.populateAdminResultsList === 'function') window.populateAdminResultsList();
                     if (typeof window.checkExistingResultMatch === 'function') window.checkExistingResultMatch();
-
-                    // Also fetch sponsor sync doc
-                    try {
-                        const spDocSnap = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'sponsor'));
-                        spDocSnap.forEach(d => {
-                            if (d.id === 'main_sponsor' && d.data()) {
-                                if (d.data().name) window.sponsorInfo.name = d.data().name;
-                                if (d.data().url) window.sponsorInfo.url = d.data().url;
-                                localStorage.setItem('kalotsavam_sponsor_name', window.sponsorInfo.name);
-                                localStorage.setItem('kalotsavam_sponsor_logo_url', window.sponsorInfo.url);
-                                window.renderSponsorLogo();
-                            }
-                        });
-                    } catch(e) {}
-
                     showSystemNotification("Synced Successfully", `Loaded ${window.itemResults.length} records from Firebase cloud.`);
                 } catch (err) {
                     console.error("Force sync failed:", err);
@@ -610,26 +606,6 @@
                     });
                 }
             }, (err) => console.log("Schedule listener notice:", err));
-
-            const sponsorRef = collection(db, 'artifacts', appId, 'public', 'data', 'sponsor');
-            onSnapshot(sponsorRef, (snapshot) => {
-                if (!snapshot.empty) {
-                    snapshot.forEach(docSnap => {
-                        if (docSnap.id === 'main_sponsor' && docSnap.data()) {
-                            const data = docSnap.data();
-                            if (data.name) window.sponsorInfo.name = data.name;
-                            if (data.url !== undefined) window.sponsorInfo.url = data.url;
-                            localStorage.setItem('kalotsavam_sponsor_name', window.sponsorInfo.name);
-                            if (window.sponsorInfo.url) {
-                                localStorage.setItem('kalotsavam_sponsor_logo_url', window.sponsorInfo.url);
-                            } else {
-                                localStorage.removeItem('kalotsavam_sponsor_logo_url');
-                            }
-                            window.renderSponsorLogo();
-                        }
-                    });
-                }
-            }, (err) => console.log("Sponsor listener notice:", err));
         }
 
         window.firebaseCloudSaveResult = async function(resultObj, docId) {
@@ -688,12 +664,12 @@
             }
         }
 
-        window.firebaseCloudSaveSponsor = async function(sponsorObj) {
+        window.firebaseCloudSaveSponsor = async function(name, url) {
             try {
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'sponsor', 'main_sponsor');
-                await setDoc(docRef, { ...sponsorObj, timestamp: Date.now() });
+                await setDoc(docRef, { name: name || '', url: url || '', timestamp: Date.now() });
             } catch (err) {
-                console.warn("Sponsor save error:", err);
+                console.warn("Sponsor cloud save error:", err);
             }
         }
 
@@ -736,17 +712,51 @@
         ];
 
         window.itemResults = [];
-        window.sponsorInfo = { name: "", url: "" };
-        window.stageData = Array.from({ length: 9 }, (_, i) => ({
-            stage: `Stage ${i + 1}`,
-            ongoing: "To be allocated",
-            time: "Awaiting Schedule",
-            next: "To be updated"
+        
+        // Alphabetic stages: A to I (9 stages total matching the attached official schedule and PDF)
+        const STAGE_LETTERS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+        const STAGE_NAMES_DESC = [
+            "Stage A (Main Hall)",
+            "Stage B (Sports Hall - External Building)",
+            "Stage C (H4 - Ground Floor)",
+            "Stage D (C1 - Drama Studio, Ground Floor)",
+            "Stage E (C3 - Ground Floor)",
+            "Stage F (H7 - First Floor)",
+            "Stage G (H8 - First Floor)",
+            "Stage H (H9 - First Floor)",
+            "Stage I (Auxiliary Hall)"
+        ];
+
+        window.stageData = STAGE_LETTERS.map((letter, i) => ({
+            stage: `Stage ${letter} - ${STAGE_NAMES_DESC[i].split('(')[1] ? '(' + STAGE_NAMES_DESC[i].split('(')[1] : ''}`,
+            letter: letter,
+            fullName: STAGE_NAMES_DESC[i],
+            ongoing: i === 0 ? "Margam Kali / Bible Tableau" : "Ongoing Event",
+            time: "10:00 AM Onwards",
+            next: "Scheduled Competition"
         }));
 
+        // Updated schedule incorporating inaugural program already listed, followed by competitions starting from 10:00 AM as per attached PDF
         window.scheduleData = [
-            { time: "08:00 AM", item: "Registration & Inauguration", category: "All", stage: "Main Hall" },
-            { time: "09:00 AM", item: "Bible Reading - English", category: "Up to 7, 8-10", stage: "Stage 1" }
+            { time: "08:00 AM", item: "Holy Qurbana", category: "All", stage: "Main Hall" },
+            { time: "08:30 AM", item: "Registration", category: "All", stage: "Main Hall" },
+            { time: "09:00 AM", item: "Inauguration", category: "All", stage: "Main Hall" },
+            { time: "10:00 AM - 11:00 AM", item: "Margam Kali", category: "30 & Above", stage: "Stage A (Main Hall)" },
+            { time: "10:00 AM - 10:45 AM", item: "Dance - Solo", category: "Up to 7", stage: "Stage B (Sports Hall)" },
+            { time: "10:00 AM - 10:30 AM", item: "Syriac Song - Solo", category: "8 to 10", stage: "Stage C (H4 - Ground)" },
+            { time: "10:00 AM - 10:30 AM", item: "Bible Citation", category: "8 to 10", stage: "Stage D (C1 - Drama)" },
+            { time: "10:00 AM - 11:00 AM", item: "Song - Solo", category: "11 to 13", stage: "Stage F (H7 - First)" },
+            { time: "10:00 AM - 10:15 AM", item: "Bible Reading - Malayalam", category: "8 to 10", stage: "Stage G (H8 - First)" },
+            { time: "10:00 AM - 10:45 AM", item: "Elocution - English", category: "8 to 10", stage: "Stage H (H9 - First)" },
+            { time: "11:00 AM - 12:00 PM", item: "Margam Kali", category: "Under 30", stage: "Stage A (Main Hall)" },
+            { time: "11:00 AM - 12:00 PM", item: "Dance - Solo", category: "8 to 10", stage: "Stage B (Sports Hall)" },
+            { time: "12:15 PM - 01:00 PM", item: "Bible Tableau", category: "All Ages", stage: "Stage A (Main Hall)" },
+            { time: "01:00 PM - 02:00 PM", item: "Dance - Group", category: "8 to 10", stage: "Stage A (Main Hall)" },
+            { time: "02:15 PM - 03:00 PM", item: "Dance - Group", category: "Up to 7", stage: "Stage A (Main Hall)" },
+            { time: "03:00 PM - 03:45 PM", item: "Dance - Group", category: "11 to 13", stage: "Stage A (Main Hall)" },
+            { time: "03:45 PM - 04:30 PM", item: "Dance - Group", category: "14 to 17", stage: "Stage A (Main Hall)" },
+            { time: "05:00 PM - 06:00 PM", item: "Bible Skit", category: "All Ages", stage: "Stage A (Main Hall)" },
+            { time: "06:30 PM - 08:00 PM", item: "Closing Ceremony & Prize Distribution", category: "All", stage: "Stage A (Main Hall)" }
         ];
 
         let projectorFitActive = true;
@@ -1002,7 +1012,7 @@
         window.saveStageUpdate = function() {
             const stageIdx = document.getElementById('adminStageSelect')?.value || 0;
             window.stageData[stageIdx] = {
-                stage: `Stage ${parseInt(stageIdx) + 1}`,
+                ...window.stageData[stageIdx],
                 time: document.getElementById('adminStageTimeInput').value.trim() || "Live Now",
                 ongoing: document.getElementById('adminStageOngoingInput').value.trim() || "To be allocated",
                 next: document.getElementById('adminStageNextInput').value.trim() || "To be updated"
@@ -1012,7 +1022,7 @@
                 window.firebaseCloudSaveStages(window.stageData);
             }
             window.renderStages();
-            showSystemNotification("Stage Updated", `Stage ${parseInt(stageIdx) + 1} updated live.`);
+            showSystemNotification("Stage Updated", `Stage ${STAGE_LETTERS[stageIdx]} updated live.`);
         }
 
         window.addScheduleEntry = function() {
@@ -1026,7 +1036,7 @@
                 return;
             }
 
-            window.scheduleData.push({ time, item, category: cat || 'All', stage: stage || 'Main Stage' });
+            window.scheduleData.push({ time, item, category: cat || 'All', stage: stage || 'Stage A' });
             if (typeof window.firebaseCloudSaveSchedule === 'function') {
                 window.firebaseCloudSaveSchedule(window.scheduleData);
             }
@@ -1069,7 +1079,8 @@
             `).join('');
         }
 
-        window.handleSponsorFileUpload = function(event) {
+        // Title Sponsor Image Upload and Saving Logic
+        window.handleSponsorImageUpload = function(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
@@ -1077,18 +1088,14 @@
                 const base64Url = e.target.result;
                 const urlInput = document.getElementById('sponsorLogoUrlInput');
                 if (urlInput) urlInput.value = base64Url;
-                window.sponsorInfo.url = base64Url;
-                window.renderSponsorLogo();
+                showSystemNotification("Image Loaded", "Sponsor image converted to syncable format.");
             };
             reader.readAsDataURL(file);
         }
 
-        window.saveSponsorInfo = function() {
-            const name = document.getElementById('sponsorNameInput')?.value.trim() || "";
-            const url = document.getElementById('sponsorLogoUrlInput')?.value.trim() || "";
-
-            window.sponsorInfo.name = name;
-            window.sponsorInfo.url = url;
+        window.saveSponsorInfo = async function() {
+            const name = document.getElementById('sponsorNameInput')?.value.trim();
+            const url = document.getElementById('sponsorLogoUrlInput')?.value.trim();
 
             if (name) localStorage.setItem('kalotsavam_sponsor_name', name);
             else localStorage.removeItem('kalotsavam_sponsor_name');
@@ -1096,46 +1103,42 @@
             if (url) localStorage.setItem('kalotsavam_sponsor_logo_url', url);
             else localStorage.removeItem('kalotsavam_sponsor_logo_url');
 
+            renderSponsorLogo();
             if (typeof window.firebaseCloudSaveSponsor === 'function') {
-                window.firebaseCloudSaveSponsor(window.sponsorInfo);
+                await window.firebaseCloudSaveSponsor(name, url);
             }
-
-            window.renderSponsorLogo();
-            showSystemNotification("Sponsor Saved", "Title sponsor updated in header and synced live.");
+            showSystemNotification("Sponsor Saved & Synced", "Title sponsor updated in header across all devices.");
         }
 
-        window.clearSponsorInfo = function() {
-            window.sponsorInfo = { name: "", url: "" };
+        window.clearSponsorInfo = async function() {
             localStorage.removeItem('kalotsavam_sponsor_name');
             localStorage.removeItem('kalotsavam_sponsor_logo_url');
             if (document.getElementById('sponsorNameInput')) document.getElementById('sponsorNameInput').value = '';
             if (document.getElementById('sponsorLogoUrlInput')) document.getElementById('sponsorLogoUrlInput').value = '';
-            if (document.getElementById('sponsorFileUp')) document.getElementById('sponsorFileUp').value = '';
-
+            if (document.getElementById('sponsorImageFileInput')) document.getElementById('sponsorImageFileInput').value = '';
+            renderSponsorLogo();
             if (typeof window.firebaseCloudSaveSponsor === 'function') {
-                window.firebaseCloudSaveSponsor(window.sponsorInfo);
+                await window.firebaseCloudSaveSponsor('', '');
             }
-
-            window.renderSponsorLogo();
             showSystemNotification("Sponsor Reset", "Sponsor info cleared.");
         }
 
         window.renderSponsorLogo = function() {
-            const name = window.sponsorInfo.name || localStorage.getItem('kalotsavam_sponsor_name') || "Official Partner";
-            const url = window.sponsorInfo.url || localStorage.getItem('kalotsavam_sponsor_logo_url');
+            const name = localStorage.getItem('kalotsavam_sponsor_name') || "Official Partner";
+            const url = localStorage.getItem('kalotsavam_sponsor_logo_url');
             const container = document.getElementById('sponsorLogoContainer');
 
             if (!container) return;
 
             if (url) {
-                container.innerHTML = `<img src="${url}" alt="${name}" title="${name}" class="h-7 max-h-8 max-w-[140px] object-contain rounded bg-white/10 p-0.5">`;
+                container.innerHTML = `<img src="${url}" alt="${name}" title="${name}" class="h-8 max-h-9 max-w-[150px] object-contain rounded bg-white/10 p-0.5">`;
             } else {
-                container.innerHTML = `<span class="font-extrabold text-white text-xs">${name}</span>`;
+                container.innerHTML = `<span class="font-bold text-white text-xs">${name}</span>`;
             }
 
             const nameInput = document.getElementById('sponsorNameInput');
             const urlInput = document.getElementById('sponsorLogoUrlInput');
-            if (nameInput && !nameInput.value) nameInput.value = window.sponsorInfo.name || localStorage.getItem('kalotsavam_sponsor_name') || '';
+            if (nameInput && !nameInput.value) nameInput.value = localStorage.getItem('kalotsavam_sponsor_name') || '';
             if (urlInput && !urlInput.value) urlInput.value = url || '';
         }
 
@@ -1397,7 +1400,7 @@
 
             const stageSelect = document.getElementById('adminStageSelect');
             if (stageSelect) {
-                stageSelect.innerHTML = window.stageData.map((s, idx) => `<option value="${idx}">${s.stage}</option>`).join('');
+                stageSelect.innerHTML = window.stageData.map((s, idx) => `<option value="${idx}">Stage ${STAGE_LETTERS[idx]} (${STAGE_NAMES_DESC[idx]})</option>`).join('');
                 populateStageForm();
             }
 
@@ -1528,6 +1531,7 @@
             renderSponsorLogo();
             renderSchedule();
             renderProgramMatrix();
+            renderStages();
             renderResults();
             initLucide();
         };

@@ -738,26 +738,409 @@
 
         // Updated schedule incorporating inaugural program already listed, followed by competitions starting from 10:00 AM as per attached PDF
         window.scheduleData = [
-            { time: "08:00 AM", item: "Holy Qurbana", category: "All", stage: "Main Hall" },
-            { time: "08:30 AM", item: "Registration", category: "All", stage: "Main Hall" },
-            { time: "09:00 AM", item: "Inauguration", category: "All", stage: "Main Hall" },
-            { time: "10:00 AM - 11:00 AM", item: "Margam Kali", category: "30 & Above", stage: "Stage A (Main Hall)" },
-            { time: "10:00 AM - 10:45 AM", item: "Dance - Solo", category: "Up to 7", stage: "Stage B (Sports Hall)" },
-            { time: "10:00 AM - 10:30 AM", item: "Syriac Song - Solo", category: "8 to 10", stage: "Stage C (H4 - Ground)" },
-            { time: "10:00 AM - 10:30 AM", item: "Bible Citation", category: "8 to 10", stage: "Stage D (C1 - Drama)" },
-            { time: "10:00 AM - 11:00 AM", item: "Song - Solo", category: "11 to 13", stage: "Stage F (H7 - First)" },
-            { time: "10:00 AM - 10:15 AM", item: "Bible Reading - Malayalam", category: "8 to 10", stage: "Stage G (H8 - First)" },
-            { time: "10:00 AM - 10:45 AM", item: "Elocution - English", category: "8 to 10", stage: "Stage H (H9 - First)" },
-            { time: "11:00 AM - 12:00 PM", item: "Margam Kali", category: "Under 30", stage: "Stage A (Main Hall)" },
-            { time: "11:00 AM - 12:00 PM", item: "Dance - Solo", category: "8 to 10", stage: "Stage B (Sports Hall)" },
-            { time: "12:15 PM - 01:00 PM", item: "Bible Tableau", category: "All Ages", stage: "Stage A (Main Hall)" },
-            { time: "01:00 PM - 02:00 PM", item: "Dance - Group", category: "8 to 10", stage: "Stage A (Main Hall)" },
-            { time: "02:15 PM - 03:00 PM", item: "Dance - Group", category: "Up to 7", stage: "Stage A (Main Hall)" },
-            { time: "03:00 PM - 03:45 PM", item: "Dance - Group", category: "11 to 13", stage: "Stage A (Main Hall)" },
-            { time: "03:45 PM - 04:30 PM", item: "Dance - Group", category: "14 to 17", stage: "Stage A (Main Hall)" },
-            { time: "05:00 PM - 06:00 PM", item: "Bible Skit", category: "All Ages", stage: "Stage A (Main Hall)" },
-            { time: "06:30 PM - 08:00 PM", item: "Closing Ceremony & Prize Distribution", category: "All", stage: "Stage A (Main Hall)" }
-        ];
+        {
+                "time": "08:00 AM",
+                "item": "Holy Qurbana",
+                "category": "All",
+                "stage": "Main Hall"
+        },
+        {
+                "time": "08:30 AM",
+                "item": "Registration",
+                "category": "All",
+                "stage": "Main Hall"
+        },
+        {
+                "time": "09:00 AM",
+                "item": "Inauguration",
+                "category": "All",
+                "stage": "Main Hall"
+        },
+        {
+                "time": "10:00 - 11:00",
+                "item": "Margam Kali",
+                "category": "30 & above",
+                "stage": "Stage A (Main Hall)"
+        },
+        {
+                "time": "11:00 - 12:00",
+                "item": "Margam Kali",
+                "category": "Under 30",
+                "stage": "Stage A (Main Hall)"
+        },
+        {
+                "time": "12:15 - 13:00",
+                "item": "Bible Tableau",
+                "category": "All",
+                "stage": "Stage A (Main Hall)"
+        },
+        {
+                "time": "13:00 - 14:00",
+                "item": "Dance - Group",
+                "category": "8 to 10",
+                "stage": "Stage A (Main Hall)"
+        },
+        {
+                "time": "14:00 - 15:00",
+                "item": "Dance - Group",
+                "category": "11 to 13",
+                "stage": "Stage A (Main Hall)"
+        },
+        {
+                "time": "15:00 - 15:45",
+                "item": "Dance - Group",
+                "category": "14 to 17",
+                "stage": "Stage A (Main Hall)"
+        },
+        {
+                "time": "17:00 - 18:00",
+                "item": "Bible Skit",
+                "category": "All",
+                "stage": "Stage A (Main Hall)"
+        },
+        {
+                "time": "18:30 - 20:00",
+                "item": "Closing Ceremony & Prize Distribution",
+                "category": "All",
+                "stage": "Stage A (Main Hall)"
+        },
+        {
+                "time": "10:00 - 10:45",
+                "item": "Dance - Solo",
+                "category": "Upto 7",
+                "stage": "Stage B (Sports Hall)"
+        },
+        {
+                "time": "11:00 - 12:00",
+                "item": "Dance - Solo",
+                "category": "8 to 10",
+                "stage": "Stage B (Sports Hall)"
+        },
+        {
+                "time": "12:00 - 13:15",
+                "item": "Dance - Solo",
+                "category": "14 to 17",
+                "stage": "Stage B (Sports Hall)"
+        },
+        {
+                "time": "13:15 - 14:00",
+                "item": "Dance - Solo",
+                "category": "11 to 13",
+                "stage": "Stage B (Sports Hall)"
+        },
+        {
+                "time": "14:15 - 15:00",
+                "item": "Dance - Group",
+                "category": "Upto 7",
+                "stage": "Stage B (Sports Hall)"
+        },
+        {
+                "time": "15:30 - 16:00",
+                "item": "Bible Costume",
+                "category": "Upto 7",
+                "stage": "Stage B (Sports Hall)"
+        },
+        {
+                "time": "16:00 - 16:30",
+                "item": "Bible Costume",
+                "category": "8 to 10",
+                "stage": "Stage B (Sports Hall)"
+        },
+        {
+                "time": "16:30 - 17:00",
+                "item": "Bible Costume",
+                "category": "11 to 13",
+                "stage": "Stage B (Sports Hall)"
+        },
+        {
+                "time": "10:00 - 10:30",
+                "item": "Syriac Song - Solo",
+                "category": "8 to 10",
+                "stage": "Stage C (H4 - Ground)"
+        },
+        {
+                "time": "10:30 - 11:00",
+                "item": "Syriac Song - Solo",
+                "category": "11 to 13",
+                "stage": "Stage C (H4 - Ground)"
+        },
+        {
+                "time": "11:00 - 11:15",
+                "item": "Syriac Song - Solo",
+                "category": "14 to 17",
+                "stage": "Stage C (H4 - Ground)"
+        },
+        {
+                "time": "11:15 - 11:30",
+                "item": "Syriac Song - Solo",
+                "category": "18 to 24",
+                "stage": "Stage C (H4 - Ground)"
+        },
+        {
+                "time": "11:30 - 12:00",
+                "item": "Syriac Song - Solo",
+                "category": "Adults",
+                "stage": "Stage C (H4 - Ground)"
+        },
+        {
+                "time": "12:15 - 13:30",
+                "item": "Song - Group",
+                "category": "Adults",
+                "stage": "Stage C (H4 - Ground)"
+        },
+        {
+                "time": "13:30 - 14:45",
+                "item": "Song - Group",
+                "category": "14 to 17",
+                "stage": "Stage C (H4 - Ground)"
+        },
+        {
+                "time": "14:45 - 15:15",
+                "item": "Song - Group",
+                "category": "18 to 24",
+                "stage": "Stage C (H4 - Ground)"
+        },
+        {
+                "time": "15:15 - 16:00",
+                "item": "Song - Group",
+                "category": "8 to 10",
+                "stage": "Stage C (H4 - Ground)"
+        },
+        {
+                "time": "16:00 - 16:45",
+                "item": "Song - Group",
+                "category": "11 to 13",
+                "stage": "Stage C (H4 - Ground)"
+        },
+        {
+                "time": "10:00 - 10:30",
+                "item": "Bible Citation",
+                "category": "8 to 10",
+                "stage": "Stage D (C1 - Drama)"
+        },
+        {
+                "time": "11:00 - 11:30",
+                "item": "Bible Citation",
+                "category": "11 to 13",
+                "stage": "Stage D (C1 - Drama)"
+        },
+        {
+                "time": "12:00 - 12:30",
+                "item": "Bible Citation",
+                "category": "14 to 17",
+                "stage": "Stage D (C1 - Drama)"
+        },
+        {
+                "time": "13:00 - 13:30",
+                "item": "Bible Citation",
+                "category": "18 to 24",
+                "stage": "Stage D (C1 - Drama)"
+        },
+        {
+                "time": "14:00 - 14:30",
+                "item": "Bible Citation",
+                "category": "Adults",
+                "stage": "Stage D (C1 - Drama)"
+        },
+        {
+                "time": "10:00 - 11:00",
+                "item": "Song - Solo",
+                "category": "11 to 13",
+                "stage": "Stage E (C3 - Ground)"
+        },
+        {
+                "time": "11:00 - 12:00",
+                "item": "Song - Solo",
+                "category": "8 to 10",
+                "stage": "Stage E (C3 - Ground)"
+        },
+        {
+                "time": "12:00 - 12:30",
+                "item": "Song - Solo",
+                "category": "Upto 7",
+                "stage": "Stage E (C3 - Ground)"
+        },
+        {
+                "time": "12:30 - 13:30",
+                "item": "Song - Solo",
+                "category": "14 to 17",
+                "stage": "Stage E (C3 - Ground)"
+        },
+        {
+                "time": "13:30 - 14:00",
+                "item": "Song - Solo",
+                "category": "18 to 24",
+                "stage": "Stage E (C3 - Ground)"
+        },
+        {
+                "time": "14:00 - 15:00",
+                "item": "Song - Solo",
+                "category": "Adults",
+                "stage": "Stage E (C3 - Ground)"
+        },
+        {
+                "time": "15:15 - 15:45",
+                "item": "Bible Mono Act",
+                "category": "8 to 10",
+                "stage": "Stage E (C3 - Ground)"
+        },
+        {
+                "time": "15:45 - 16:15",
+                "item": "Bible Mono Act",
+                "category": "11 to 13",
+                "stage": "Stage E (C3 - Ground)"
+        },
+        {
+                "time": "16:15 - 16:45",
+                "item": "Bible Mono Act",
+                "category": "14 to 17",
+                "stage": "Stage E (C3 - Ground)"
+        },
+        {
+                "time": "14:30 - 14:45",
+                "item": "Instrumental - Guitar",
+                "category": "8 to 10",
+                "stage": "Stage F (H7 - First)"
+        },
+        {
+                "time": "14:45 - 15:00",
+                "item": "Instrumental - Guitar",
+                "category": "11 to 13",
+                "stage": "Stage F (H7 - First)"
+        },
+        {
+                "time": "15:00 - 15:15",
+                "item": "Instrumental - Violin",
+                "category": "8 to 10",
+                "stage": "Stage F (H7 - First)"
+        },
+        {
+                "time": "15:15 - 15:30",
+                "item": "Instrumental - Violin",
+                "category": "11 to 13",
+                "stage": "Stage F (H7 - First)"
+        },
+        {
+                "time": "15:30 - 15:45",
+                "item": "Instrumental - Guitar",
+                "category": "14 to 17",
+                "stage": "Stage F (H7 - First)"
+        },
+        {
+                "time": "15:45 - 16:15",
+                "item": "Instrumental - Violin",
+                "category": "14 to 17",
+                "stage": "Stage F (H7 - First)"
+        },
+        {
+                "time": "16:15 - 16:45",
+                "item": "Instrumental - Keyboard",
+                "category": "11 to 13",
+                "stage": "Stage F (H7 - First)"
+        },
+        {
+                "time": "16:45 - 17:15",
+                "item": "Instrumental - Keyboard",
+                "category": "8 to 10",
+                "stage": "Stage F (H7 - First)"
+        },
+        {
+                "time": "10:00 - 10:15",
+                "item": "Bible Reading - Malayalam",
+                "category": "8 to 10",
+                "stage": "Stage G (H8 - First)"
+        },
+        {
+                "time": "10:15 - 10:45",
+                "item": "Bible Reading - Malayalam",
+                "category": "11 to 13",
+                "stage": "Stage G (H8 - First)"
+        },
+        {
+                "time": "10:45 - 11:15",
+                "item": "Bible Reading - Malayalam",
+                "category": "14 to 17",
+                "stage": "Stage G (H8 - First)"
+        },
+        {
+                "time": "11:30 - 12:45",
+                "item": "Elocution - Malayalam",
+                "category": "Adults",
+                "stage": "Stage G (H8 - First)"
+        },
+        {
+                "time": "12:45 - 13:15",
+                "item": "Elocution - Malayalam",
+                "category": "8 to 10",
+                "stage": "Stage G (H8 - First)"
+        },
+        {
+                "time": "13:15 - 13:45",
+                "item": "Elocution - Malayalam",
+                "category": "11 to 13",
+                "stage": "Stage G (H8 - First)"
+        },
+        {
+                "time": "13:45 - 14:15",
+                "item": "Elocution - Malayalam",
+                "category": "14 to 17",
+                "stage": "Stage G (H8 - First)"
+        },
+        {
+                "time": "14:15 - 14:30",
+                "item": "Elocution - Malayalam",
+                "category": "18 to 24",
+                "stage": "Stage G (H8 - First)"
+        },
+        {
+                "time": "10:00 - 10:45",
+                "item": "Elocution - English",
+                "category": "8 to 10",
+                "stage": "Stage H (H9 - First)"
+        },
+        {
+                "time": "10:45 - 11:15",
+                "item": "Elocution - English",
+                "category": "11 to 13",
+                "stage": "Stage H (H9 - First)"
+        },
+        {
+                "time": "11:15 - 11:30",
+                "item": "Elocution - English",
+                "category": "18 to 24",
+                "stage": "Stage H (H9 - First)"
+        },
+        {
+                "time": "11:30 - 12:00",
+                "item": "Elocution - English",
+                "category": "14 to 17",
+                "stage": "Stage H (H9 - First)"
+        },
+        {
+                "time": "12:30 - 13:00",
+                "item": "Bible Reading - English",
+                "category": "Upto 7",
+                "stage": "Stage H (H9 - First)"
+        },
+        {
+                "time": "13:00 - 13:45",
+                "item": "Bible Reading - English",
+                "category": "8 to 10",
+                "stage": "Stage H (H9 - First)"
+        },
+        {
+                "time": "13:45 - 14:30",
+                "item": "Bible Reading - English",
+                "category": "11 to 13",
+                "stage": "Stage H (H9 - First)"
+        },
+        {
+                "time": "14:30 - 15:00",
+                "item": "Bible Reading - English",
+                "category": "14 to 17",
+                "stage": "Stage H (H9 - First)"
+        }
+];
 
         let projectorFitActive = true;
         let editingResultDocId = null;

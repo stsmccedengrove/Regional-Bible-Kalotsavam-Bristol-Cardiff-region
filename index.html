@@ -696,6 +696,7 @@
 
     <script>
         const REGIONAL_MISSIONS = [
+            "None",
             "Exeter", "Taunton", "Weston Super Mare", "Bristol",
             "Bath", "Newport", "Cardiff", "Barry",
             "Hereford", "Gloucester", "Swansea", "Swindon"
@@ -1545,6 +1546,7 @@
         function calculateMissionStandings() {
             const tally = {};
             REGIONAL_MISSIONS.forEach(m => {
+                if (m === 'None') return;
                 tally[m] = { mission: m, first: 0, second: 0, third: 0, points: 0, prizes: [] };
             });
 
@@ -1559,17 +1561,17 @@
                 const pts2 = isGroup ? 7 : 3;
                 const pts3 = isGroup ? 5 : 1;
 
-                if (res.p1?.mission && tally[res.p1.mission]) {
+                if (res.p1?.mission && res.p1.mission !== 'None' && tally[res.p1.mission]) {
                     tally[res.p1.mission].first++;
                     tally[res.p1.mission].points += pts1;
                     tally[res.p1.mission].prizes.push({ place: "1st", item: `${res.itemName} (${res.category})`, winner: res.p1.name, status: res.status, pts: pts1 });
                 }
-                if (res.p2?.mission && tally[res.p2.mission]) {
+                if (res.p2?.mission && res.p2.mission !== 'None' && tally[res.p2.mission]) {
                     tally[res.p2.mission].second++;
                     tally[res.p2.mission].points += pts2;
                     tally[res.p2.mission].prizes.push({ place: "2nd", item: `${res.itemName} (${res.category})`, winner: res.p2.name, status: res.status, pts: pts2 });
                 }
-                if (res.p3?.mission && tally[res.p3.mission]) {
+                if (res.p3?.mission && res.p3.mission !== 'None' && tally[res.p3.mission]) {
                     tally[res.p3.mission].third++;
                     tally[res.p3.mission].points += pts3;
                     tally[res.p3.mission].prizes.push({ place: "3rd", item: `${res.itemName} (${res.category})`, winner: res.p3.name, status: res.status, pts: pts3 });
